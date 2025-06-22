@@ -1,105 +1,38 @@
-/**@import {Buffer} from "./buffer/Buffer";*/
-/**@import {IndexBuffer} from "./buffer/IndexBuffer";*/
+import GPUEntity2D from "./GPUEntity2D.js";
 
-import Shader from "./Shader.js";
-
-export default class Shape {
-
+export default class Shape extends GPUEntity2D {
       /**
-       * @type {Shader}
+       * @type {number[]}
        */
-      static #shader;
-
+      vertices;
       /**
-       * 
-       * @param {WebGLRenderingContext} gl 
+       * @type {number[]}
        */
-      static #createShader(gl) {
-            if (!Shape.#shader) {
-                  Shape.#shader = new Shader(
-                        gl, 
-                        /*glsl*/`
-                        attribute vec2 a_pos;
-                        attribute vec4 a_color;
+      colors;
+      /**
+       * accepted values are:
+       *    - `3` for triangles primitive
+       *    - `2` for lines 
+       *    - `1` for points
+       * @type {1 | 2 | 3}
+       */
+      primitive = 3;
 
-                        uniform mat2 u_transformation;
-
-
-                        varying vec4 v_color;
-
-                        void main() {
-                              gl_Position = u_transformation * a_pos;
-                              v_color = a_color;
-                        }
-                        `,
-                        /*glsl*/`
-                        precision mediump float;
-                        varying vec4 v_color;
-
-                        void main() {
-                              if (gl_FragColor.a <= 0.01) {
-                                    discard;
-                              }
-                        }
-                        `
-                  );
+      get indices() {
+            switch (this.primitive) {
+                  case 1: return this.vertices.map((_,i) => i);
+                  case 2: return this.#wire(this.vertices);
+                  default: return this.#triangulate(this.vertices);
             }
-
-            return Shape.#shader;
       }
 
       /**
-       * @type {Buffer}
-       * @readonly
+       * 
+       * @param {number[]} vertices 
        */
-      #colorBuffer;
-      /**
-       * @type {IndexBuffer}
-       * @readonly
-       */
-      #indexBuffer;
-      /**
-       * @type {Buffer}
-       * @readonly
-       */
-      #positionBuffer;
-      /**
-       * @type {number}
-       * @readonly
-       */
-      #count;
-      /**
-       * @type {number}
-       * @readonly
-       */
-      #primitive;
-
-
-      /**
-       * @param {WebGLRenderingContext} gl
-       * @param {number[]} path 
-       * @param {GLenum} [primitive]
-       */
-      constructor(gl, path, primitive = gl.TRIANGLES) {
-            const shader = Shape.#createShader(gl);     
-            
-            this.#positionBuffer = shader.createBuffer('a_pos');
-            this.#colorBuffer = shader.createBuffer('a_color');
-            
-            this.#indexBuffer = shader.createIndexBuffer();
-
-            this.#positionBuffer.write(path, gl.STATIC_DRAW);
-            this.#count = path.length;
-
-            switch (primitive) {
-                  case gl.TRIANGLES: 
-                        this.#indexBuffer.write(this.#triangulate(path))
-                  break;
-                  case gl.LINES: 
-                        this.#indexBuffer.write(this.#wire(path));
-                  break;
-                  default: throw new Error('Primitive not recognized');
-            }
+      constructor(vertices) {
+            super();
+            this.vertices = vertices;
       }
 
       /**
@@ -131,13 +64,5 @@ export default class Shape {
             }
 
             return indices;
-      }
-
-      draw() {
-            this.#colorBuffer.bind();
-            this.#positionBuffer.bind();
-            this.#indexBuffer.bind()
-
-            Shape.#shader.draw(this.#count, true, this.#primitive);
       }
 }
