@@ -2,6 +2,7 @@ import {Buffer} from "./buffer/Buffer.js";
 import { UniformBuffer } from "./buffer/UniformBuffer.js";
 import { extractAttributeType, extractUniformType } from "./Token.js";
 import { IndexBuffer } from "./buffer/IndexBuffer.js";
+import { Texture } from "./buffer/Texture.js";
 export default class Shader {
       /**
        * @type {WebGLRenderingContext}
@@ -102,6 +103,13 @@ export default class Shader {
        */
       createUniform(name) {
             return new UniformBuffer(this.#gl, name, this.#program, extractUniformType(name, this.#source));
+      }
+
+      /**
+       * @param {string} name 
+       */
+      createTexture(name) {
+            return new Texture(this.#gl, name, this.#program);
       }
 
       bind() {
