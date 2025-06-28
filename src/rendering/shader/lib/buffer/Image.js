@@ -1,0 +1,30 @@
+export default (() => {
+      /**
+       * @type {Map<string,HTMLImageElement>}
+       */
+      const cache = new Map();
+
+      return {
+            /**
+             * @param {string} img
+             */
+            preload(img) {
+                  const image = new Image();
+
+                  image.src = img;
+
+                  image.addEventListener('load', () => {
+                        cache.set(img, image);
+                  });    
+            },
+            /**
+             * @param {string} img
+             */
+            get(img) {
+                  if (!cache.has(img)) {
+                        throw new Error("[ImageCache] you must call `preload` function ahead of time, to load your textures.");
+                  }
+                  return cache.get(img);
+            }
+      }
+})()

@@ -1,12 +1,13 @@
 /**@import { Buffer } from "../lib/buffer/Buffer.js";*/
-/**@import Shape from "../Shape.js";*/
+/**@import TextureEntity from "../Texture.js";*/
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
+import { Texture } from "../lib/buffer/Texture.js";
 import Shader from "../lib/Shader.js";
 
 export default class TextureBucket {
       /**
        * @readonly
-       * @type {Set<Shape>}
+       * @type {Set<TextureEntity>}
        */
       #bucket = new Set();
       /**
@@ -23,7 +24,12 @@ export default class TextureBucket {
        * @type {Buffer}
        * @readonly
        */
-      #colors;
+      #texCoords
+      /**
+       * @type {Texture}
+       * @readonly
+       */
+      #texture;
       /**
        * @type {Buffer}
        * @readonly
@@ -47,61 +53,81 @@ export default class TextureBucket {
                   gl, 
                   /*glsl*/`
                   attribute vec2 a_pos;
-                  attribute vec4 a_color;
                   attribute vec4 a_transform;
                   attribute float a_light;
+                  attribute vec2 a_text_coords;
 
-
-                  varying vec4 v_color;
+                  varying vec2 v_text_coords;
 
                   void main() {
                         gl_Position = vec4(a_pos.x * a_transform.x + a_transform.z, a_pos.y * a_transform.y + a_transform.w, 0, 1);
-                        v_color = vec4(clamp(a_color*a_light, 0, 1));
+                        v_text_coords = a_text_coords;
                   }
                   `,
                   /*glsl*/`
                   precision mediump float;
-                  varying vec4 v_color;
+                  varying vec2 v_text_coords;
+
+                  uniform sampler2D u_texture;
 
                   void main() {
-                        if (v_color.a <= 0.01) {
+                        vec4 color = texture2D(u_texture, v_text_coords);
+
+                        if (color.a <= 0.01) {
                               discard;
                         }
-                        gl_FragColor = v_color;
+                        gl_FragColor = color;
                   }
                   `
             );
 
             this.#positions = this.#shader.createBuffer('a_pos');
-            this.#colors = this.#shader.createBuffer('a_color');
+            this.#positions.write([
+                  -1, -1,
+                  -1, 1,
+                  1, 1,
+                  1, -1,
+            ]);
+            this.#texCoords = this.#shader.createBuffer("a_text_coords");
+            this.#texCoords.write([
+                  0, 0,
+                  0, 1,
+                  1, 1,
+                  1, 0,
+            ]);
             this.#transformation = this.#shader.createBuffer('a_transform');
             this.#light = this.#shader.createBuffer('a_light');
+            this.#texture = this.#shader.createTexture('u_texture');
             this.#indices = this.#shader.createIndexBuffer();
       }
-
       /**
        * 
-       * @param {1|2|3} vertices 
+       * @param {number[]} transformations 
+       * @param {number[]} lights 
+       * @param {number[]} indices 
        */
-      #toPrimitive(vertices) {
-            switch (vertices) {
-                  case 1: return this.#shader.gl.POINTS;
-                  case 2: return this.#shader.gl.LINES;
-                  case 3: return this.#shader.gl.TRIANGLES;
-            }
+      #draw(transformations, lights, indices) {
+            this.#transformation.write(transformations);
+            this.#light.write(lights);
+            this.#indices.write(indices);
+
+            this.#shader.drawIndexed(
+                  indices.length,
+                  this.#shader.gl.TRIANGLES
+            );
       }
       /**
-       * @param {Shape} shape 
+       * @param {TextureEntity} texture
        */
-      add(shape) {
-            this.#bucket.add(shape);
+      add(texture) {
+            this.#bucket.add(texture);
       }
 
       /**
-       * @param {Shape} shape 
+       * @param {TextureEntity} texture 
        */
-      remove(shape) {
-            this.#bucket.delete(shape);
+      remove(texture) {
+            this.#bucket.delete(texture);
       }
 
       draw() {
@@ -109,11 +135,8 @@ export default class TextureBucket {
             if (this.#bucket.size <= 0) {
                   return this;
             }
+            const count = 4;
 
-            /**@type {number[]} */
-            let vertices = [];
-            /**@type {number[]} */
-            let colors = [];
             /**@type {number[]} */
             let transformations = [];
             /**@type {number[]} */
@@ -121,48 +144,34 @@ export default class TextureBucket {
             /**@type {number[]} */
             let indices = [];
 
-            const shapes = [...this.#bucket].sort((a,b) => a.primitive - b.primitive);
-            let primitive = shapes[0].primitive;
+            const shapes = [...this.#bucket].sort((a,b) => a.image.localeCompare(b.image));
             let offset = 0;
 
+            this.#texture.write(shapes[0].image);
             this.#shader.bind();
-
+            this.#texture.bind();
             this.#positions.bind();
-            this.#colors.bind();
+            this.#texCoords.bind();
             this.#transformation.bind();
             this.#light.bind();
             this.#indices.bind();
 
             for (let i = 0; i < shapes.length; i++) {
-                  if (primitive !== shapes[i].primitive) {
-                        this.#positions.write(vertices);
-                        this.#colors.write(colors);
-                        this.#transformation.write(transformations);
-                        this.#light.write(lights);
-                        this.#indices.write(indices);
-
-                        this.#shader.drawIndexed(
-                              indices.length,
-                              this.#toPrimitive(primitive)
-                        );
-                        primitive = shapes[i].primitive;
-                        offset = 0;
-                        vertices = [];
-                        colors = [];
+                  if (this.#texture.image !== shapes[i].image) {
+                        this.#draw(transformations, lights, indices);
+                        offset = 0; 
                         transformations = [];
                         lights = [];
                         indices = [];
+                        this.#texture.write(shapes[i].image);
                   }
 
-                  const count = shapes[i].vertices.length/2;
                   const sin = Math.sin(shapes[i].rotation);
                   const cos = Math.cos(shapes[i].rotation);
 
                   const transf = [shapes[i].scaleX * (sin + cos), shapes[i].scaleY * (-sin + cos), shapes[i].x, shapes[i].y]
 
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
-                  vertices = vertices.concat(shapes[i].vertices);
-                  colors = colors.concat(shapes[i].colors);
                   lights = lights.concat(new Array(count).fill(shapes[i].light, 0, count));
 
                   for (let j = 0; j < count; j++) {
@@ -171,15 +180,6 @@ export default class TextureBucket {
                   offset += count;
             }
 
-            this.#positions.write(vertices);
-            this.#colors.write(colors);
-            this.#transformation.write(transformations);
-            this.#light.write(lights);
-            this.#indices.write(indices);
-
-            this.#shader.drawIndexed(
-                  indices.length,
-                  this.#toPrimitive(primitive)
-            );
+            this.#draw(transformations, lights, indices);
       }
 }
