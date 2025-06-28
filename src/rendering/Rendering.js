@@ -5,8 +5,16 @@ import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
 export const useRendering = () => {
       const ctx = new Context();
 
-      
-      return createAnimationSystem((/**@type {GPUEntity2D[]}*/entities) => {
+      return createAnimationSystem(
+      /**
+       * @param {GPUEntity2D[]} entities 
+       * @param {boolean} isDirty 
+       */
+      (entities, isDirty) => {
+            if (!isDirty) {
+                  return;
+            }
+            
             ctx.clear();
 
             for (const en of entities) {
