@@ -74,10 +74,10 @@ export default class Context {
        */
       rect() {
             return new Shape([
-                  1,0,
-                  0,1,
-                  0,0,
-                  1,1
+                  -1, -1,
+                  -1, 1,
+                  1, 1,
+                  1, -1,
             ]);
       }
 

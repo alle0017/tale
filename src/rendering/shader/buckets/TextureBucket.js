@@ -77,7 +77,7 @@ export default class TextureBucket {
                               a_pos.y * a_transform.y + a_transform.w, 
                               0.
                         );
-                        gl_Position = vec4(mat3(1,0,0, 0, 1, 0, 0, 0, 1) * pos, 1.);
+                        gl_Position = vec4(u_camera * pos, 1.);
                   }
                   `,
                   /*glsl*/`

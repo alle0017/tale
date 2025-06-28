@@ -49,7 +49,7 @@ export default class Shape extends GPUEntity2D {
       #triangulate(points) {
             const indices = [];
 
-            for (let i = 0; i < points.length - 1; i++) {
+            for (let i = 0; i < points.length/2 - 1; i++) {
                   indices.push(0);
                   indices.push(i);
                   indices.push(i + 1);

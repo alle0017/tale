@@ -57,7 +57,7 @@ export default class ShapeBucket {
                   varying vec4 v_color;
 
                   void main() {
-                        gl_Position = vec4(a_pos.x * a_transform.x + a_transform.z, a_pos.y * a_transform.y + a_transform.w, 0, 1);
+                        gl_Position = vec4(u_camera*vec3(a_pos.x * a_transform.x + a_transform.z, a_pos.y * a_transform.y + a_transform.w, 0),1);
                         v_color = vec4(clamp(a_color*a_light, 0., 1.));
                   }
                   `,
@@ -88,6 +88,7 @@ export default class ShapeBucket {
        * @param {Camera} camera 
        */
       bindCamera(camera) {
+            this.#shader.bind();
             camera.bind(this.#shader.program, 'u_camera');
       }
 
@@ -166,7 +167,7 @@ export default class ShapeBucket {
                         indices = [];
                   }
 
-                  const count = shapes[i].vertices.length/2;
+                  const count = shapes[i].vertices.length;
                   const sin = Math.sin(shapes[i].rotation);
                   const cos = Math.cos(shapes[i].rotation);
 
