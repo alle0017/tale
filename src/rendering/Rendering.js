@@ -1,21 +1,11 @@
-import { createAnimationSystem } from "../../components";
+import Context from "./Context.js";
 
-export const use2dRenderingSystem = () => {
-      const cvs = document.createElement('canvas');
-      const ctx = cvs.getContext('2d');
+export const useRendering = () => {
+      const ctx = new Context();
 
-      document.body.appendChild(cvs);
-
-      cvs.style.imageRendering = 'pixelated';
-      cvs.width = document.body.clientWidth;
-      cvs.height = document.body.clientHeight;
-
-      
-
-      return createAnimationSystem(/**@param {Array<(context: CanvasRenderingContext2D) => void>} components*/components => {
-            for (const comp of components) {
-                  comp(ctx);
-            }
-      });
+      return createAnimationSystem(entity => {
+            ctx.clear();
+            
+      });   
 }
 

@@ -1,5 +1,5 @@
 /**@import { Buffer } from "../lib/buffer/Buffer.js";*/
-/**@import Shape from "../Shape.js";*/
+/**@import Shape from "../entity/Shape.js";*/
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
 import Shader from "../lib/Shader.js";
 

@@ -1,10 +1,12 @@
 import ShapeBucket from "./shader/buckets/ShapeBucket.js";
 import TextureBucket from "./shader/buckets/TextureBucket.js";
-import Shape from "./shader/Shape.js";
-import TextureEntity from "./shader/Texture.js";
+import Shape from "./shader/entity/Shape.js";
+import TextureEntity from "./shader/entity/Texture.js";
+/**@import GPUContext from "./index.js"*/
 
 /**
  * Represents the rendering context for WebGL operations.
+ * @implements {GPUContext}
  */
 export default class Context {
       /**

@@ -1,5 +1,5 @@
 /**@import { Buffer } from "../lib/buffer/Buffer.js";*/
-/**@import TextureEntity from "../Texture.js";*/
+/**@import TextureEntity from "../entity/Texture.js";*/
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
 import { Texture } from "../lib/buffer/Texture.js";
 import Shader from "../lib/Shader.js";
