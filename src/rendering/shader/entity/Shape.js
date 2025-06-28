@@ -1,5 +1,9 @@
 import GPUEntity2D from "./GPUEntity2D.js";
+/**@import GPUContext from "../../index" */
 
+/**
+ * @extends {GPUEntity2D}
+ */
 export default class Shape extends GPUEntity2D {
       /**
        * @type {number[]}
@@ -64,5 +68,23 @@ export default class Shape extends GPUEntity2D {
             }
 
             return indices;
+      }
+
+      /**
+       * draw this into the provided
+       * context
+       * @param {GPUContext} ctx 
+       */
+      draw(ctx) {
+            ctx.drawShape(this);
+      }
+
+      /**
+       * remove this from the provided
+       * context
+       * @param {GPUContext} ctx 
+       */
+      remove(ctx) {
+            ctx.clearShape(this);
       }
 }
