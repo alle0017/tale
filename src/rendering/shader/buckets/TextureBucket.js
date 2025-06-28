@@ -103,27 +103,22 @@ export default class TextureBucket {
                   1, -1,
             ]);
             this.#texCoords = this.#shader.createBuffer("a_text_coords");
-            this.#texCoords.write([
-                  0, 0,
-                  0, 1,
-                  1, 1,
-                  1, 0,
-            ]);
             this.#transformation = this.#shader.createBuffer('a_transform');
             this.#light = this.#shader.createBuffer('a_light');
             this.#texture = this.#shader.createTexture('u_texture');
             this.#indices = this.#shader.createIndexBuffer();
       }
       /**
-       * 
+       * @param {number[]} texCoords 
        * @param {number[]} transformations 
        * @param {number[]} lights 
        * @param {number[]} indices 
        */
-      #draw(transformations, lights, indices) {
+      #draw(texCoords, transformations, lights, indices) {
             this.#transformation.write(transformations);
             this.#light.write(lights);
             this.#indices.write(indices);
+            this.#texCoords.write(texCoords);
 
             this.#shader.drawIndexed(
                   indices.length,
@@ -157,6 +152,8 @@ export default class TextureBucket {
             let lights = [];
             /**@type {number[]} */
             let indices = [];
+            /**@type {number[]} */
+            let texCoords = [];
 
             const shapes = [...this.#bucket].sort((a,b) => a.image.localeCompare(b.image));
             let offset = 0;
@@ -172,11 +169,12 @@ export default class TextureBucket {
 
             for (let i = 0; i < shapes.length; i++) {
                   if (this.#texture.image !== shapes[i].image) {
-                        this.#draw(transformations, lights, indices);
+                        this.#draw(texCoords, transformations, lights, indices);
                         offset = 0; 
                         transformations = [];
                         lights = [];
                         indices = [];
+                        texCoords = [];
                         this.#texture.write(shapes[i].image);
                   }
 
@@ -186,6 +184,7 @@ export default class TextureBucket {
 
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
                   lights = lights.concat(new Array(count).fill(shapes[i].light, 0, count));
+                  texCoords = texCoords.concat(shapes[i].textureCoords);
 
                   for (let j = 0; j < count; j++) {
                         transformations.push(...transf);
@@ -193,6 +192,6 @@ export default class TextureBucket {
                   offset += count;
             }
 
-            this.#draw(transformations, lights, indices);
+            this.#draw(texCoords, transformations, lights, indices);
       }
 }
