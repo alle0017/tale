@@ -32,6 +32,10 @@ export default class Context {
        */
       #camera;
 
+      get camera() {
+            return this.#camera;
+      }
+
       /**
        * Initializes the WebGL context and associated buckets.
        */

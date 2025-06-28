@@ -10,6 +10,9 @@ export default class Shape extends GPUEntity2D {
        */
       vertices;
       /**
+       * color used to draw each vertex.
+       * must be a series of numbers following scheme `[r,g,b,a]`
+       * repeated for each vertex
        * @type {number[]}
        */
       colors;

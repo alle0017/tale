@@ -6,6 +6,12 @@ import Shader from "../lib/Shader.js";
 import { Camera } from "./Camera.js";
 
 export default class TextureBucket {
+      static #VERTICES_POS = [
+            -1, -1,
+            -1, 1,
+            1, 1,
+            1, -1,
+      ];
       /**
        * @readonly
        * @type {Set<TextureEntity>}
@@ -66,12 +72,12 @@ export default class TextureBucket {
                   void main() {
                         v_text_coords = a_text_coords;
                         v_light = a_light;
-                        gl_Position = vec4(
+                        vec3 pos = vec3(
                               a_pos.x * a_transform.x + a_transform.z, 
                               a_pos.y * a_transform.y + a_transform.w, 
-                              0., 
-                              1.
+                              0.
                         );
+                        gl_Position = vec4(mat3(1,0,0, 0, 1, 0, 0, 0, 1) * pos, 1.);
                   }
                   `,
                   /*glsl*/`
@@ -99,12 +105,6 @@ export default class TextureBucket {
             );
 
             this.#positions = this.#shader.createBuffer('a_pos');
-            this.#positions.write([
-                  -1, -1,
-                  -1, 1,
-                  1, 1,
-                  1, -1,
-            ]);
             this.#texCoords = this.#shader.createBuffer("a_text_coords");
             this.#transformation = this.#shader.createBuffer('a_transform');
             this.#light = this.#shader.createBuffer('a_light');
@@ -112,12 +112,14 @@ export default class TextureBucket {
             this.#indices = this.#shader.createIndexBuffer();
       }
       /**
+       * @param {number[]} positions 
        * @param {number[]} texCoords 
        * @param {number[]} transformations 
        * @param {number[]} lights 
        * @param {number[]} indices 
        */
-      #draw(texCoords, transformations, lights, indices) {
+      #draw(positions, texCoords, transformations, lights, indices) {
+            this.#positions.write(positions);
             this.#transformation.write(transformations);
             this.#light.write(lights);
             this.#indices.write(indices);
@@ -149,11 +151,11 @@ export default class TextureBucket {
        * @param {Camera} camera 
        */
       bindCamera(camera) {
+            this.#shader.bind();
             camera.bind(this.#shader.program, 'u_camera');
       }
 
       draw() {
-
             if (this.#bucket.size <= 0) {
                   return this;
             }
@@ -167,12 +169,13 @@ export default class TextureBucket {
             let indices = [];
             /**@type {number[]} */
             let texCoords = [];
+            /**@type {number[]} */
+            let pos = [];
 
             const shapes = [...this.#bucket].sort((a,b) => a.image.localeCompare(b.image));
             let offset = 0;
 
             this.#texture.write(shapes[0].image);
-            this.#shader.bind();
             this.#texture.bind();
             this.#positions.bind();
             this.#texCoords.bind();
@@ -182,8 +185,7 @@ export default class TextureBucket {
 
             for (let i = 0; i < shapes.length; i++) {
                   if (this.#texture.image !== shapes[i].image) {
-                        this.#draw(texCoords, transformations, lights, indices);
-                        offset = 0; 
+                        this.#draw(pos, texCoords, transformations, lights, indices);
                         transformations = [];
                         lights = [];
                         indices = [];
@@ -198,13 +200,13 @@ export default class TextureBucket {
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
                   lights = lights.concat(new Array(count).fill(shapes[i].light, 0, count));
                   texCoords = texCoords.concat(shapes[i].textureCoords);
+                  pos = pos.concat(TextureBucket.#VERTICES_POS);
 
                   for (let j = 0; j < count; j++) {
                         transformations.push(...transf);
                   }
                   offset += count;
             }
-
-            this.#draw(texCoords, transformations, lights, indices);
+            this.#draw(pos, texCoords, transformations, lights, indices);
       }
 }

@@ -1,3 +1,4 @@
+import type { Camera } from "./shader/buckets/Camera.js";
 import type Shape from "./shader/entity/Shape.js";
 import type TextureEntity from "./shader/entity/Texture.js";
 
@@ -5,6 +6,7 @@ import type TextureEntity from "./shader/entity/Texture.js";
  * Represents the rendering context for WebGL operations.
  */
 export default interface GPUContext {
+      camera: Camera;
       /**
        * Draws all entities added to the current context
        */
