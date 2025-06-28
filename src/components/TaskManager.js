@@ -1,15 +1,15 @@
-export class Game {
+export class TaskManager {
       /**
-       * @type {Game}
+       * @type {TaskManager}
        */
       static #instance;
 
       static get() {
-            if (!Game.#instance) {
-                  Game.#instance = new Game();
+            if (!TaskManager.#instance) {
+                  TaskManager.#instance = new TaskManager();
             }
 
-            return Game.#instance;
+            return TaskManager.#instance;
       }
 
       /**
@@ -91,6 +91,6 @@ export class Game {
       }
 }
 
-const useGame = () => Game.get();
+const useTaskManager = () => TaskManager.get();
 
-export {useGame}
+export {useTaskManager}

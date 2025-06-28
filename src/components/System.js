@@ -1,4 +1,4 @@
-import { useGame } from "./Game.js";
+import { useTaskManager } from "./TaskManager.js";
 
 /**
  * create a system that is run as a low priority task.
@@ -9,12 +9,12 @@ import { useGame } from "./Game.js";
 export function createSystem(system) {
       /**@type {Set<T>} */
       const components = new Set();
-      const game = useGame();
+      const manager = useTaskManager();
       const task = () => {
             system([...components])
       };
 
-      let dispose = game.addTask(task);
+      let dispose = manager.addTask(task);
 
       return {
             /**
@@ -38,7 +38,7 @@ export function createSystem(system) {
                   dispose();
             },
             resume() {
-                  dispose = game.addTask(task);
+                  dispose = manager.addTask(task);
             }
       }
 }
@@ -52,12 +52,12 @@ export function createSystem(system) {
 export function createAnimationSystem(system) {
       /**@type {Set<T>} */
       const components = new Set();
-      const game = useGame();
+      const manager = useTaskManager();
       const task = () => {
             system([...components])
       };
 
-      let dispose = game.addAnimationTask(task);
+      let dispose = manager.addAnimationTask(task);
 
       return {
             /**
@@ -81,7 +81,7 @@ export function createAnimationSystem(system) {
                   dispose();
             },
             resume() {
-                  dispose = game.addAnimationTask(task);
+                  dispose = manager.addAnimationTask(task);
             }
       }
 }
