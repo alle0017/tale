@@ -58,20 +58,34 @@ export default class TextureBucket {
                   attribute vec2 a_text_coords;
 
                   varying vec2 v_text_coords;
+                  varying float v_light;
 
                   void main() {
-                        gl_Position = vec4(a_pos.x * a_transform.x + a_transform.z, a_pos.y * a_transform.y + a_transform.w, 0, 1);
                         v_text_coords = a_text_coords;
+                        v_light = a_light;
+                        gl_Position = vec4(
+                              a_pos.x * a_transform.x + a_transform.z, 
+                              a_pos.y * a_transform.y + a_transform.w, 
+                              0., 
+                              1.
+                        );
                   }
                   `,
                   /*glsl*/`
                   precision mediump float;
                   varying vec2 v_text_coords;
+                  varying float v_light;
 
                   uniform sampler2D u_texture;
 
                   void main() {
-                        vec4 color = texture2D(u_texture, v_text_coords);
+                        vec4 color = vec4(
+                              clamp(
+                                    texture2D(u_texture, v_text_coords)*v_light, 
+                                    0., 
+                                    1.
+                              )
+                        );
 
                         if (color.a <= 0.01) {
                               discard;
@@ -168,8 +182,7 @@ export default class TextureBucket {
 
                   const sin = Math.sin(shapes[i].rotation);
                   const cos = Math.cos(shapes[i].rotation);
-
-                  const transf = [shapes[i].scaleX * (sin + cos), shapes[i].scaleY * (-sin + cos), shapes[i].x, shapes[i].y]
+                  const transf = [shapes[i].scaleX * (sin + cos), shapes[i].scaleY * (-sin + cos), shapes[i].x, shapes[i].y];
 
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
                   lights = lights.concat(new Array(count).fill(shapes[i].light, 0, count));

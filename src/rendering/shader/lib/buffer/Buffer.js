@@ -30,6 +30,10 @@ export class Buffer {
             this.#buffer = this.#gl.createBuffer();
             this.#pointer = this.#gl.getAttribLocation(program, name);
             this.#type = this.#getSize(type);
+ 
+            if (this.#pointer < 0) {
+                  throw new Error(`${name} was not bound correctly`);
+            }
       }
 
       /**

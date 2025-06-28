@@ -13,9 +13,12 @@ export default (() => {
 
                   image.src = img;
 
-                  image.addEventListener('load', () => {
-                        cache.set(img, image);
-                  });    
+                  return new Promise((resolve) => {
+                        image.addEventListener('load', () => {
+                              cache.set(img, image);
+                              resolve();
+                        });   
+                  });
             },
             /**
              * @param {string} img

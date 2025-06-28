@@ -56,7 +56,7 @@ export default class ShapeBucket {
 
                   void main() {
                         gl_Position = vec4(a_pos.x * a_transform.x + a_transform.z, a_pos.y * a_transform.y + a_transform.w, 0, 1);
-                        v_color = vec4(clamp(a_color*a_light, 0, 1));
+                        v_color = vec4(clamp(a_color*a_light, 0., 1.));
                   }
                   `,
                   /*glsl*/`
