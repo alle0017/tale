@@ -2,6 +2,7 @@
 /**@import Shape from "../entity/Shape.js";*/
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
 import Shader from "../lib/Shader.js";
+import { Camera } from "./Camera.js";
 
 export default class ShapeBucket {
       /**
@@ -51,6 +52,7 @@ export default class ShapeBucket {
                   attribute vec4 a_transform;
                   attribute float a_light;
 
+                  uniform mat3 u_camera;
 
                   varying vec4 v_color;
 
@@ -77,6 +79,16 @@ export default class ShapeBucket {
             this.#transformation = this.#shader.createBuffer('a_transform');
             this.#light = this.#shader.createBuffer('a_light');
             this.#indices = this.#shader.createIndexBuffer();
+      }
+
+      /**
+       * bind the camera to this bucket.
+       * this passage is needed to render correctly 
+       * the texture
+       * @param {Camera} camera 
+       */
+      bindCamera(camera) {
+            camera.bind(this.#shader.program, 'u_camera');
       }
 
       /**

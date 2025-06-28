@@ -25,6 +25,10 @@ export default class Shader {
             return this.#gl;
       }
 
+      get program() {
+            return this.#program;
+      }
+
       /**
        * @param {WebGLRenderingContext} gl 
        * @param {string} vertex

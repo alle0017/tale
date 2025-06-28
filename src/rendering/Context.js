@@ -1,3 +1,4 @@
+import { Camera } from "./shader/buckets/Camera.js";
 import ShapeBucket from "./shader/buckets/ShapeBucket.js";
 import TextureBucket from "./shader/buckets/TextureBucket.js";
 import Shape from "./shader/entity/Shape.js";
@@ -27,6 +28,11 @@ export default class Context {
       #shapes;
 
       /**
+       * @type {Camera}
+       */
+      #camera;
+
+      /**
        * Initializes the WebGL context and associated buckets.
        */
       constructor() {
@@ -37,13 +43,16 @@ export default class Context {
             this.#ctx = cvs.getContext('webgl');
             this.#textures =  new TextureBucket(this.#ctx);
             this.#shapes = new ShapeBucket(this.#ctx);
+            this.#camera = new Camera(this.#ctx);
       }
 
       /**
        * Draws all textures and shapes in their respective buckets.
        */
       draw() {
+            this.#textures.bindCamera(this.#camera);
             this.#textures.draw();
+            this.#shapes.bindCamera(this.#camera);
             this.#shapes.draw();
       }
 

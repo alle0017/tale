@@ -3,6 +3,7 @@
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
 import { Texture } from "../lib/buffer/Texture.js";
 import Shader from "../lib/Shader.js";
+import { Camera } from "./Camera.js";
 
 export default class TextureBucket {
       /**
@@ -56,6 +57,8 @@ export default class TextureBucket {
                   attribute vec4 a_transform;
                   attribute float a_light;
                   attribute vec2 a_text_coords;
+
+                  uniform mat3 u_camera;
 
                   varying vec2 v_text_coords;
                   varying float v_light;
@@ -137,6 +140,16 @@ export default class TextureBucket {
        */
       remove(texture) {
             this.#bucket.delete(texture);
+      }
+
+      /**
+       * bind the camera to this bucket.
+       * this passage is needed to render correctly 
+       * the texture
+       * @param {Camera} camera 
+       */
+      bindCamera(camera) {
+            camera.bind(this.#shader.program, 'u_camera');
       }
 
       draw() {
