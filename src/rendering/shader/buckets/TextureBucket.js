@@ -52,6 +52,9 @@ export default class TextureBucket {
        * @readonly
        */
       #indices;
+      get entities() {
+            return [...this.#bucket];
+      }
       /**
        * @param {WebGLRenderingContext} gl 
        */

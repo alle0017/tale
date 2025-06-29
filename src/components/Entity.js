@@ -25,11 +25,11 @@ const createEntity = () => {
                   }
 
                   return this;
-            },
-            has(key) {
-                  return map.has(key);
             }
       }, {
+            has(target, key) {
+                  return map.has(key) || key in target;
+            },
             get(target, key) {
                   if (key in target) {
                         return target[key];

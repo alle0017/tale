@@ -1,10 +1,11 @@
 import { useRendering } from "../rendering/Rendering.js";
+import SceneManager from "./SceneManager.js";
 /**@import {System} from "../components/index.js" */
 /**@import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js" */
 /**@import GPUContext from "../rendering/index.js" */
 
 
-class Game {
+export class Game {
       static #game = new Game();
 
       static get() {
@@ -14,6 +15,7 @@ class Game {
        * @type {System<GPUEntity2D> & {ctx: GPUContext}}
        */
       #engine;
+      #sceneManager = new SceneManager();
 
       /**
        * the camera used inside the scene.
@@ -39,7 +41,6 @@ class Game {
       get ctx() {
             return this.#engine.ctx;
       }
-
       /**
        * system that renders each entity onto the screen.
        * it works, under the hood, with {@link Game.ctx} 
@@ -47,6 +48,13 @@ class Game {
        */
       get engine() {
             return this.#engine;
+      }
+      /**
+       * scene manager useful to transit across scenes 
+       * and preserve their state
+       */
+      get scenes() {
+            return this.#sceneManager;
       }
 
       /**

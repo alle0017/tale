@@ -1,4 +1,5 @@
 import type { Camera } from "./shader/buckets/Camera.js";
+import type GPUEntity2D from "./shader/entity/GPUEntity2D.js";
 import type Shape from "./shader/entity/Shape.js";
 import type TextureEntity from "./shader/entity/Texture.js";
 
@@ -7,6 +8,7 @@ import type TextureEntity from "./shader/entity/Texture.js";
  */
 export default interface GPUContext {
       camera: Camera;
+      entities: GPUEntity2D[];
       /**
        * Draws all entities added to the current context
        */

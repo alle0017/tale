@@ -3,6 +3,7 @@ import ShapeBucket from "./shader/buckets/ShapeBucket.js";
 import TextureBucket from "./shader/buckets/TextureBucket.js";
 import Shape from "./shader/entity/Shape.js";
 import TextureEntity from "./shader/entity/Texture.js";
+/**@import GPUEntity2D from "./shader/entity/GPUEntity2D.js";*/
 /**@import GPUContext from "./index.js"*/
 
 /**
@@ -36,6 +37,9 @@ export default class Context {
             return this.#camera;
       }
 
+      get entities() {
+            return /**@type {GPUEntity2D[]}*/(this.#textures.entities).concat(/**@type {GPUEntity2D[]}*/(this.#shapes.entities))
+      }
       /**
        * Initializes the WebGL context and associated buckets.
        */

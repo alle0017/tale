@@ -40,6 +40,11 @@ export default class ShapeBucket {
        * @readonly
        */
       #indices;
+
+      get entities() {
+            return [...this.#bucket];
+      }
+      
       /**
        * @param {WebGLRenderingContext} gl 
        */
