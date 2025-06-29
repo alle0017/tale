@@ -195,4 +195,8 @@ export default class ShapeBucket {
                   this.#toPrimitive(primitive)
             );
       }
+
+      removeAll() {
+            this.#bucket.clear();
+      }
 }

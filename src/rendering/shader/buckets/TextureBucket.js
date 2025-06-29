@@ -209,4 +209,7 @@ export default class TextureBucket {
             }
             this.#draw(pos, texCoords, transformations, lights, indices);
       }
+      removeAll() {
+            this.#bucket.clear();
+      }
 }

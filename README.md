@@ -58,11 +58,10 @@ that later could be called in a scene like this
 
 ```javascript
 export const MainScene() {
-      const scene = useScene();
       const player = Player();
 
-      scene.add(player);
-      scene.camera.follow(player);
+      game.add(player);
+      game.camera.follow(player);
       return scene;
 }
 

@@ -120,4 +120,9 @@ export default class Context {
       clearShape(shape) {
             this.#shapes.remove(shape);
       }
+
+      removeAll() {
+            this.#shapes.removeAll();
+            this.#textures.removeAll();
+      }
 }

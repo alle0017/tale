@@ -46,4 +46,8 @@ export default interface GPUContext {
        * @param img - The texture entity to remove.
        */
       clearImage(img: TextureEntity): void;
+      /**
+       * remove all current drawn entities.
+       */
+      removeAll(): void;
 }
