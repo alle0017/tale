@@ -176,7 +176,12 @@ export default class ShapeBucket {
                   const sin = Math.sin(shapes[i].rotation);
                   const cos = Math.cos(shapes[i].rotation);
 
-                  const transf = [shapes[i].scaleX * (sin + cos), shapes[i].scaleY * (-sin + cos), shapes[i].x, shapes[i].y]
+                  const transf = [
+                        shapes[i].scaleX * (sin + cos), 
+                        shapes[i].scaleY * (-sin + cos), 
+                        shapes[i].x/this.#shader.gl.canvas.width, 
+                        shapes[i].y/this.#shader.gl.canvas.height
+                  ];
 
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
                   vertices = vertices.concat(shapes[i].vertices);

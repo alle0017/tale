@@ -21,6 +21,10 @@ const createEntity = () => {
                   }
 
                   for (const k of Object.keys(component)) {
+                        if (map.has(k)) {
+                              throw new Error(`illegal component addition: property "${k}" was already bound`);
+                        }
+
                         map.set(k,component);
                   }
 

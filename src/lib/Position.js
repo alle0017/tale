@@ -1,6 +1,8 @@
 /**@import {PhysicsPosition, Position} from "." */
 
 /**
+ * position component that represent any point 
+ * that can be moved in 2D space.
  * @returns {Position}
  */
 export const usePosition = () => {
@@ -40,7 +42,6 @@ export const usePosition = () => {
                         sub(this);
                   }
             },
-
             onMove(callback) {
                   subs.add(callback);
                   return () => subs.delete(callback);

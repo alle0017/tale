@@ -1,11 +1,10 @@
 import { createSystem } from "../components/index.js"
-import { usePhysicsPosition, } from "./Position.js";
 /**@import {PhysicsPosition} from "." */
 
-export const usePhysics = (() => {
+export const usePhysicsSystem = () => {
       let last = performance.now();
 
-      const system = createSystem(/**@param {PhysicsPosition[]} positions */positions => {
+      return createSystem(/**@param {PhysicsPosition[]} positions */positions => {
             const dt = performance.now() - last;
             
             for (const pos of positions) {
@@ -28,12 +27,4 @@ export const usePhysics = (() => {
 
             last = performance.now();
       });
-
-      return () => {
-            const pos =  usePhysicsPosition();
-
-            system.add(pos);
-
-            return pos;
-      }
-})()
+}

@@ -1,5 +1,5 @@
 import { SharedUniformBuffer } from "../lib/buffer/SharedUniformBuffer.js";
-
+/**@import {Position} from "../../../lib/index.js" */
 export class Camera {
       /**
        * @readonly
@@ -109,5 +109,16 @@ export class Camera {
                   this.#dirty = false;
             }
             this.#buffer.bind(program, name);
+      }
+
+      /**
+       * follow a position onto the screen
+       * @param {Position} position 
+       */
+      follow(position) {
+            position.onMove(pos => {
+                  this.x = pos.x;
+                  this.y = pos.y;
+            });
       }
 }
