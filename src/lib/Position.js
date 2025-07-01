@@ -45,7 +45,7 @@ export const usePosition = () => {
             onMove(callback) {
                   subs.add(callback);
                   return () => subs.delete(callback);
-            }
+            },
       };
 }
 
