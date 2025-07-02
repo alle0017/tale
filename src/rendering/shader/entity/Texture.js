@@ -18,19 +18,16 @@ export default class TextureEntity extends GPUEntity2D {
        */
       image;
       zIndex = 0;
-      
       get textureCoords() {
-            const coords = [];
-
-            for (let i = 0; i < this.#textureCoords.length; i+= 2) {
-                  coords.push(
-                        this.#textureCoords[i],
-                        this.#textureCoords[i + 1],
-                        this.zIndex
-                  );
-            }
-
-            return coords;
+            return this.#textureCoords;
+      }
+      get vertices() {
+            return [
+                   -1, -1, this.zIndex, 
+                  -1, 1, this.zIndex,
+                  1, 1, this.zIndex,
+                  1, -1, this.zIndex,
+            ];
       }
 
       get indices() {

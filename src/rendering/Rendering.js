@@ -13,15 +13,9 @@ import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
 export const useRendering = () => {
       const manager = useTaskManager();
       const ctx = new Context();
-      let dirty = false;
       const task = () => {
-            if (!dirty) {
-                  return;
-            }
-            
             ctx.clear();
             ctx.draw();
-            dirty = false;
       };
 
       let dispose = manager.addAnimationTask(task);
@@ -33,14 +27,12 @@ export const useRendering = () => {
              */
             add(entity) {
                   entity.draw(ctx);
-                  dirty = true;
             },
             /**
              * @param {GPUEntity2D} entity 
              */
             delete(entity) {
                   entity.remove(ctx);
-                  dirty = true;
             },
 
             dispose() {

@@ -208,7 +208,7 @@ export default class TextureBucket {
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
                   lights = lights.concat(new Array(count).fill(shapes[i].light, 0, count));
                   texCoords = texCoords.concat(shapes[i].textureCoords);
-                  pos = pos.concat(TextureBucket.#VERTICES_POS);
+                  pos = pos.concat(shapes[i].vertices);
 
                   for (let j = 0; j < count; j++) {
                         transformations.push(...transf);

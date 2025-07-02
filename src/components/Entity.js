@@ -32,6 +32,7 @@ const createEntity = () => {
             }
       }, {
             has(target, key) {
+                  console.log('has', key)
                   return map.has(key) || key in target;
             },
             get(target, key) {
@@ -44,6 +45,20 @@ const createEntity = () => {
                   }
 
                   return map.get(key)[key];
+            },
+            set(target, key, value) {
+                  if (key in target) {
+                        target[key] = value;
+                        return true;
+                  }
+
+                  if (!map.has(key)) {
+                        throw new Error("illegal access to property");
+                  }
+
+                  map.get(key)[key] = value;
+
+                  return true;
             }
       })
 };

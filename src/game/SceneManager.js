@@ -1,4 +1,4 @@
-import Scene from "./Scene";
+import Scene from "./Scene.js";
 
 export default class SceneManager {
       /**
@@ -47,9 +47,11 @@ export default class SceneManager {
        */
       use(scene, resumable = true) {
 
-            this.#current.stop();
+            if (this.#current) {
+                  this.#current.stop();
+            }
 
-            if (!this.#toResume) {
+            if (!this.#toResume && this.#current) {
                   this.#current.clear();
             }
 
