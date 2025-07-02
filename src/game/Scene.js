@@ -1,5 +1,5 @@
 import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js";
-import { Game, useGame } from "./game.js";
+import { Game, useGame } from "./Game.js";
 /**@import {Entity} from "../components/Entity"*/
 /**@import {System} from "../components/index.js" */
 
@@ -22,6 +22,12 @@ export default class Scene {
        * @type {GPUEntity2D[]}
        */
       #drawable;
+      /**@type {Set<() => void>} */
+      #onResume = new Set();
+      /**@type {Set<() => void>} */
+      #onStop = new Set();
+      /**@type {Set<() => void>} */
+      #onClear = new Set();
 
       constructor() {
             this.#game = useGame();
@@ -61,6 +67,10 @@ export default class Scene {
             for (const system of this.#systems) {
                   system.stop();
             }
+
+            for (const stopper of this.#onStop) {
+                  stopper();
+            }
       }
       /**
        * resume all the systems that where 
@@ -76,6 +86,10 @@ export default class Scene {
             for (const system of this.#systems) {
                   system.resume();
             }
+
+            for (const resumer of this.#onResume) {
+                  resumer();
+            }
       }
       /**
        * remove all entities from the screen and
@@ -88,5 +102,30 @@ export default class Scene {
             for (const system of this.#systems) {
                   system.dispose();
             }
+
+            for (const cleaner of this.#onClear) {
+                  cleaner();
+            }
+      }
+      /**
+       * @param {() => void} callback
+       */
+      onResume(callback) {
+            this.#onResume.add(callback);
+            return () => this.#onResume.delete(callback);
+      }
+      /**
+       * @param {() => void} callback
+       */
+      onStop(callback) {
+            this.#onStop.add(callback);
+            return () => this.#onStop.delete(callback);
+      }
+      /**
+       * @param {() => void} callback
+       */
+      onClear(callback) {
+            this.#onClear.add(callback);
+            return () => this.#onClear.delete(callback);
       }
 }
