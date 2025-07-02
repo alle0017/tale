@@ -4,11 +4,6 @@ import Image from "../lib/buffer/Image.js";
 
 export default class TextureEntity extends GPUEntity2D {
       /**
-       * @type {string}
-       */
-      image;
-
-      /**
        * @type {number[]}
        */
       #textureCoords = [
@@ -17,9 +12,25 @@ export default class TextureEntity extends GPUEntity2D {
             1, 1,
             1, 0,
       ];
+
+      /**
+       * @type {string}
+       */
+      image;
+      zIndex = 0;
       
       get textureCoords() {
-            return this.#textureCoords;
+            const coords = [];
+
+            for (let i = 0; i < this.#textureCoords.length; i+= 2) {
+                  coords.push(
+                        this.#textureCoords[i],
+                        this.#textureCoords[i + 1],
+                        this.zIndex
+                  );
+            }
+
+            return coords;
       }
 
       get indices() {

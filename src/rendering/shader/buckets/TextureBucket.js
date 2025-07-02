@@ -62,7 +62,7 @@ export default class TextureBucket {
             this.#shader = new Shader(
                   gl, 
                   /*glsl*/`
-                  attribute vec2 a_pos;
+                  attribute vec3 a_pos;
                   attribute vec4 a_transform;
                   attribute float a_light;
                   attribute vec2 a_text_coords;
@@ -78,7 +78,7 @@ export default class TextureBucket {
                         vec3 pos = vec3(
                               a_pos.x * a_transform.x + a_transform.z, 
                               a_pos.y * a_transform.y + a_transform.w, 
-                              0.
+                              a_pos.z
                         );
                         gl_Position = vec4(u_camera * pos, 1.);
                   }

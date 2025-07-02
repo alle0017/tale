@@ -52,7 +52,7 @@ export default class ShapeBucket {
             this.#shader = new Shader(
                   gl, 
                   /*glsl*/`
-                  attribute vec2 a_pos;
+                  attribute vec3 a_pos;
                   attribute vec4 a_color;
                   attribute vec4 a_transform;
                   attribute float a_light;
@@ -62,7 +62,15 @@ export default class ShapeBucket {
                   varying vec4 v_color;
 
                   void main() {
-                        gl_Position = vec4(u_camera*vec3(a_pos.x * a_transform.x + a_transform.z, a_pos.y * a_transform.y + a_transform.w, 0),1);
+                        gl_Position = vec4(
+                              u_camera
+                              *
+                              vec3(
+                                    a_pos.x * a_transform.x + a_transform.z, 
+                                    a_pos.y * a_transform.y + a_transform.w, 
+                                    a_pos.z
+                              )
+                        ,1);
                         v_color = vec4(clamp(a_color*a_light, 0., 1.));
                   }
                   `,
@@ -172,7 +180,7 @@ export default class ShapeBucket {
                         indices = [];
                   }
 
-                  const count = shapes[i].vertices.length;
+                  const count = shapes[i].coords.length;
                   const sin = Math.sin(shapes[i].rotation);
                   const cos = Math.cos(shapes[i].rotation);
 
@@ -184,7 +192,7 @@ export default class ShapeBucket {
                   ];
 
                   indices = indices.concat(shapes[i].indices.map(i => i + offset));
-                  vertices = vertices.concat(shapes[i].vertices);
+                  vertices = vertices.concat(shapes[i].coords);
                   colors = colors.concat(shapes[i].colors);
                   lights = lights.concat(new Array(count).fill(shapes[i].light, 0, count));
 

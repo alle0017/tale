@@ -49,6 +49,8 @@ export default class Context {
             document.body.appendChild(cvs);
 
             this.#ctx = cvs.getContext('webgl');
+            this.#ctx.enable(this.#ctx.DEPTH_TEST);
+            
             this.#textures =  new TextureBucket(this.#ctx);
             this.#shapes = new ShapeBucket(this.#ctx);
             this.#camera = new Camera(this.#ctx);

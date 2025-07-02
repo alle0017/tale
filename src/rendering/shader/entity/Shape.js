@@ -25,6 +25,22 @@ export default class Shape extends GPUEntity2D {
        */
       primitive = 3;
 
+      zIndex = 0;
+
+      get coords() {
+            const coords = [];
+
+            for (let i = 0; i < this.vertices.length; i+= 2) {
+                  coords.push(
+                        this.vertices[i],
+                        this.vertices[i + 1],
+                        this.zIndex
+                  );
+            }
+
+            return coords;
+      }
+
       get indices() {
             switch (this.primitive) {
                   case 1: return this.vertices.map((_,i) => i);
