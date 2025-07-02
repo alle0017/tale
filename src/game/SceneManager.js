@@ -28,9 +28,22 @@ export default class SceneManager {
        * ## note
        * ---
        * is important the reuse of same builder,
-       * because if you change it, like this `manager.use(() => MyScene())`
-       * the manager couldn't tell if the scene was already created and must 
+       * because if you change it
+       * the manager can't tell if the scene was already created and must 
        * be resumed, so it creates new one instead.
+       * 
+       * @example 
+       * ```javascript
+       * ❌ NO
+       * function MyScene() {...}
+       * manager.use(() => MyScene())
+       * manager.use(() => MyScene()) // not resumed
+       * 
+       * ✅ OK
+       * function MyScene() {...}
+       * manager.use(MyScene)
+       * manager.use(MyScene)
+       * ```
        */
       use(scene, resumable = true) {
 

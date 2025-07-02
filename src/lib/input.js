@@ -1,5 +1,13 @@
 /**@import Scene from "../game/Scene.js";*/
 
+/**
+ * hook used to define input events.
+ * every event is attached to the scene passed, 
+ * in particular every event defined is reused 
+ * if the scene is resumed, is stopped if the
+ * scene is stopped, and is completely dropped if
+ * the scene is cleared
+ */
 export const useInput = (() => {
       /**
        * @type {Set<(e: KeyboardEvent)=>void>}
@@ -64,7 +72,8 @@ export const useInput = (() => {
 
             return {
                   /**
-                   * 
+                   * set an event handler attached 
+                   * to an abstract event.
                    * @param {string} event 
                    * @param {() => void} handler 
                    */
@@ -78,7 +87,7 @@ export const useInput = (() => {
                         return () => listeners.get(event).delete(handler);
                   },
                   /**
-                   * map an abstract event onto a key
+                   * map an abstract event onto a key.
                    * @param {string} ev 
                    * @param {string} key 
                    */
