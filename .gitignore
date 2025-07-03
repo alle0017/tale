@@ -8,5 +8,3 @@ package-lock.json
 # MACOS
 .DS_Store
 .assets
-index.html
-index.js

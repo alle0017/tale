@@ -69,12 +69,14 @@ img,span {
 }
 
 .header {
-      position: absolute;
-      top: 0px;
       height: 32px;
       font-size: var(--fs1);
       border-bottom: 1px solid var(--n1);
       width: 100%;
+}
+
+.body {
+      padding: 10%;
 }
 
 .up-bar {
@@ -177,3 +179,11 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
 .sc-10 { margin-left: 83.333%; }
 .sc-11 { margin-left: 91.666%; }
 .sc-12 { margin-left: 100%; }
+.resizable {
+      resize: both;
+      overflow: auto;
+}
+
+.main {
+      margin-top: 40px;
+}
