@@ -4,7 +4,8 @@ import { $ref, html } from "../fw/index.js";
  * 
  * @param {{
  * ref: {},
- * children: unknown[]
+ * children: unknown[],
+ * header: unknown,
  * }} props 
  * @returns 
  */
@@ -16,8 +17,11 @@ export default function Drawer(props) {
       const toggle = () => drawer.element.isConnected? hide(): show();
 
       if (props.ref) {
-             Object.defineProperty(props.ref, 'toggle', {
+            Object.defineProperty(props.ref, 'toggle', {
                   value: toggle
+            });
+            Object.defineProperty(props.ref, 'isOpen', {
+                  value: () => drawer.element.isConnected
             });
       }
      
@@ -26,7 +30,7 @@ export default function Drawer(props) {
                   <div class="drawer" ref=${drawer}>
                         <div class="layout">
                               <div class="header row g-3 p-1 center">
-                                    <h3 class="col">Drawer header</h3>
+                                    <h3 class="col">${props.header}</h3>
                                     <button 
                                           class="icon-btn col sc-3"
                                           @click=${hide}

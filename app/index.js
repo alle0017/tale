@@ -1,6 +1,9 @@
-import { $ref, GApp, html } from "./fw/index.js";
+import { $error, $ref, $signal, GApp, html } from "./fw/index.js";
 import { useActive } from "./hooks/hooks.js";
 import Drawer from "./components/Drawer.js";
+import Entity from "./components/pane/Entity.js";
+import Explorer from "./components/Explorer.js";
+import useEntity from "./components/tabs/Entity.js";
 /**@import Ref from "./fw/lib/Signals/Reference.js";*/
 
 function App() {
@@ -13,11 +16,21 @@ function App() {
       const cvsRoot = $ref();
       const layout = $ref();
 
+      const header = $signal('');
+      const items = $signal([]);
+      const icon = $signal('');
+
+      /**
+       * @type {import("./components/types.js").Tab}
+       */
+      let tab;
+
+      $error.catch(console.error)
+
 
 
       cvsRoot.onLoad(cvs => {
-            drawer.toggle();
-
+            drawer.toggle()
             const resizeObserver = new ResizeObserver(entries => {
                   for (const entry of entries) {
                         const { width, height } = entry.contentRect;
@@ -30,6 +43,7 @@ function App() {
             resizeObserver.observe(cvs);
       });
 
+
       return html`
             <ul class="navbar up-bar">
                   <li class="row g-2" @click=${active}>
@@ -38,17 +52,45 @@ function App() {
                               Scenes
                         </span>
                   </li>
-                  <li class="row g-2" @click=${active}>
+                  <li class="row g-2" @click=${e => { 
+                        active(e); 
+                        tab = useEntity(header, items, icon);
+                  }}>
                         <img src="./icons/entity.svg" class="col" width="18"></img>
                         <span class="col">
                               Entities
                         </span>
                   </li>
-
             </ul>
-            <Drawer ref=${drawer}>
-                  <div ref=${layout}>
-                  </div>
+            <Explorer 
+                  icon=${icon}
+                  items=${items}
+                  @create=${() => {
+                        if (!tab) {
+                              return;
+                        }
+                        const name = tab.create();
+                        tab.clean(layout.element);
+                        tab.open(layout.element, name);
+                        if (!drawer.isOpen()) {
+                              drawer.toggle();
+                        }
+                  }}
+                  @open=${name => {
+                        if (!tab) {
+                              return;
+                        }
+
+                        tab.clean(layout.element);
+                        tab.open(layout.element, name);
+
+                        if (!drawer.isOpen()) {
+                              drawer.toggle();
+                        }
+                  }}
+            />
+            <Drawer ref=${drawer} header=${header}>
+                  <div ref=${layout} class="list g-1 px-1"></div>
             </Drawer>
             <div ref=${cvsRoot} class="resizable main" style="width: 300px; height: 250px;">
                   <canvas ref=${canvas} width="300" height="250"></canvas>
@@ -58,4 +100,5 @@ function App() {
 
 GApp
 .registerComponent(Drawer)
+.registerComponent(Explorer)
 .createRoot(App)
