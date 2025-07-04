@@ -16,6 +16,12 @@
       --fs0: 14px;
       --fs1: 18px;
       --fs2: 20px;
+
+      --tp-button-background-color: var(--n1) !important;
+      --tp-button-background-color-active: var(--n2) !important;
+      --tp-button-background-color-focus: var(--n3) !important;
+      --tp-button-background-color-hover: var(--n4) !important;
+      --tp-button-foreground-color: var(--t0) !important;
 }
 
 * {
@@ -29,7 +35,7 @@ img,span {
 }
 
 .drawer {
-      width: 300px;
+      width: 400px;
       height: 100%;
       min-height: 100%;
       position: fixed;
@@ -81,6 +87,13 @@ img,span {
 
 .up-bar {
       position: fixed;
+      top: 0px;
+      left: 0px;
+      width: 100%;
+}
+
+.up-bar-secondary {
+      position: absolute;
       top: 0px;
       left: 0px;
       width: 100%;
@@ -163,6 +176,25 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
       margin: 25%;
 }
 
+.mt-1 {
+      margin-top: 5%;
+}
+.mt-2 {
+      margin-top: 10%;
+}
+.mt-3 {
+      margin-top: 15%;
+}
+.mt-4 {
+      margin-top: 20%;
+}
+.mt-5 {
+      margin-top: 25%;
+}
+.px-1 {
+      padding-left: 5%;
+      padding-right: 5%;
+}
 .center {
       align-items: center;
 }
@@ -186,4 +218,59 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
 
 .main {
       margin-top: 40px;
+}
+
+.list {
+      display: flex; 
+      flex-direction: column; 
+      overflow-y: scroll; 
+      height: 80vh; 
+      max-height: 80vh;
+      width: 100%;
+}
+
+.file {
+     width: 70px; 
+     height: 80px;
+     background-color: var(--n1);
+     border-radius: 5px;
+     display: inline-flex;
+     justify-content: center;
+     align-items: center;
+     padding: 10px;
+     box-sizing: border-box;
+     cursor: pointer;
+}
+
+.h-container {
+      display: flex;
+      max-width: 80%;
+      min-width: 80%;
+      overflow-x: scroll;
+      height: 200px;
+      gap: 10%;
+}
+
+.bottom-drawer {
+      border-top: 1px solid var(--n1);
+      height: 300px;
+      width: 100%;
+      min-width: 100%;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+}
+
+.v-container {
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center;
+}
+
+.sm-item {
+      width: 32px !important;
 }
