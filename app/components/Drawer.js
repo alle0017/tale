@@ -6,6 +6,7 @@ import { $ref, html } from "../fw/index.js";
  * ref: {},
  * children: unknown[],
  * header: unknown,
+ * onDelete: () => void,
  * }} props 
  * @returns 
  */
@@ -32,11 +33,18 @@ export default function Drawer(props) {
                               <div class="header row g-3 p-1 center">
                                     <h3 class="col">${props.header}</h3>
                                     <button 
-                                          class="icon-btn col sc-3"
+                                          class="icon-btn col sc-2"
+                                          @click=${() => props.onDelete?.call()}
+                                          aria-label="delete button"
+                                    >
+                                          <img src="./icons/trash.svg" width="16"></img>
+                                    </button>
+                                    <button 
+                                          class="icon-btn col"
                                           @click=${hide}
                                           aria-label="close button"
                                     >
-                                          <img src="./icons/x.svg" width="24"></img>
+                                          <img src="./icons/x.svg" width="16"></img>
                                     </button>
                               </div>
                               <div class="body">

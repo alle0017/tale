@@ -37,6 +37,7 @@ export default function useEntity(headerText, items, icon) {
                   items.value = [...proj.entities.keys()].map(e => e.name);
                   if (dispose) {
                         dispose()
+                        dispose = undefined;
                   }
             },
             open: (layout,name) => {
@@ -45,6 +46,23 @@ export default function useEntity(headerText, items, icon) {
                               dispose = Entity(layout, e);
                               break;
                         }
+                  }
+            },
+            delete: name => {
+                  for (const e of proj.entities) {
+                        if (e.name === name) {
+                              proj.entities.delete(e);
+                              break;
+                        }
+                  }
+
+                  proj.bodies.delete(name);
+                  proj.positions.delete(name);
+                  items.value = [...proj.entities.keys()].map(e => e.name);
+
+                  if (dispose) {
+                        dispose()
+                        dispose = undefined;
                   }
             }
       }

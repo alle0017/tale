@@ -1,7 +1,6 @@
 import { $error, $ref, $signal, GApp, html } from "./fw/index.js";
 import { useActive } from "./hooks/hooks.js";
 import Drawer from "./components/Drawer.js";
-import Entity from "./components/pane/Entity.js";
 import Explorer from "./components/Explorer.js";
 import useEntity from "./components/tabs/Entity.js";
 /**@import Ref from "./fw/lib/Signals/Reference.js";*/
@@ -24,6 +23,10 @@ function App() {
        * @type {import("./components/types.js").Tab}
        */
       let tab;
+      /**
+       * @type {string}
+       */
+      let activeElement;
 
       $error.catch(console.error)
 
@@ -72,6 +75,7 @@ function App() {
                         const name = tab.create();
                         tab.clean(layout.element);
                         tab.open(layout.element, name);
+                        activeElement = name;
                         if (!drawer.isOpen()) {
                               drawer.toggle();
                         }
@@ -81,6 +85,7 @@ function App() {
                               return;
                         }
 
+                        activeElement = name;
                         tab.clean(layout.element);
                         tab.open(layout.element, name);
 
@@ -89,7 +94,16 @@ function App() {
                         }
                   }}
             />
-            <Drawer ref=${drawer} header=${header}>
+            <Drawer 
+                  ref=${drawer} 
+                  header=${header}
+                  @delete=${() => {
+                        if (!tab) {
+                              return;
+                        }
+
+                        tab.delete(activeElement);
+                  }}>
                   <div ref=${layout} class="list g-1 px-1"></div>
             </Drawer>
             <div ref=${cvsRoot} class="resizable main" style="width: 300px; height: 250px;">
