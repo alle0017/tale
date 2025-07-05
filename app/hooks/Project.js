@@ -1,3 +1,5 @@
+/**@import EntityView from "../components/entity/EntityView";*/
+
 export default class Project {
       static project = new Project();
       #entityId = 0;
@@ -12,7 +14,7 @@ export default class Project {
       }
 
       /**
-       * @type {Set<import("../Resumable").Entity>}
+       * @type {Set<EntityView>}
        */
       entities = new Set();
       /**
@@ -23,12 +25,4 @@ export default class Project {
        * @type {Map<string,HTMLImageElement>}
        */
       images = new Map();
-      /**
-       * @type {Map<string,import("../Resumable").Position>}
-       */
-      positions = new Map();
-      /**
-       * @type {Map<string,import("../Resumable").Body>}
-       */
-      bodies = new Map();
 }

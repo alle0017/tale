@@ -2,7 +2,9 @@ import { $error, $ref, $signal, GApp, html } from "./fw/index.js";
 import { useActive } from "./hooks/hooks.js";
 import Drawer from "./components/Drawer.js";
 import Explorer from "./components/Explorer.js";
-import useEntity from "./components/tabs/Entity.js";
+import { Pane } from "./tweakpane-4.0.5/tweakpane-4.0.5.min.js";
+import EntityTab from "./components/tabs/EntityTab.js";
+import GameObjectView from "./components/GameObjectView.js";
 /**@import Ref from "./fw/lib/Signals/Reference.js";*/
 
 function App() {
@@ -20,14 +22,17 @@ function App() {
       const icon = $signal('');
 
       /**
-       * @type {import("./components/types.js").Tab}
+       * @type {import("./components/types.d.ts").Tab<GameObjectView>}
        */
       let tab;
       /**
-       * @type {string}
+       * @type {Pane}
        */
-      let activeElement;
+      let pane;
 
+      layout.onLoad(el => {
+            pane = new Pane({ container: el });
+      });
       $error.catch(console.error)
 
 
@@ -57,7 +62,7 @@ function App() {
                   </li>
                   <li class="row g-2" @click=${e => { 
                         active(e); 
-                        tab = useEntity(header, items, icon);
+                        tab = EntityTab;
                   }}>
                         <img src="./icons/entity.svg" class="col" width="18"></img>
                         <span class="col">
@@ -72,10 +77,11 @@ function App() {
                         if (!tab) {
                               return;
                         }
-                        const name = tab.create();
-                        tab.clean(layout.element);
-                        tab.open(layout.element, name);
-                        activeElement = name;
+
+                        tab.clean();
+                        tab.create();
+                        tab.current.open(pane);
+                        
                         if (!drawer.isOpen()) {
                               drawer.toggle();
                         }
@@ -85,9 +91,9 @@ function App() {
                               return;
                         }
 
-                        activeElement = name;
-                        tab.clean(layout.element);
-                        tab.open(layout.element, name);
+                        tab.clean();
+                        tab.use(name);
+                        tab.current.open(pane);
 
                         if (!drawer.isOpen()) {
                               drawer.toggle();
@@ -102,7 +108,8 @@ function App() {
                               return;
                         }
 
-                        tab.delete(activeElement);
+                        tab.clean();
+                        tab.delete();
                   }}>
                   <div ref=${layout} class="list g-1 px-1"></div>
             </Drawer>
