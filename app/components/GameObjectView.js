@@ -31,13 +31,12 @@ export default class GameObjectView {
       }
 
       /**
-       * open a pane usable to modify 
-       * the game object
        * @param {Pane} root 
        */
       createLinks(root) {
             for (const link of this.model.linkable) {
                   const self = this;
+
                   root.addBinding({
                         get link() {
                               return self.model.links.has(link.name);
@@ -61,6 +60,19 @@ export default class GameObjectView {
                   }, 'link', {
                         label: link.name
                   });
+            }
+      }
+
+      /**
+       * @param {Pane} root 
+       */
+      restoreLinks(root) {
+            for (const link of this.model.linkable) {
+                  if (this.model.links.has(link.name)) {
+                        const linked = this.model.links.get(link.name);
+                        this.model.links.set(link.name, linked);
+                        linked.open(root);
+                  }
             }
       }
 }
