@@ -1,4 +1,4 @@
-/**@import { Pane } from "../../tweakpane-4.0.5/tweakpane-4.0.5.min";*/
+/**@import { FolderApi, Pane } from "tweakpane";*/
 import GameObjectView from "../GameObjectView.js";
 import PositionModel from "./PositionModel.js";
 
@@ -7,7 +7,7 @@ import PositionModel from "./PositionModel.js";
  */
 export default class PositionView extends GameObjectView {
       /**
-       * @type {Pane | undefined}
+       * @type {FolderApi | undefined}
        */
       #pane;
       #model = new PositionModel();

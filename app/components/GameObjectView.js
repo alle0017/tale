@@ -1,4 +1,4 @@
-/**@import { Pane } from "../tweakpane-4.0.5/tweakpane-4.0.5.min.js";*/
+/**@import { FolderApi, Pane } from "tweakpane";*/
 /**@import GameObjectModel from "./GameObjectModel.js";*/
 
 /**
@@ -20,7 +20,7 @@ export default class GameObjectView {
        * open a pane usable to modify 
        * the game object
        * @abstract
-       * @param {Pane} root 
+       * @param {Pane | FolderApi} root 
        */
       open(root) {
             throw new Error("open(Pane) must be implemented")
@@ -31,7 +31,7 @@ export default class GameObjectView {
       }
 
       /**
-       * @param {Pane} root 
+       * @param {Pane | FolderApi} root 
        */
       createLinks(root) {
             for (const link of this.model.linkable) {
@@ -64,7 +64,7 @@ export default class GameObjectView {
       }
 
       /**
-       * @param {Pane} root 
+       * @param {Pane | FolderApi} root 
        */
       restoreLinks(root) {
             for (const link of this.model.linkable) {

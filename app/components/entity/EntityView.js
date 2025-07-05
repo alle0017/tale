@@ -1,4 +1,4 @@
-/**@import { Pane } from "../../tweakpane-4.0.5/tweakpane-4.0.5.min";*/
+/**@import { FolderApi, Pane } from "tweakpane";*/
 import GameObjectView from "../GameObjectView.js";
 import EntityModel from "./EntityModel.js";
 
@@ -7,7 +7,7 @@ import EntityModel from "./EntityModel.js";
  */
 export default class EntityView extends GameObjectView {
       /**
-       * @type {Pane | undefined}
+       * @type {FolderApi | undefined}
        */
       #pane;
       #model = new EntityModel();

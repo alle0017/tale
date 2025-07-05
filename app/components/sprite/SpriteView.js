@@ -1,4 +1,4 @@
-/**@import { ButtonApi, Pane } from "../../tweakpane-4.0.5/tweakpane-4.0.5.min";*/
+/**@import { ButtonApi, FolderApi, Pane } from "tweakpane";*/
 import { useImageLoader, useProject } from "../../hooks/hooks.js";
 import GameObjectView from "../GameObjectView.js";
 import SpriteModel from "./SpriteModel.js";
@@ -8,7 +8,7 @@ import SpriteModel from "./SpriteModel.js";
  */
 export default class SpriteView extends GameObjectView {
       /**
-       * @type {Pane | undefined}
+       * @type {FolderApi | undefined}
        */
       #pane;
       #model = new SpriteModel();

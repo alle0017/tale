@@ -2,9 +2,9 @@ import { $error, $ref, $signal, GApp, html, Signal } from "./fw/index.js";
 import { useActive } from "./hooks/hooks.js";
 import Drawer from "./components/Drawer.js";
 import Explorer from "./components/Explorer.js";
-import { Pane } from "./tweakpane-4.0.5/tweakpane-4.0.5.min.js";
-import EntityTab from "./components/tabs/EntityTab.js";
+import { Pane } from "tweakpane";
 import GameObjectView from "./components/GameObjectView.js";
+import { Menu } from "./router.js";
 /**@import Ref from "./fw/lib/Signals/Reference.js";*/
 
 function App() {
@@ -31,9 +31,7 @@ function App() {
        */
       let pane;
 
-      layout.onLoad(el => {
-            pane = new Pane({ container: el });
-      });
+      layout.onLoad(el => { pane = new Pane({ container: el }) });
       $error.catch(console.error)
 
 
@@ -55,24 +53,20 @@ function App() {
 
       return html`
             <ul class="navbar up-bar">
-                  <li class="row g-2" @click=${active}>
-                        <img src="./icons/scene.svg" class="col" width="18"></img>
-                        <span class="col">
-                              Scenes
-                        </span>
-                  </li>
-                  <li class="row g-2" @click=${e => { 
-                        active(e); 
-                        header.value = 'Entities';
-                        tab = EntityTab;
-                        items.value = tab.items;
-                        icon.value = tab.icon;
-                  }}>
-                        <img src="./icons/entity.svg" class="col" width="18"></img>
-                        <span class="col">
-                              Entities
-                        </span>
-                  </li>
+                  ${Menu.map( value => 
+                  html`<li class="row g-2" @click=${e => { 
+                              active(e); 
+                              header.value = value.route;
+                              tab = value.tab;
+                              items.value = tab.items;
+                              icon.value = tab.icon;
+                        }}>
+                              <img src=${value.icon} class="col" width="18"></img>
+                              <span class="col">
+                                    ${value.route}
+                              </span>
+                        </li>`
+                  )}
             </ul>
             <Explorer 
                   icon=${icon}
@@ -119,7 +113,7 @@ function App() {
                   }}>
                   <div ref=${layout} class="list g-1 px-1"></div>
             </Drawer>
-            <div ref=${cvsRoot} class="resizable main" style="width: 300px; height: 250px;">
+            <div ref=${cvsRoot} class="main" style="width: 300px; height: 250px;">
                   <canvas ref=${canvas} width="300" height="250"></canvas>
             </div>
       `
