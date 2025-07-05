@@ -9,6 +9,12 @@ export default {
        * @type {undefined | EntityView}
        */
       current: undefined,
+      icon: './icons/entity.svg',
+      get items() {
+            const proj = useProject();
+
+            return [...proj.entities.values()].map(e => e.model.name);
+      },
       /**
        * @param {string} name 
        */

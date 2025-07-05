@@ -1,4 +1,4 @@
-import { $error, $ref, $signal, GApp, html } from "./fw/index.js";
+import { $error, $ref, $signal, GApp, html, Signal } from "./fw/index.js";
 import { useActive } from "./hooks/hooks.js";
 import Drawer from "./components/Drawer.js";
 import Explorer from "./components/Explorer.js";
@@ -16,11 +16,12 @@ function App() {
       const canvas = $ref();
       const cvsRoot = $ref();
       const layout = $ref();
-
       const header = $signal('');
+      /**
+       * @type {Signal<readonly string[]>}
+       */
       const items = $signal([]);
       const icon = $signal('');
-
       /**
        * @type {import("./components/types.d.ts").Tab<GameObjectView>}
        */
@@ -62,7 +63,10 @@ function App() {
                   </li>
                   <li class="row g-2" @click=${e => { 
                         active(e); 
+                        header.value = 'Entities';
                         tab = EntityTab;
+                        items.value = tab.items;
+                        icon.value = tab.icon;
                   }}>
                         <img src="./icons/entity.svg" class="col" width="18"></img>
                         <span class="col">
@@ -81,6 +85,7 @@ function App() {
                         tab.clean();
                         tab.create();
                         tab.current.open(pane);
+                        items.value = tab.items;
                         
                         if (!drawer.isOpen()) {
                               drawer.toggle();
@@ -110,6 +115,7 @@ function App() {
 
                         tab.clean();
                         tab.delete();
+                        items.value = tab.items;
                   }}>
                   <div ref=${layout} class="list g-1 px-1"></div>
             </Drawer>
