@@ -32,8 +32,10 @@ export default class EntityView extends GameObjectView {
                         self.#model.name = value;
                   }
             }, 'name');
+            this.#pane.addBinding(this.#model, 'variable');
             this.createLinks(this.#pane);
             this.#pane.addBinding(this.#model, 'customScript');
+            this.restoreLinks(this.#pane);
       }
 
       dispose() {
