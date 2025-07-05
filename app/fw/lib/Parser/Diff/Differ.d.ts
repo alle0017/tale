@@ -1,5 +1,5 @@
-import ConcreteNode from "../Nodes/ConcreteNode";
-import VNode from "../Nodes/VNode";
+import type ConcreteNode from "../Nodes/ConcreteNode";
+import type VNode from "../Nodes/VNode";
 
 export default interface Differ {
       /**

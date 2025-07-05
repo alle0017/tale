@@ -165,6 +165,17 @@ export default class VNode {
        * @param {unknown} el 
        */
       equals( el ){
+            /**
+             * @param {unknown} a 
+             * @param {unknown} b 
+             * @returns 
+             */
+            const objectEquals = (a,b) => (
+                  typeof a === 'object' && 
+                  typeof b === 'object' &&
+                  JSON.stringify(a) === JSON.stringify(b)
+            );
+
             if( !el )
                   return false;
             if( typeof el !== 'object' )
@@ -175,10 +186,23 @@ export default class VNode {
                   return false;
             if( el.#props.size !== this.#props.size )
                   return false;
+            if (el.#children.length !== this.#children.length)
+                  return false;
 
             for( const key of this.#props.keys() ){
-                  if( !el.#props.has(key) )
+                  if( !el.#props.has(key) ) {
                         return false;
+                  } 
+
+                  if ( !objectEquals(el.#props.get(key), this.#props.get(key)) && this.#props.get(key) !== el.#props.get(key) ) {
+                        return false;
+                  }
+            }
+
+            for (let i = 0; i < this.#children.length; i++) {
+                  if (!this.#children[i].equals(el.#children[i])) {
+                        return false;
+                  }
             }
 
             return true;
