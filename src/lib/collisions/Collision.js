@@ -19,7 +19,7 @@ export function useCollisionSystem() {
                   const chunk = iterator.getChunk();
 
                   for (const body of chunk) {
-                        iterator.getCurrent().onCollision(body);
+                        iterator.getCurrent().triggerCollision(body);
                   }
             }
       });

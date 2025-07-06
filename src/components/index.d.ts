@@ -19,6 +19,10 @@ export type System<T> = {
     resume(): void;
 };
 
+/**
+ * @param system function that will be executed 
+ * as a lower priority task
+ */
 export declare function createSystem<T>(system: (components: T[], isDirty: boolean) => void): System<T>
 export declare function createAnimationSystem<T>(system: (components: T[], isDirty: boolean) => void): System<T>
 

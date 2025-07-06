@@ -31,9 +31,11 @@ export type PhysicsPosition = {
  * `c` is the (x,y) point used to check conditions
  */
 export type RigidBody = {
+      tag: string[],
       x: number,
       y: number,
       width: number,
       height: number,
-      onCollision(body: RigidBody): void;
+      onCollision(watcher: (body: RigidBody) => void): () => void;
+      triggerCollision(body: RigidBody): void;
 }
