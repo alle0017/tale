@@ -8,7 +8,7 @@ import ScriptView from "../script/ScriptView.js";
 /**
  * @implements {GameObjectModel}
  */
-export default class EntityModel extends GameObjectModel {
+export default class SceneModel extends GameObjectModel {
       script = new ScriptView();
       linkable = [{
             name: 'Sprite',
@@ -21,8 +21,8 @@ export default class EntityModel extends GameObjectModel {
             type: BodyView
       }];
 
-      name = useProject().baseEntityName;
-      variable = 'entity';
+      name = useProject().baseSceneName;
+      variable = 'scene';
 
 
       /**
@@ -33,11 +33,7 @@ export default class EntityModel extends GameObjectModel {
       generateCode(name) {
             return `
                   function ${this.name}() {
-                        const ${this.variable} = createEntity();
-                        ${[...this.links.entries()]
-                              .map(([k,v]) => `${v.model.generateCode(k)}\n${this.variable}.add(${k});\n`)
-                              .reduce((p,c) => p + c, '')
-                        }
+                        const ${this.variable} = useScene();
                         ${this.script.model.script? `main(${this.variable});`: ''}
                         return ${this.variable};
                   }

@@ -22,6 +22,7 @@ export default class EntityView extends GameObjectView {
        */
       open(pane) {
             const self = this;
+
             this.#pane = pane.addFolder({ title: this.#model.name });
             this.#pane.addBinding({
                   get name() {
@@ -33,8 +34,8 @@ export default class EntityView extends GameObjectView {
                   }
             }, 'name');
             this.#pane.addBinding(this.#model, 'variable');
+            this.#model.script.open(this.#pane);
             this.createLinks(this.#pane);
-            this.#pane.addBinding(this.#model, 'customScript');
             this.restoreLinks(this.#pane);
       }
 

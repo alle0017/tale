@@ -1,5 +1,5 @@
 /**@import { ButtonApi, FolderApi, Pane } from "tweakpane";*/
-import { useImageLoader, useProject } from "../../hooks/hooks.js";
+import { useProject } from "../../hooks/hooks.js";
 import GameObjectView from "../GameObjectView.js";
 import SpriteModel from "./SpriteModel.js";
 
@@ -22,20 +22,18 @@ export default class SpriteView extends GameObjectView {
        * @param {Pane} pane
        */
       open(pane) {
+            const proj = useProject();
+            const options = {};
+
+            for (const img of proj.images.keys()) {
+                  options[img] = img;
+            }
+
             this.#pane = pane.addFolder({ title: 'Sprite' });
 
-            /**@type {ButtonApi} */
-            const btn = this.#pane.addButton({
-                  label: 'image',
-                  title: 'upload'
-            }).on('click', async () => {
-                  const {img, name} = await useImageLoader();
-                  const proj = useProject();
-
-                  btn.title = name;
-                  proj.images.set(name, img);
-                  this.#model.image = name;
-            });
+            this.#pane.addBinding(this.#model, 'image', {
+                  options,
+            })
 
             this.#pane.addBinding(this.#model, 'startX');
             this.#pane.addBinding(this.#model, 'startY');
