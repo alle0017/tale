@@ -4,6 +4,10 @@ import GameObjectModel from "../GameObjectModel.js";
  * @implements {GameObjectModel}
  */
 export default class BodyModel extends GameObjectModel {
+      /**
+       * @type {string[]}
+       */
+      tags = [];
       x = 0;
       y = 0;
       width = 0;
@@ -16,7 +20,7 @@ export default class BodyModel extends GameObjectModel {
        */
       generateCode(name) {
             return `
-                  const ${name} = useBody();
+                  const ${name} = useBody([${this.tags.map(tag => `"${tag}"`).join(',')}]);
                   ${name}.x = ${this.x};
                   ${name}.y = ${this.y};
                   ${name}.width = ${this.width};
