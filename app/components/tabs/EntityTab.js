@@ -1,8 +1,9 @@
 import { useProject } from "../../hooks/hooks.js";
 import EntityView from "../entity/EntityView.js";
+/**@import {Pane} from "tweakpane" */
 
 /**
- * @type {import("../types").Tab<EntityView>}
+ * @type {import("../types").Tab & {current: undefined | EntityView}}
  */
 export default {
       /**
@@ -17,8 +18,9 @@ export default {
       },
       /**
        * @param {string} name 
+       * @param {Pane} pane 
        */
-      use(name) {
+      use(name, pane) {
             const proj = useProject();
 
             for (const e of proj.entities) {
@@ -26,13 +28,16 @@ export default {
                         this.current = e;
                   }
             }
+
+            this.current.open(pane);
       },
-      create() {
+      create(pane) {
             const proj = useProject();
             const entity = new EntityView();
 
             proj.entities.add(entity);
             this.current = entity;
+            this.current.open(pane);
       },
       delete() {
             if (!this.current) {

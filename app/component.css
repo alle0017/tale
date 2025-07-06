@@ -17,17 +17,36 @@
       --fs1: 18px;
       --fs2: 20px;
 
+      --tp-base-background-color: var(--n0);
+      --tp-base-shadow-color: var(--n1);
+
       --tp-button-background-color: var(--n1) !important;
       --tp-button-background-color-active: var(--n2) !important;
       --tp-button-background-color-focus: var(--n3) !important;
       --tp-button-background-color-hover: var(--n4) !important;
       --tp-button-foreground-color: var(--t0) !important;
+
+      --tp-container-background-color: var(--n1);
+      --tp-container-background-color-active: var(--n2);
+      --tp-container-background-color-focus: var(--n3);
+      --tp-container-background-color-hover: var(--n3);
+      --tp-container-foreground-color: var(--t0);
+      --tp-groove-foreground-color: var(--n0);
+      --tp-input-background-color: var(--n1);
+      --tp-input-background-color-active: var(--n2);
+      --tp-input-background-color-focus: var(--n3);
+      --tp-input-background-color-hover: var(--n3);
+      --tp-input-foreground-color: var(--t0);
+      --tp-label-foreground-color: var(--t1);
 }
 
 * {
-      background-color: var(--n0);
       color: var(--t0);
       font-size: var(--fs0);
+}
+
+.bg, body {
+      background-color: var(--n0);
 }
 
 img,span {

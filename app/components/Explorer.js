@@ -17,7 +17,7 @@ export default function Explorer({
       items,
 }) {
       return html`
-            <div class="bottom-drawer">
+            <div class="bottom-drawer bg">
                   <ul class="up-bar-secondary navbar">
                         <li class="sm-item" @click=${onCreate}>
                               <img src="./icons/plus.svg" width="16"/>

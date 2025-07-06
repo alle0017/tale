@@ -28,7 +28,7 @@ export default function Drawer(props) {
      
       return html`
             <div ref=${layout}>
-                  <div class="drawer" ref=${drawer}>
+                  <div class="drawer bg" style="z-index: 1000;" ref=${drawer}>
                         <div class="layout">
                               <div class="header row g-3 p-1 center">
                                     <h3 class="col">${props.header}</h3>
