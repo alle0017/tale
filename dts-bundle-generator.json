@@ -1,0 +1,8 @@
+{
+  "entries": ["src/index.js"],
+  "outFile": "dist/index.d.ts",
+  "noBanner": true,
+  "output": {
+    "noImports": true
+  }
+}

@@ -17,6 +17,9 @@ import type { RigidBody } from "./lib/index.js";
  * dynamically
  */
 export declare const useGame: () => Game;
+/**
+ * create new scene and retrieve its reference
+ */
 export declare const useScene: () => Scene;
 /**
  * hook that can be used to create a rigid 
