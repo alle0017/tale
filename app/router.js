@@ -1,6 +1,10 @@
 import EntityTab from "./components/tabs/EntityTab.js";
 import Router from "./fw/lib/router/Router.js";
 import { createContext } from "./fw/index.js";
+import Editor from "./components/editor/Editor.js";
+import Canvas from "./components/Canvas.js";
+import AssetsTab from "./components/tabs/AssetsTab.js";
+import Image from "./components/Image.js";
 
 export const Menu = [
       {
@@ -14,24 +18,24 @@ export const Menu = [
             icon: './icons/entity.svg',
       },
       {
-            route: 'Components',
-            tab: EntityTab,
-            icon: './icons/component.svg',
+            route: 'Assets',
+            tab: AssetsTab,
+            icon: './icons/assets.svg',
       },
-];
-
-export const Routes = [
-
 ];
 
 export const useRouter = createContext({
       router: new Router({
             '/editor':  {
-                  route: undefined,
+                  route: Editor,
                   protected: false,
             },
             '/canvas':  {
-                  route: undefined,
+                  route: Canvas,
+                  protected: false,
+            },
+            '/asset': {
+                  route: Image,
                   protected: false,
             }
       }, () => true)

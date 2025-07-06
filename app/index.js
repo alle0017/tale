@@ -3,19 +3,13 @@ import { useActive } from "./hooks/hooks.js";
 import Drawer from "./components/Drawer.js";
 import Explorer from "./components/Explorer.js";
 import { Pane } from "tweakpane";
-import GameObjectView from "./components/GameObjectView.js";
-import { Menu } from "./router.js";
-/**@import Ref from "./fw/lib/Signals/Reference.js";*/
+import { Menu, useRouter } from "./router.js";
 
 function App() {
       const active = useActive('active');
       const drawer = {};
-      /**
-       * @type {Ref<HTMLCanvasElement>}
-       */
-      const canvas = $ref();
-      const cvsRoot = $ref();
       const layout = $ref();
+      const root = $ref();
       const header = $signal('');
       /**
        * @type {Signal<readonly string[]>}
@@ -23,7 +17,7 @@ function App() {
       const items = $signal([]);
       const icon = $signal('');
       /**
-       * @type {import("./components/types.d.ts").Tab<GameObjectView>}
+       * @type {import("./components/types.d.ts").Tab}
        */
       let tab;
       /**
@@ -32,31 +26,24 @@ function App() {
       let pane;
 
       layout.onLoad(el => { pane = new Pane({ container: el }) });
-      $error.catch(console.error)
+      $error.catch(console.error);
 
+      root.onLoad(el => {
+            const router = useRouter();
 
-
-      cvsRoot.onLoad(cvs => {
-            drawer.toggle()
-            const resizeObserver = new ResizeObserver(entries => {
-                  for (const entry of entries) {
-                        const { width, height } = entry.contentRect;
-
-                        canvas.element.width = width;
-                        canvas.element.height = height;
-                  }
-            });
-
-            resizeObserver.observe(cvs);
+            router.router.root = el;
       });
 
-
       return html`
-            <ul class="navbar up-bar">
+            <ul class="navbar up-bar bg">
                   ${Menu.map( value => 
                   html`<li class="row g-2" @click=${e => { 
                               active(e); 
                               header.value = value.route;
+
+                              if (tab) {
+                                    tab.clean();
+                              }
                               tab = value.tab;
                               items.value = tab.items;
                               icon.value = tab.icon;
@@ -68,21 +55,32 @@ function App() {
                         </li>`
                   )}
             </ul>
+            <div ref=${root} class="main"></div>
             <Explorer 
                   icon=${icon}
                   items=${items}
-                  @create=${() => {
+                  @create=${async () => {
                         if (!tab) {
                               return;
                         }
 
                         tab.clean();
-                        tab.create();
-                        tab.current.open(pane);
-                        items.value = tab.items;
+                        const ret = tab.create(pane);
+
+                        if (ret && ret instanceof Promise) {
+                              ret.then(() => {
+                                    items.value = tab.items;
                         
-                        if (!drawer.isOpen()) {
-                              drawer.toggle();
+                                    if (!drawer.isOpen()) {
+                                          drawer.toggle();
+                                    }
+                              });
+                        } else {
+                              items.value = tab.items;
+                        
+                              if (!drawer.isOpen()) {
+                                    drawer.toggle();
+                              }
                         }
                   }}
                   @open=${name => {
@@ -91,8 +89,7 @@ function App() {
                         }
 
                         tab.clean();
-                        tab.use(name);
-                        tab.current.open(pane);
+                        tab.use(name, pane);
 
                         if (!drawer.isOpen()) {
                               drawer.toggle();
@@ -113,9 +110,6 @@ function App() {
                   }}>
                   <div ref=${layout} class="list g-1 px-1"></div>
             </Drawer>
-            <div ref=${cvsRoot} class="main" style="width: 300px; height: 250px;">
-                  <canvas ref=${canvas} width="300" height="250"></canvas>
-            </div>
       `
 }
 
