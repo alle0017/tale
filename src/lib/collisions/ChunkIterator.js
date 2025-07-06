@@ -75,9 +75,5 @@ export default class ChunkIterator {
 
       next() {
             this.#current++;
-
-            if (this.#current >= this.#bodies.length) {
-                  this.#current = this.#bodies.length - 1;
-            }
       }
 }

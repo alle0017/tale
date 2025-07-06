@@ -7,15 +7,16 @@ export default (() => {
       return {
             /**
              * @param {string} img
+             * @param {string} name 
              */
-            preload(img) {
+            preload(img, name) {
                   const image = new Image();
 
                   image.src = img;
 
                   return new Promise((resolve) => {
                         image.addEventListener('load', () => {
-                              cache.set(img, image);
+                              cache.set(name, image);
                               resolve();
                         });   
                   });

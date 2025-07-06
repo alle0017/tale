@@ -21,6 +21,7 @@ export function useCollisionSystem() {
                   for (const body of chunk) {
                         iterator.getCurrent().triggerCollision(body);
                   }
+                  iterator.next();
             }
       });
 }

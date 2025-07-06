@@ -1,4 +1,5 @@
 import { useRendering } from "../rendering/Rendering.js";
+import Image from "../rendering/shader/lib/buffer/Image.js";
 import SceneManager from "./SceneManager.js";
 /**@import {System} from "../components/index.js" */
 /**@import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js" */
@@ -62,6 +63,18 @@ export class Game {
        */
       constructor() {
             this.#engine = useRendering();
+      }
+
+      /**
+       * method used to preload all images 
+       * that will be used inside the game
+       * @param  {Record<string,string>} imgs 
+       */
+      async preload(imgs) {
+
+            for (const[k,v] of Object.entries(imgs)) {
+                  await Image.preload(v, k);
+            }
       }
 }
 
