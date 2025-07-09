@@ -1,0 +1,58 @@
+/**@import {Component,Query} from "./Component.js" */
+
+
+/**
+ * @template {{}} T
+ * @typedef {{
+ *   add: <V extends string, X extends {}>(
+ *     component: Component<V, X>
+ *   ) => Entity<T & { [K in V]: X }>
+ * } & T} Entity
+ */
+
+
+/**
+ * function that creates an entity.
+ * the entity must be added to the world to be queried, 
+ * otherwise it will be **'invisible'** to systems
+ * @template {{}} K
+ * @return {Entity<K>}
+ */
+export const createEntity = () => {
+      /**
+       * @type {Map<string,Component<Readonly<string>,unknown>>}
+       */
+      const map = new Map();
+
+      // @ts-ignore
+      return new Proxy({
+            add(component) {
+                  if (!component) {
+                        throw new Error("illegal component addition");
+                  }
+
+                  map.set(component.$$name, component);
+
+                  return this;
+            }
+      }, {
+            has(target, key) {
+                  return map.has(key.toString()) || key in target;
+            },
+            get(target, key) {
+                  if (key.toString() === 'add') {
+                        return target[key];
+                  }
+
+                  if (!map.has(key.toString())) {
+                        throw new Error("illegal access to property");
+                  }
+
+                  return map.get(key.toString()).state;
+            },
+            set(target, key, value) {
+                  throw new Error("components cannot be overwritten");
+            }
+      })
+};
+
