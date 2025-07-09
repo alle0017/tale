@@ -1,68 +1,70 @@
-/**@import {RigidBody} from ".." */
-export default class ChunkIterator {
+/** @import { RigidBody } from ".." */
 
-      #chunk = 0;
-      /**@type {RigidBody[]} */
+export default class ChunkIterator {
+      /** @type {RigidBody[]} */
       #bodies;
       #current = 0;
+      #chunkSize = 0;
 
       /**
-       * 
        * @param {RigidBody[]} bodies 
        */
       constructor(bodies) {
             this.#bodies = [...bodies];
-            this.#bodies.sort((a,b) => {
 
-                  if (a.width < this.#chunk) {
-                        this.#chunk = a.width;
-                  }
+            // Set chunk size to a reasonable proximity range (e.g., max width)
+            this.#chunkSize = Math.max(...this.#bodies.map(b => b.width), 1);
 
-                  if (b.width < this.#chunk) {
-                        this.#chunk = b.width;
-                  }
-
-                  return a.x - b.x;
-            });
+            // Sort bodies by x for spatial locality
+            this.#bodies.sort((a, b) => a.x - b.x);
       }
-      
+
+      /**
+       * 
+       * @param {RigidBody} a 
+       * @param {RigidBody} b 
+       * @returns 
+       */
+      #isColliding(a, b) {
+            return (
+                  a.x < b.x + b.width &&
+                  a.x + a.width > b.x &&
+                  a.y < b.y + b.height &&
+                  a.y + a.height > b.y
+            );
+      }
+
       getCurrent() {
             return this.#bodies[this.#current];
       }
 
       getChunk() {
             const chunk = [];
-            const center = this.#bodies.at(this.#current);
+            const center = this.getCurrent();
 
+            // Scan left
             for (let i = this.#current - 1; i >= 0; i--) {
-                  const curr = this.#bodies.at(i);
+                  const other = this.#bodies[i];
 
-                  if (curr.x + this.#chunk < center.x) {
+                  if (other.x + other.width < center.x - this.#chunkSize) {
                         break;
                   }
 
-                  if (
-                        curr.x + curr.width >= center.x &&
-                        ((curr.y <= center.y && curr.y + curr.height >= center.y) ||
-                        (curr.y >= center.y && curr.y >= center.y + center.height))
-                  ) {
-                        chunk.push(curr);
+                  if (this.#isColliding(center, other)) {
+                        chunk.push(other);
                   }
             }
 
+            // Scan right
             for (let i = this.#current + 1; i < this.#bodies.length; i++) {
-                  const curr = this.#bodies.at(i);
+                  const other = this.#bodies[i];
 
-                  if (center.x + this.#chunk < curr.x) {
+                  if (other.x > center.x + center.width + this.#chunkSize) {
                         break;
                   }
 
-                  if (
-                        center.x + center.width >= curr.x &&
-                        ((curr.y <= center.y && curr.y + curr.height >= center.y) ||
-                        (curr.y >= center.y && curr.y >= center.y + center.height))
-                  ) {
-                        chunk.push(curr);
+                  if (this.#isColliding(center, other)) {
+                        chunk.push(other);
                   }
             }
 

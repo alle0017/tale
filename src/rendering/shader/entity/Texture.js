@@ -57,7 +57,6 @@ export default class TextureEntity extends GPUEntity2D {
 
       set startY(value) {
             const h = Image.get(this.image).height;
-
             this.#textureCoords[1] = value/h;
             this.#textureCoords[7] = value/h;
       }
