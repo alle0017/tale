@@ -449,22 +449,50 @@ declare class TaskManager {
 	 */
 	addAnimationTask(task: () => void): () => void;
 	/**
-	 * remove all tasks actually in execution
+	 * Clears all tasks and animations from the task manager.
 	 */
 	clearAll(): void;
 	#private;
 }
+/**
+ * Provides access to the TaskManager singleton instance.
+ * @returns {TaskManager} The TaskManager instance.
+ */
 export function useTaskManager(): TaskManager;
+/**
+ * Initializes the rendering context for WebGL operations.
+ */
 export function useRendering(): void;
+
 declare namespace Query$1 {
-	export { sprite };
-	export { position };
-	export { body };
-	export { physics };
+    /**
+     * Query for sprite components.
+     */
+    export { sprite };
+
+    /**
+     * Query for position components.
+     */
+    export { position };
+
+    /**
+     * Query for body components.
+     */
+    export { body };
+
+    /**
+     * Query for physics components.
+     */
+    export { physics };
 }
+
+/**
+ * Initializes and provides access to a new World instance.
+ * @returns {World} The newly created World instance.
+ */
 export function useWorld(): World;
 
 export {
-	Query$1 as Query,
+    Query$1 as Query,
 };
 
