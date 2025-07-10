@@ -10,6 +10,10 @@ import { useTaskManager } from "./TaskManager.js";
  */
 export class World {
       /**
+       * @type {Set<() => void>}
+       */
+      #hooks = new Set();
+      /**
        * @type {Set<Entity<{}>>}
        */
       #entities = new Set();
@@ -30,6 +34,9 @@ export class World {
        */
       add(entity) {
             this.#entities.add(entity);
+            for (const hook of this.#hooks) {
+                  hook();
+            }
       }
       /**
        * remove the specified entity from the world
@@ -37,6 +44,9 @@ export class World {
        */
       remove(entity) {
             this.#entities.delete(entity);
+            for (const hook of this.#hooks) {
+                  hook();
+            }
       }
 
       /**
@@ -70,5 +80,14 @@ export class World {
                         useTaskManager().addTask(system);
                   }
             });
+      }
+
+      /**
+       * lifecycle hook called each time an 
+       * entity is added or removed from the system
+       * @param {() => void} hook 
+       */
+      onStateChange(hook) {
+            this.#hooks.add(hook);
       }
 }

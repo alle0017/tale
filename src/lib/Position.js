@@ -1,11 +1,15 @@
 /**@import {PhysicsPosition, Position} from "." */
 
-/**
- * position component that represent any point 
- * that can be moved in 2D space.
- * @returns {Position}
- */
-export const usePosition = () => {
+import { createComponent } from "../ecs/Component";
+
+export const [
+      position, 
+      /**
+       * position component that represent any point 
+       * that can be moved in 2D space.
+       */
+      usePosition
+] = createComponent('position', () => {
       /**
        * @type {Set<(pos: Position) => void>}
        */
@@ -42,12 +46,17 @@ export const usePosition = () => {
                         sub(this);
                   }
             },
+            /**
+             * 
+             * @param {(pos: Position) => void} callback 
+             * @returns {() => void} - unsubscribe method
+             */
             onMove(callback) {
                   subs.add(callback);
                   return () => subs.delete(callback);
             },
       };
-}
+});
 
 
 /**

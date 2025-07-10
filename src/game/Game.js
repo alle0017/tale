@@ -1,7 +1,6 @@
 import { useRendering } from "../rendering/Rendering.js";
 import Image from "../rendering/shader/lib/buffer/Image.js";
 import SceneManager from "./SceneManager.js";
-/**@import {System} from "../components/index.js" */
 /**@import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js" */
 /**@import GPUContext from "../rendering/index.js" */
 
@@ -13,7 +12,7 @@ export class Game {
             return Game.#game;
       }
       /**
-       * @type {System<GPUEntity2D> & {ctx: GPUContext}}
+       * @type {{ctx: GPUContext}}
        */
       #engine;
       #sceneManager = new SceneManager();

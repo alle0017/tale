@@ -1,50 +1,39 @@
-import { useTaskManager } from "../components/TaskManager.js";
-import Context from "./Context.js";
-import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
-/**@import GPUContext from "./index.js" */
-/**@import { System } from "../components/index.js";*/
+import { useTaskManager, Priority } from "../ecs/TaskManager.js";
+import { sprite } from "../lib/Sprite.js";
+import { WorldManager } from "../ecs/WorldManager.js";
+import { useGame } from "../index.js";
+
+
 
 /**
- * create a rendering system, used
- * to draw multiple entities onto the
- * screen. It uses dirty checking for better performances
- * @returns {System<GPUEntity2D> & {ctx: GPUContext}}
+ * create a rendering system that continues 
+ * to draw entities onto the screen
  */
 export const useRendering = () => {
-      const manager = useTaskManager();
-      const ctx = new Context();
-      const task = () => {
-            ctx.clear();
-            ctx.draw();
+      const game = useGame();
+      const system = () => {
+            game.ctx.clear();
+            game.ctx.draw();
       };
+      let entities = WorldManager.current.entities.filter(sprite);
 
-      let dispose = manager.addAnimationTask(task);
+      game.ctx.removeAll();
 
-      return {
-            ctx,
-            /**
-             * @param {GPUEntity2D} entity 
-             */
-            add(entity) {
-                  entity.draw(ctx);
-            },
-            /**
-             * @param {GPUEntity2D} entity 
-             */
-            delete(entity) {
-                  entity.remove(ctx);
-            },
-
-            dispose() {
-                  dispose();
-                  ctx.removeAll();
-            },
-            stop() {
-                  dispose();
-            },
-            resume() {
-                  dispose = manager.addAnimationTask(task);
-            }
+      for (const entity of entities) {
+            entity.sprite.draw(game.ctx);
       }
-}
+
+      WorldManager.current.onStateChange(() => {
+            entities = WorldManager.current.entities.filter(sprite);
+            game.ctx.removeAll();
+
+            for (const entity of entities) {
+                  entity.sprite.draw(game.ctx);
+            }
+      });
+
+      WorldManager.current.addSystem(system, Priority.HIGH);
+
+      useTaskManager().addAnimationTask(system);
+};
 

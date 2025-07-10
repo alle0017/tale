@@ -1,19 +1,13 @@
 import { useGame } from "../game/Game.js"
+import { createComponent } from "../ecs/Component.js";
 /**@import {Position} from "./index.js" */
 
-/**
- * sprite component used to 
- * draw entities onto the screen
- * @param {string} asset 
- */
-export const useSprite = asset => {
-      const game = useGame();
-      const sprite = game.ctx.image();
+export const [sprite, useSprite] = createComponent('sprite', /**@param {string} asset*/asset => {
+      const sprite = useGame().ctx.image();
       let ticket;
 
       sprite.image = asset;
-      game.engine.add(sprite);
-      
+
       return {
             sprite,
             /**
@@ -45,20 +39,6 @@ export const useSprite = asset => {
                   }
                   ticket();
                   ticket = undefined;
-            },
-            /**
-             * stop rendering the sprite onto
-             * the screen
-             */
-            hide() {
-                  game.engine.delete(sprite);
-            },
-            /**
-             * start rendering the sprite onto the
-             * screen
-             */
-            show() {
-                  game.engine.add(sprite);
-            },
+            }
       }
-}
+});

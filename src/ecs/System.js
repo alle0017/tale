@@ -20,7 +20,7 @@ import { WorldManager } from "./WorldManager.js";
  * @param {Q} query
  */
 export const useSystem = (update, ...query) => {
-      useTaskManager().addTask(() => {
+      const system = () => {
             const allEntities = WorldManager.current.entities;
 
             for (const entity of allEntities) {
@@ -29,5 +29,9 @@ export const useSystem = (update, ...query) => {
                         update(entity);
                   }
             }
-      });    
+      };
+
+      WorldManager.current.addSystem(system);
+
+      useTaskManager().addTask(system);    
 };

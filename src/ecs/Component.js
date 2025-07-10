@@ -21,9 +21,10 @@ export const createComponent = (() => {
       /**
        * @template {string} T
        * @template {{}} K
+       * @template {unknown[]} X
        * @param {T} key
-       * @param {() => K} factory 
-       * @returns {[Query<T,K>, () => Component<T,K>]}
+       * @param {(...params: X) => K} factory 
+       * @returns {[Query<T,K>, (...args: X) => Component<T,K>]}
        */
       return (key, factory) => {
 
@@ -36,7 +37,9 @@ export const createComponent = (() => {
             return [
                   // @ts-ignore
                   e => e.has(key),
-                  () => { return { state: factory(), $$name: key } }
+                  (...props) => { 
+                        return { state: factory(...props), $$name: key } 
+                  }
             ];
       }
 })()

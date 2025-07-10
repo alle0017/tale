@@ -1,3 +1,11 @@
+/**
+ * @enum {number}
+ */
+export const Priority = {
+      HIGH: 100,
+      LOW: -1,
+};
+
 export class TaskManager {
       /**
        * @type {TaskManager}
