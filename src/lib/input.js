@@ -1,4 +1,6 @@
-/**@import Scene from "../game/Scene.js";*/
+/**@import {World} from "../ecs/World";*/
+
+import { WorldManager } from "../ecs/WorldManager.js";
 
 /**
  * hook used to define input events.
@@ -20,7 +22,8 @@ export const useInput = (() => {
             }
       });
 
-      return /**@param {Scene} scene*/scene => {
+      return () => {
+            const scene = WorldManager.current;
             /**@type {Map<string,Set<() => void>>} */
             const listeners = new Map();
             /**@type {Map<string,string>} */
@@ -60,14 +63,8 @@ export const useInput = (() => {
 
             tasks.add(handler);
 
-            const resume = scene.onResume(() => tasks.add(handler));
-            const stop = scene.onStop(() => tasks.delete(handler));
-            const clear = scene.onClear(() => {
-                  resume();
-                  stop();
-                  clear();
-                  tasks.delete(handler);
-            });
+            scene.onResume(() => tasks.add(handler));
+            scene.onStop(() => tasks.delete(handler));
 
 
             return {

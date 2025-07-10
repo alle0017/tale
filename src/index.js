@@ -1,55 +1,47 @@
 import { useGame,Game } from "./game/Game.js";
-import Scene from "./game/Scene.js";
-import SceneManager from "./game/SceneManager.js";
-import { usePhysicsSystem } from "./lib/Physics.js";
-import { useSprite } from "./lib/Sprite.js";
-import { usePosition, usePhysicsPosition } from "./lib/Position.js";
-import { useCollisionSystem } from "./lib/collisions/Collision.js";
+import { useSprite, sprite } from "./lib/Sprite.js";
+import { position, usePosition, } from "./lib/Position.js";
 import { useInput } from "./lib/input.js";
-import createEntity from "./components/Entity.js";
-import { createAnimationSystem, createSystem } from "./components/index.js";
+import { useBody, body, useCollisionSystem } from "./lib/collisions/Collision.js";
+import { createEntity } from "./ecs/Entity.js";
+import { useSystem } from "./ecs/System.js";
+import { World } from "./ecs/World.js";
+import { WorldManager } from "./ecs/WorldManager.js";
+import { useTaskManager } from "./ecs/TaskManager.js";
+import { useRendering } from "./rendering/Rendering.js";
+import { usePhysicsSystem, usePhysics, physics } from "./lib/Physics.js";
 
-/**
- * @param {string[]} tag 
- * @returns {import("./lib/index.js").RigidBody}
- */
-export const useBody = (tag = []) => {
-      /**@type {Set<(body: import("./lib/index.js").RigidBody) => void>} */
-      const subs = new Set();
-
-      return {
-            tag,
-            x: 0,
-            y: 0,
-            width: 32,
-            height: 32,
-            onCollision: watcher => {
-                  subs.add(watcher);
-
-                  return () => subs.delete(watcher);
-            },
-            triggerCollision(body) {
-                  for (const sub of subs) {
-                        sub(body);
-                  }
-            }
-      }
-}
+export const Query = {
+      sprite,
+      position,
+      body,
+      physics,
+};
 
 export {
       useGame,
       Game,
-      Scene,
-      SceneManager,
-      usePhysicsPosition,
+      useSystem,
+      usePhysics,
       usePhysicsSystem,
       useSprite,
       usePosition,
       useCollisionSystem,
       useInput,
       createEntity,
-      createAnimationSystem,
-      createSystem,
+      World,
+      WorldManager,
+      useBody,
+      useTaskManager,
+      useRendering,
 }
 
-export const useScene = () => new Scene();
+export const useWorld = () => {
+      const world = new World();
+
+      WorldManager.use(world);
+      
+      useRendering();
+
+      return world;
+}

@@ -10,9 +10,9 @@ import { useTaskManager } from "./TaskManager.js";
  */
 export class World {
       /**
-       * @type {Set<() => void>}
+       * @type {Map<'change'|'enter'|'leave',Set<() => void>>}
        */
-      #hooks = new Set();
+      #hooks = new Map();
       /**
        * @type {Set<Entity<{}>>}
        */
@@ -24,6 +24,12 @@ export class World {
       get entities() {
             return [...this.#entities];
       }
+
+      constructor() {
+            this.#hooks.set('change', new Set());
+            this.#hooks.set('enter', new Set());
+            this.#hooks.set('leave', new Set());
+      }
       /**
        * add new entity into the world. 
        * from the moment an entity is added,
@@ -34,7 +40,7 @@ export class World {
        */
       add(entity) {
             this.#entities.add(entity);
-            for (const hook of this.#hooks) {
+            for (const hook of this.#hooks.get('change')) {
                   hook();
             }
       }
@@ -44,7 +50,7 @@ export class World {
        */
       remove(entity) {
             this.#entities.delete(entity);
-            for (const hook of this.#hooks) {
+            for (const hook of this.#hooks.get('change')) {
                   hook();
             }
       }
@@ -65,6 +71,9 @@ export class World {
        */
       onLeave() {
             useTaskManager().clearAll();
+            for (const hook of this.#hooks.get('leave')) {
+                  hook();
+            }
       }
 
       /**
@@ -80,6 +89,9 @@ export class World {
                         useTaskManager().addTask(system);
                   }
             });
+            for (const hook of this.#hooks.get('enter')) {
+                  hook();
+            }
       }
 
       /**
@@ -88,6 +100,21 @@ export class World {
        * @param {() => void} hook 
        */
       onStateChange(hook) {
-            this.#hooks.add(hook);
+            this.#hooks.get('change').add(hook);
+            return () => this.#hooks.get('change').delete(hook);
+      }
+      /**
+       * @param {() => void} callback
+       */
+      onResume(callback) {
+            this.#hooks.get('enter').add(callback);
+            return () => this.#hooks.get('enter').delete(callback);
+      }
+      /**
+       * @param {() => void} callback
+       */
+      onStop(callback) {
+            this.#hooks.get('leave').add(callback);
+            return () => this.#hooks.get('leave').delete(callback);
       }
 }

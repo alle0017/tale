@@ -1,6 +1,6 @@
-import { useRendering } from "../rendering/Rendering.js";
+import { WorldManager } from "../ecs/WorldManager.js";
+import Context from "../rendering/Context.js";
 import Image from "../rendering/shader/lib/buffer/Image.js";
-import SceneManager from "./SceneManager.js";
 /**@import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js" */
 /**@import GPUContext from "../rendering/index.js" */
 
@@ -12,10 +12,9 @@ export class Game {
             return Game.#game;
       }
       /**
-       * @type {{ctx: GPUContext}}
+       * @type {GPUContext}
        */
-      #engine;
-      #sceneManager = new SceneManager();
+      #ctx;
 
       /**
        * the camera used inside the scene.
@@ -23,45 +22,45 @@ export class Game {
        * camera.
        */
       get camera() {
-            return this.#engine.ctx.camera;
+            return this.#ctx.camera;
       }
 
       /**
        * Context used to draw entities onto the canvas.
        * To render an entity, it must be created with the
-       * context and then added to the {@link Game.engine}, like the example
-       * below
+       * context and then drawn using standard Context api. 
+       * this is simplified by the `useSprite` hook. if 
+       * you want more control, you have to do something like 
+       * this
        * @example
        * ```javascript
        * const game = useGame();
        * const img = game.ctx.image();
-       * game.engine.add(img);
+       * img.draw(game.ctx);
+       * const f = () => {
+       *    game.ctx.clear();
+       *    game.ctx.draw();
+       *    requestAnimationFrame(f);
+       * }
+       * f();
        * ```
        */
       get ctx() {
-            return this.#engine.ctx;
+            return this.#ctx;
       }
       /**
-       * system that renders each entity onto the screen.
-       * it works, under the hood, with {@link Game.ctx} 
-       * to render every entity that was added
-       */
-      get engine() {
-            return this.#engine;
-      }
-      /**
-       * scene manager useful to transit across scenes 
+       * scene manager useful to transit across Worlds 
        * and preserve their state
        */
-      get scenes() {
-            return this.#sceneManager;
+      get worlds() {
+            return WorldManager;
       }
 
       /**
        * @private
        */
       constructor() {
-            this.#engine = useRendering();
+            this.#ctx = new Context();
       }
 
       /**

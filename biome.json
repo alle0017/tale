@@ -5,7 +5,11 @@
     "rules": {
       "recommended": true,
       "complexity": {
-        "noStaticOnlyClass": "off"
+        "noStaticOnlyClass": "off",
+        "noBannedTypes": "off"
+      },
+      "style": {
+        "useImportType": "off"
       }
     }
   },

@@ -5,15 +5,6 @@ export type Position = {
 	y: number;
 	onMove(callback: (pos: Position) => void): () => void;
 };
-export type PhysicsPosition = {
-	x: number;
-	y: number;
-	vx: number;
-	vy: number;
-	ax: number;
-	ay: number;
-	onMove(callback: (pos: Position) => void): () => void;
-};
 /**
  * x should be considered the leftmost
  * point onto the rectangle, while y should be considered
@@ -31,7 +22,6 @@ export type PhysicsPosition = {
  * `c` is the (x,y) point used to check conditions
  */
 export type RigidBody = {
-	tag: string[];
 	x: number;
 	y: number;
 	width: number;
@@ -39,6 +29,15 @@ export type RigidBody = {
 	onCollision(watcher: (body: RigidBody) => void): () => void;
 	triggerCollision(body: RigidBody): void;
 };
+export type PhysicsPosition = {
+	x: number,
+	y: number,
+	vx: number,
+	vy: number,
+	ax: number,
+	ay: number,
+	onMove(callback: (pos: Position) => void): () => void;
+}
 declare class Camera {
 	/**
 	 * @param {WebGLRenderingContext} gl
@@ -61,131 +60,6 @@ declare class Camera {
 	 */
 	follow(position: Position): void;
 	#private;
-}
-export type Entity<T extends {}> = {
-	add<K extends {}>(component: K): Entity<T & K>;
-	has(key: string): boolean;
-} & T;
-/**
- * @template {{}} T
- * @typedef {{
- *    add<K extends {}>(component: K): Entity<T & K>,
- *    has(key: string): boolean,
- * } & T} Entity
- */
-/**
- * @template {{}} K
- * @return {Entity<K>}
- */
-export declare function createEntity<K extends {}>(): Entity<K>;
-export type System<T> = {
-	add(comp: T): void;
-	delete(comp: T): void;
-	dispose(): void;
-	stop(): void;
-	resume(): void;
-};
-/**
- * @param system function that will be executed
- * as a lower priority task
- */
-export declare function createSystem<T>(system: (components: T[], isDirty: boolean) => void): System<T>;
-export declare function createAnimationSystem<T>(system: (components: T[], isDirty: boolean) => void): System<T>;
-export declare class Scene {
-	/**
-	 * add an entity to the scene.
-	 * @param {Entity<unknown>} entity
-	 */
-	add(entity: Entity<Record<string, unknown>>): void;
-	/**
-	 * add system to the scene. If the scene
-	 * is stopped and later resumed, all systems
-	 * are restarted
-	 * @param {System<unknown>} system
-	 */
-	use(system: System<unknown>): void;
-	/**
-	 * stop the current scene and remove all
-	 * drawn entities from the screen. The entities are
-	 * preserved for later reuse, in case the scene will be
-	 * resumed with {@link Scene.resume()}
-	 */
-	stop(): void;
-	/**
-	 * resume all the systems that where
-	 * registered and add all {@link GPUEntity2D}
-	 * that where drawn when the scene was
-	 * removed
-	 */
-	resume(): void;
-	/**
-	 * remove all entities from the screen and
-	 * stop al the systems available.
-	 * if the scene is resumed, nothing will be preserved
-	 */
-	clear(): void;
-	/**
-	 * @param {() => void} callback
-	 */
-	onResume(callback: () => void): () => boolean;
-	/**
-	 * @param {() => void} callback
-	 */
-	onStop(callback: () => void): () => boolean;
-	/**
-	 * @param {() => void} callback
-	 */
-	onClear(callback: () => void): () => boolean;
-	#private;
-}
-export declare class SceneManager {
-	current: Scene;
-	/**
-	 * @param {() => Scene} scene - scene builder.
-	 * @param {boolean} [resumable=true] - tells to the manager if the
-	 * scene could be later resumed instead of being recreated. this is useful
-	 * for stateful scenes like when you stop the game to open a menu and later
-	 * on resume it.
-	 * ## note
-	 * ---
-	 * is important the reuse of same builder,
-	 * because if you change it
-	 * the manager can't tell if the scene was already created and must
-	 * be resumed, so it creates new one instead.
-	 *
-	 * @example
-	 * ```javascript
-	 * ❌ NO
-	 * function MyScene() {...}
-	 * manager.use(() => MyScene())
-	 * manager.use(() => MyScene()) // not resumed
-	 *
-	 * ✅ OK
-	 * function MyScene() {...}
-	 * manager.use(MyScene)
-	 * manager.use(MyScene)
-	 * ```
-	 */
-	use(scene: () => Scene, resumable?: boolean): void;
-	#private;
-}
-declare class GPUEntity2D {
-	x: number;
-	y: number;
-	scaleY: number;
-	scaleX: number;
-	rotation: number;
-	light: number;
-	/**
-	 * @abstract
-	 * @param {GPUContext} ctx
-	 */
-	draw(ctx: GPUContext): void;
-	/**
-	 * @abstract
-	 * @param {GPUContext} ctx
-	 */
-	remove(ctx: GPUContext): void;
 }
 declare class Shape extends GPUEntity2D {
 	/**
@@ -215,21 +89,6 @@ declare class Shape extends GPUEntity2D {
 	zIndex: number;
 	coords: number[];
 	indices: number[];
-	#private;
-}
-declare class TextureEntity extends GPUEntity2D {
-	/**
-	 * @type {string}
-	 */
-	image: string;
-	zIndex: number;
-	textureCoords: number[];
-	vertices: number[];
-	indices: number[];
-	startX: number;
-	startY: number;
-	endX: number;
-	endY: number;
 	#private;
 }
 /**
@@ -282,66 +141,52 @@ export interface GPUContext {
 	 */
 	removeAll(): void;
 }
-/**@import {System} from "../components/index.js" */
-/**@import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js" */
-/**@import GPUContext from "../rendering/index.js" */
-export class Game {
-	static "__#16@#game": Game;
-	static get(): Game;
+declare class GPUEntity2D {
+	x: number;
+	y: number;
+	scaleY: number;
+	scaleX: number;
+	rotation: number;
+	light: number;
 	/**
-	 * the camera used inside the scene.
-	 * every default entity is bound to this
-	 * camera.
+	 * @abstract
+	 * @param {GPUContext} ctx
 	 */
-	camera(): Camera;
+	draw(ctx: GPUContext): void;
 	/**
-	 * Context used to draw entities onto the canvas.
-	 * To render an entity, it must be created with the
-	 * context and then added to the {@link Game.engine}, like the example
-	 * below
-	 * @example
-	 * ```javascript
-	 * const game = useGame();
-	 * const img = game.ctx.image();
-	 * game.engine.add(img);
-	 * ```
+	 * @abstract
+	 * @param {GPUContext} ctx
 	 */
-	ctx: GPUContext;
-	/**
-	 * system that renders each entity onto the screen.
-	 * it works, under the hood, with {@link Game.ctx}
-	 * to render every entity that was added
-	 */
-	engine: System<GPUEntity2D>;
-	/**
-	 * scene manager useful to transit across scenes
-	 * and preserve their state
-	 */
-	scenes: SceneManager;
-	#private;
+	remove(ctx: GPUContext): void;
 }
-export function useGame(): Game;
-export function usePosition(): Position;
-export function usePhysicsPosition(): PhysicsPosition;
-export function usePhysicsSystem(): System<PhysicsPosition>;
-declare class Texture {
+declare class TextureEntity extends GPUEntity2D {
 	/**
-	 * @param {WebGLRenderingContext} gl
-	 * @param {string} name
-	 * @param {WebGLProgram} program
+	 * @type {string}
 	 */
-	constructor(gl: WebGLRenderingContext, name: string, program: WebGLProgram);
 	image: string;
-	/**
-	 *
-	 * @param {string} value
-	 */
-	write(value: string): void;
-	bind(): void;
+	zIndex: number;
+	textureCoords: number[];
+	vertices: number[];
+	indices: number[];
+	startX: number;
+	startY: number;
+	endX: number;
+	endY: number;
 	#private;
 }
-export function useSprite(asset: string): {
-	sprite: Texture;
+export function createEntity<K extends {}>(): Entity<K>;
+export type Entity<T extends {}> = {
+	add: <V extends string, X extends {}>(component: Component<V, X>) => Entity<T & {
+		[K in V]: X;
+	}>;
+} & T;
+export type Component<T extends string, K extends {}> = {
+	$$name: T;
+	state: K;
+};
+export type Query<K extends string, T extends {}> = (e: Entity<{}>) => e is Entity<T>;
+declare const sprite: Query<"sprite", {
+	sprite: TextureEntity;
 	/**
 	 * bind the position component
 	 * to the sprite, so whenever the
@@ -357,27 +202,217 @@ export function useSprite(asset: string): {
 	 * @throws {Error} if no position was bound
 	 */
 	unbind(): void;
+}>;
+export declare const useSprite: (asset: string) => Component<"sprite", {
+	sprite: TextureEntity;
 	/**
-	 * stop rendering the sprite onto
-	 * the screen
+	 * bind the position component
+	 * to the sprite, so whenever the
+	 * position component changes the sprite
+	 * will follow it. Every position that
+	 * was previously bind will be unbind
+	 * @param {Position} position
 	 */
-	hide(): void;
+	bind(position: Position): void;
 	/**
-	 * start rendering the sprite onto the
-	 * screen
+	 * detach previously bound
+	 * position.
+	 * @throws {Error} if no position was bound
 	 */
-	show(): void;
-};
+	unbind(): void;
+}>;
+declare const position: Query<"position", {
+	x: number;
+	y: number;
+	/**
+	 *
+	 * @param {(pos: Position) => void} callback
+	 * @returns {() => void} - unsubscribe method
+	 */
+	onMove(callback: (pos: Position) => void): () => void;
+}>;
+export declare const usePosition: () => Component<"position", {
+	x: number;
+	y: number;
+	/**
+	 *
+	 * @param {(pos: Position) => void} callback
+	 * @returns {() => void} - unsubscribe method
+	 */
+	onMove(callback: (pos: Position) => void): () => void;
+}>;
 /**
  * create a collision system where,
  * each body registered to it, is checked
  * to see whether is colliding with
  * something else, in that case triggers
  * an event of collision
- * @returns {System<RigidBody>}
  */
-export function useCollisionSystem(): System<RigidBody>;
-export function useInput(scene: Scene): {
+export function useCollisionSystem(): void;
+declare const body: Query<"body", RigidBody>;
+export declare const useBody: () => Component<"body", RigidBody>;
+declare const physics: Query<"physics", {
+	x: number;
+	y: number;
+	vx: number;
+	vy: number;
+	ax: number;
+	ay: number;
+	/**
+	 *
+	 * @param {(pos: PhysicsPosition) => void} callback
+	 * @returns {() => void} - unsubscribe method
+	 */
+	onMove(callback: (pos: PhysicsPosition) => void): () => void;
+}>;
+export declare const usePhysics: () => Component<"physics", {
+	x: number;
+	y: number;
+	vx: number;
+	vy: number;
+	ax: number;
+	ay: number;
+	/**
+	 *
+	 * @param {(pos: PhysicsPosition) => void} callback
+	 * @returns {() => void} - unsubscribe method
+	 */
+	onMove(callback: (pos: PhysicsPosition) => void): () => void;
+}>;
+export function usePhysicsSystem(): void;
+/**
+ * class that handles world.
+ * world are micro-cosmos, composed
+ * of entities and systems
+ * that acts only on that entities.
+ * only one world can exist at time
+ */
+export class World {
+	entities: Entity<{}>[];
+	/**
+	 * add new entity into the world.
+	 * from the moment an entity is added,
+	 * until it is removed with {@link World.remove()},
+	 * the entity will be affected to systems
+	 * that can query it.
+	 * @param {Entity<{}>} entity
+	 */
+	add(entity: Entity<{}>): void;
+	/**
+	 * remove the specified entity from the world
+	 * @param {Entity<{}>} entity
+	 */
+	remove(entity: Entity<{}>): void;
+	/**
+	 * add system to the tracked once.
+	 * A system that is tracked is dependant
+	 * to the World for its execution
+	 * @param {() => void} system
+	 */
+	addSystem(system: () => void, priority?: number): void;
+	/**
+	 * cleanup method called
+	 * when the World leave
+	 */
+	onLeave(): void;
+	/**
+	 * method used when the World
+	 * is started. All systems attached to it are
+	 * restarted
+	 */
+	onEnter(): void;
+	/**
+	 * lifecycle hook called each time an
+	 * entity is added or removed from the system
+	 * @param {() => void} hook
+	 */
+	onStateChange(hook: () => void): () => boolean;
+	/**
+	 * @param {() => void} callback
+	 */
+	onResume(callback: () => void): () => boolean;
+	/**
+	 * @param {() => void} callback
+	 */
+	onStop(callback: () => void): () => boolean;
+	#private;
+}
+/**@import {World} from "./World" */
+/**
+ * class that handles {@link World} lifecycle.
+ */
+export class WorldManager {
+	/**
+	 * current world in execution
+	 * @type {World}
+	 */
+	static "__#1@#current": World;
+	/**
+	 * change the current world.
+	 * stopping previous systems and
+	 * replacing all old entities.
+	 * they will remain in the old world,
+	 * that can be later resumed
+	 * @param {World} world
+	 */
+	static use(world: World): void;
+	/**
+	 * current world in execution
+	 */
+	static current: World;
+}
+/**@import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js" */
+/**@import GPUContext from "../rendering/index.js" */
+export class Game {
+	static "__#14@#game": Game;
+	static get(): Game;
+	/**
+	 * the camera used inside the scene.
+	 * every default entity is bound to this
+	 * camera.
+	 */
+	camera: Camera;
+	/**
+	 * Context used to draw entities onto the canvas.
+	 * To render an entity, it must be created with the
+	 * context and then drawn using standard Context api.
+	 * this is simplified by the `useSprite` hook. if
+	 * you want more control, you have to do something like
+	 * this
+	 * @example
+	 * ```javascript
+	 * const game = useGame();
+	 * const img = game.ctx.image();
+	 * img.draw(game.ctx);
+	 * const f = () => {
+	 *    game.ctx.clear();
+	 *    game.ctx.draw();
+	 *    requestAnimationFrame(f);
+	 * }
+	 * f();
+	 * ```
+	 */
+	ctx: GPUContext;
+	/**
+	 * scene manager useful to transit across Worlds
+	 * and preserve their state
+	 */
+	worlds: typeof WorldManager;
+	/**
+	 * method used to preload all images
+	 * that will be used inside the game
+	 * @param  {Record<string,string>} imgs
+	 */
+	preload(imgs: Record<string, string>): Promise<void>;
+	#private;
+}
+export function useGame(): Game;
+export function useSystem<K extends string, U extends {}, Q extends Query<K, U>[]>(update: (entity: Entity<Union<Q>>) => void, ...query: Q): void;
+export type Union<Q extends unknown[]> = Q extends [
+	infer X,
+	...infer Y
+] ? (X extends Query<infer R, infer N> ? Record<R, N> : {}) & Union<Y> : {};
+export function useInput(): {
 	/**
 	 * set an event handler attached
 	 * to an abstract event.
@@ -397,5 +432,39 @@ export function useInput(scene: Scene): {
 	 */
 	removeMapping: (key: string) => void;
 };
-export function useBody(tag?: string[]): RigidBody;
-export function useScene(): Scene;
+declare class TaskManager {
+	/**
+	 * @type {TaskManager}
+	 */
+	static "__#16@#instance": TaskManager;
+	static get(): TaskManager;
+	/**
+	 * @param {() => void} task
+	 */
+	addTask(task: () => void): () => void;
+	/**
+	 * creates an high priority task that
+	 * runs before each frame
+	 * @param {() => void} task
+	 */
+	addAnimationTask(task: () => void): () => void;
+	/**
+	 * remove all tasks actually in execution
+	 */
+	clearAll(): void;
+	#private;
+}
+export function useTaskManager(): TaskManager;
+export function useRendering(): void;
+declare namespace Query$1 {
+	export { sprite };
+	export { position };
+	export { body };
+	export { physics };
+}
+export function useWorld(): World;
+
+export {
+	Query$1 as Query,
+};
+
