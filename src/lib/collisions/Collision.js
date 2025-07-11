@@ -2,11 +2,12 @@ import ChunkIterator from "./ChunkIterator.js";
 import { createComponent } from "../../ecs/Component.js";
 import { WorldManager } from "../../ecs/WorldManager.js";
 import { useTaskManager, Priority } from "../../ecs/TaskManager.js";
+import * as List from "../../types/List.js"
 /**@import {RigidBody} from ".." */
 
 export const [body,useBody] = createComponent('body', /**@returns {RigidBody} */() => {
-      /**@type {Set<(body: RigidBody) => void>} */
-      const subs = new Set();
+      /**@type {List.Root<(body: RigidBody) => void>} */
+      const subs = List.create();
 
       
       return {
@@ -15,14 +16,18 @@ export const [body,useBody] = createComponent('body', /**@returns {RigidBody} */
             width: 32,
             height: 32,
             onCollision: watcher => {
-                  subs.add(watcher);
+                  let node = List.push(subs,watcher);
 
-                  return () => subs.delete(watcher);
+                  return () => {
+                        if (!node) {
+                              return;
+                        }
+                        List.remove(subs,node);
+                        node = null;
+                  };
             },
             triggerCollision(body) {
-                  for (const sub of subs) {
-                        sub(body);
-                  }
+                  List.forEach(subs, sub => sub(body))
             }
       }
 });
