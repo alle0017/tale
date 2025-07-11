@@ -1,12 +1,13 @@
 import { useSystem } from "../ecs/System.js"
 import { createComponent } from "../ecs/Component.js";
+import * as List from "../types/List.js"
 /**@import {PhysicsPosition} from "." */
 
 export const [physics, usePhysics] = createComponent('physics', () => {
       /**
-       * @type {Set<(pos: PhysicsPosition) => void>}
+       * @type {List.Root<(pos: PhysicsPosition) => void>}
        */
-      const subs = new Set();
+      const subs = List.create();
       let x = 0;
       let y = 0;
 
@@ -21,9 +22,7 @@ export const [physics, usePhysics] = createComponent('physics', () => {
 
                   x = v;
 
-                  for (const sub of subs) {
-                        sub(this);
-                  }
+                  List.forEach(subs, sub => sub(this));
             },
             get y() {
                   return y;
@@ -35,9 +34,7 @@ export const [physics, usePhysics] = createComponent('physics', () => {
 
                   y = v;
 
-                  for (const sub of subs) {
-                        sub(this);
-                  }
+                  List.forEach(subs, sub => sub(this));
             },
             vx: 0,
             vy: 0,
@@ -49,8 +46,15 @@ export const [physics, usePhysics] = createComponent('physics', () => {
              * @returns {() => void} - unsubscribe method
              */
             onMove(callback) {
-                  subs.add(callback);
-                  return () => subs.delete(callback);
+                  let node = List.push(subs, callback);
+                  return () => {
+                        if (!node) {
+                              return;
+                        }
+                        
+                        List.remove(subs, node)
+                        node = null;
+                  };
             },
       };
 });
