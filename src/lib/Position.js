@@ -1,6 +1,6 @@
 /**@import {PhysicsPosition, Position} from "." */
-
-import { createComponent } from "../ecs/Component";
+import { createComponent } from "../ecs/Component.js";
+import * as List from "../types/List.js"
 
 export const [
       position, 
@@ -11,9 +11,9 @@ export const [
       usePosition
 ] = createComponent('position', () => {
       /**
-       * @type {Set<(pos: Position) => void>}
+       * @type {List.Root<(pos: Position) => void>}
        */
-      const subs = new Set();
+      const subs = List.create();
       let x = 0;
       let y = 0;
 
@@ -28,9 +28,7 @@ export const [
 
                   x = v;
 
-                  for (const sub of subs) {
-                        sub(this);
-                  }
+                  List.forEach(subs, sub => sub(this));
             },
             get y() {
                   return y;
@@ -42,9 +40,7 @@ export const [
 
                   y = v;
 
-                  for (const sub of subs) {
-                        sub(this);
-                  }
+                  List.forEach(subs, sub => sub(this));
             },
             /**
              * 
@@ -52,62 +48,14 @@ export const [
              * @returns {() => void} - unsubscribe method
              */
             onMove(callback) {
-                  subs.add(callback);
-                  return () => subs.delete(callback);
+                  let node = List.push(subs, callback);
+                  return () => {
+                        if (!node) {
+                              return;
+                        }
+                        List.remove(subs,node);
+                        node = null;
+                  };
             },
       };
 });
-
-
-/**
- * @returns {PhysicsPosition}
- */
-export const usePhysicsPosition = () => {
-      /**
-       * @type {Set<(pos: Position) => void>}
-       */
-      const subs = new Set();
-      let x = 0;
-      let y = 0;
-
-      return {
-            get x() {
-                  return x;
-            },
-            set x(v) {
-                  if (x === v) {
-                        return;
-                  }
-
-                  x = v;
-
-                  for (const sub of subs) {
-                        sub(this);
-                  }
-            },
-            get y() {
-                  return y;
-            },
-            set y(v) {
-                  if (y === v) {
-                        return;
-                  }
-
-                  y = v;
-
-                  for (const sub of subs) {
-                        sub(this);
-                  }
-            },
-
-            vx: 0,
-            vy: 0,
-            ax: 0,
-            ay: 0,
-
-            onMove(callback) {
-                  subs.add(callback);
-                  return () => subs.delete(callback);
-            }
-      };
-}
