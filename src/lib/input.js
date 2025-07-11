@@ -1,5 +1,5 @@
 /**@import {World} from "../ecs/World";*/
-
+import * as List from "../types/List.js"
 import { WorldManager } from "../ecs/WorldManager.js";
 
 /**
@@ -12,19 +12,17 @@ import { WorldManager } from "../ecs/WorldManager.js";
  */
 export const useInput = (() => {
       /**
-       * @type {Set<(e: KeyboardEvent)=>void>}
+       * @type {List.Root<(e: KeyboardEvent)=>void>}
        */
-      const tasks = new Set();
+      const tasks = List.create();
 
       window.addEventListener('keydown', e => {
-            for (const task of tasks) {
-                  task(e);
-            }
+            List.forEach(tasks, task => task(e));
       });
 
       return () => {
             const scene = WorldManager.current;
-            /**@type {Map<string,Set<() => void>>} */
+            /**@type {Map<string,List.Root<() => void>>} */
             const listeners = new Map();
             /**@type {Map<string,string>} */
             const resolver = new Map();
@@ -56,15 +54,22 @@ export const useInput = (() => {
                         return;
                   }
 
-                  for (const sub of listeners.get(ev)) {
-                        sub();
-                  }
+                  List.forEach(listeners.get(ev), sub => sub());
             };
 
-            tasks.add(handler);
+            let node = List.push(tasks,handler);
 
-            scene.onResume(() => tasks.add(handler));
-            scene.onStop(() => tasks.delete(handler));
+            scene.onResume(() => {
+                  node = List.push(tasks,handler)
+            });
+
+            scene.onStop(() => {
+                  if (!node) {
+                        return;
+                  }
+                  List.remove(tasks, node)
+                  node = null;
+            });
 
 
             return {
@@ -76,12 +81,18 @@ export const useInput = (() => {
                    */
                   on: (event, handler) => {
                         if (!listeners.has(event)) {
-                              listeners.set(event, new Set());
+                              listeners.set(event, List.create());
                         }
 
-                        listeners.get(event).add(handler);
+                        let node = List.push(listeners.get(event),handler);
 
-                        return () => listeners.get(event).delete(handler);
+                        return () => {
+                              if (!node) {
+                                    return;
+                              }
+                              List.remove(listeners.get(event),node);
+                              node = null;
+                        };
                   },
                   /**
                    * map an abstract event onto a key.
