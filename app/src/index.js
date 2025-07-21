@@ -40,7 +40,7 @@ export {
 
 export const useWorld = () => {
       const world = new World();
-
+      
       WorldManager.use(world);
       
       useRendering();
