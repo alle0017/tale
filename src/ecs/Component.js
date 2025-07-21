@@ -1,3 +1,4 @@
+import List from "../types/List.js";
 /**@import {Entity} from "./Entity" */
 
 /**
@@ -11,15 +12,21 @@
  * @typedef {(e: Entity<{}>) => e is Entity<T>} Query
  */
 /**
+ * @typedef {{ 
+ *    name: string, 
+ *    factory: (...args: unknown[]) => Component<string,{}> 
+ * }} $Component
+ */
+/**
  * hook responsible for component creation.
  * it will return a way to query the component
  * from system and a way to create it.
  */
 export const createComponent = (() => {
       /**
-       * @type {Set<string>}
+       * @type {List<$Component>}
        */
-      const symbols = new Set();
+      const symbols = new List();
 
       /**
        * @template {string} T
@@ -29,20 +36,31 @@ export const createComponent = (() => {
        * @param {(...params: X) => K} factory 
        * @returns {[Query<T,K>, (...args: X) => Component<T,K>]}
        */
-      return (key, factory) => {
+      const create = (key, factory) => {
 
-            if (symbols.has(key)) {
-                  throw new Error(`Illegal key used for component declaration: ${key}`);
+            for (const comp of symbols) {
+                  if (comp.name === key) {
+                        throw new Error(`Illegal key used for component declaration: ${key}`);
+                  }
             }
 
-            symbols.add(key);
+            const node = symbols.push({
+                  name: key,
+                  factory: (...props) => { 
+                        //@ts-ignore
+                        return { state: factory(...props), $$name: key } 
+                  }
+            });
 
             return [
                   // @ts-ignore
                   e => e.has(key),
-                  (...props) => { 
-                        return { state: factory(...props), $$name: key } 
-                  }
+                  //@ts-ignore
+                  node.value.factory
             ];
-      }
+      };
+
+      create.getAllComponents = () => symbols;
+
+      return create;
 })()

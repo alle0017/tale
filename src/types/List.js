@@ -60,7 +60,20 @@ export default class List {
                   head = head.next;
             }
       }
+      /**
+       * @param {T} value 
+       */
+      has(value) {
+            let head = this.#head;
 
+            while (head) {
+                  if (head.value === value) {
+                        return true;
+                  }
+                  head = head.next;
+            }
+            return false;
+      }
       /**
        * @param {T} value
        */
