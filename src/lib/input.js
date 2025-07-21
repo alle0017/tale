@@ -1,5 +1,5 @@
 /**@import {World} from "../ecs/World";*/
-import * as List from "../types/List.js"
+import List from "../types/List.js"
 import { WorldManager } from "../ecs/WorldManager.js";
 
 /**
@@ -12,17 +12,17 @@ import { WorldManager } from "../ecs/WorldManager.js";
  */
 export const useInput = (() => {
       /**
-       * @type {List.Root<(e: KeyboardEvent)=>void>}
+       * @type {List<(e: KeyboardEvent)=>void>}
        */
-      const tasks = List.create();
+      const tasks = new List();
 
       window.addEventListener('keydown', e => {
-            List.forEach(tasks, task => task(e));
+            tasks.forEach(task => task(e));
       });
 
       return () => {
             const scene = WorldManager.current;
-            /**@type {Map<string,List.Root<() => void>>} */
+            /**@type {Map<string,List<() => void>>} */
             const listeners = new Map();
             /**@type {Map<string,string>} */
             const resolver = new Map();
@@ -54,20 +54,20 @@ export const useInput = (() => {
                         return;
                   }
 
-                  List.forEach(listeners.get(ev), sub => sub());
+                  listeners.get(ev).forEach(sub => sub());
             };
 
-            let node = List.push(tasks,handler);
+            let node = tasks.push(handler);
 
             scene.onResume(() => {
-                  node = List.push(tasks,handler)
+                  node = tasks.push(handler)
             });
 
             scene.onStop(() => {
                   if (!node) {
                         return;
                   }
-                  List.remove(tasks, node)
+                  tasks.remove(node)
                   node = null;
             });
 
@@ -81,16 +81,16 @@ export const useInput = (() => {
                    */
                   on: (event, handler) => {
                         if (!listeners.has(event)) {
-                              listeners.set(event, List.create());
+                              listeners.set(event, new List());
                         }
 
-                        let node = List.push(listeners.get(event),handler);
+                        let node = listeners.get(event).push(handler);
 
                         return () => {
                               if (!node) {
                                     return;
                               }
-                              List.remove(listeners.get(event),node);
+                              listeners.get(event).remove(node);
                               node = null;
                         };
                   },

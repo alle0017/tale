@@ -1,123 +1,82 @@
 /**
  * @template T
  * @typedef {{
- *    next: List<T>
+ *    next: ListNode<T>
  *    value: T,
- * }} List
+ * }} ListNode
  */
 
 /**
  * @template T
- * @typedef {{
- *    head: List<T>,
- * }} Root
  */
+export default class List {
+      /**
+       * @type {ListNode<T>}
+       */
+      #head;
 
-/**
- * @template T
- * @param {T} value 
- * @returns {List<T>}
- */
-export function node(value) {
-      return {
-            next: null,
-            value,
-      }
-}
-
-/**
- * @template T
- * @returns {Root<T>}
- */
-export function create() {
-      return {
-            head: null,
-      }
-}
-
-
-/**
- * @template T
- * @param {Root<T>} list 
- * @param {List<T>} node 
- */
-export function append(list, node) {
-      node.next = list.head;
-      list.head = node;
-}
-
-/**
- * @template T
- * @param {Root<T>} list 
- * @param {List<T>} node 
- */
-export function remove(list, node) {
-      if (list.head === node) {
-            list.head = node.next;
-            return;
-      }
-
-      node.value = list.head.value;
-      list.head = list.head.next;
-}
-
-/**
- * @template T
- * @param {Root<T>} list 
- * @param {(value: T) => void} callback
- */
-export function forEach(list, callback) {
-      let head = list.head;
-
-      while (head) {
-            callback(head.value);
-            head = head.next;
-      }
-}
-
-/**
- * @template T
- * @param {Root<T>} list 
- * @param {T} value
- */
-export function push(list, value) {
-      const n = node(value);
-
-      append(list,n);
-
-      return n;
-}
-/**
- * @template T
- * @param {Root<T>} list 
- * @param {T} value
- */
-export function has(list, value) {
-      let head = list.head;
-
-      while (head) {
-            if (head.value === value) {
-                  return head;
+      /**
+       * @template T
+       * @param {T} value 
+       * @returns {ListNode<T>}
+       */
+      #node(value) {
+            return {
+                  next: null,
+                  value,
             }
-            head = head.next;
-      }
-      return null;
-}
-
-/**
- * @template T
- * @param {Root<T>} list 
- * @param {T} value
- */
-export function unique(list, value) {
-      let newNode = has(list, value);
-      if (newNode) {
-            return;
       }
 
-      newNode = node(value);
 
-      append(list,newNode);
+      /**
+       * @param {ListNode<T>} node 
+       */
+      append(node) {
+            node.next = this.#head;
+            this.#head = node;
+      }
 
-      return newNode;
+      /**
+       * @param {ListNode<T>} node 
+       */
+      remove(node) {
+            if (this.#head === node) {
+                  this.#head = node.next;
+                  return;
+            }
+
+            node.value = this.#head.value;
+            this.#head = this.#head.next;
+      }
+
+      /**
+       * @param {(value: T) => void} callback
+       */
+      forEach(callback) {
+            let head = this.#head;
+
+            while (head) {
+                  callback(head.value);
+                  head = head.next;
+            }
+      }
+
+      /**
+       * @param {T} value
+       */
+      push(value) {
+            const n = this.#node(value);
+
+            this.append(n);
+
+            return n;
+      }
+      * [Symbol.iterator]() {
+            let head = this.#head;
+
+            while (head) {
+                  yield head.value;
+                  head = head.next;
+            }
+      }
 }

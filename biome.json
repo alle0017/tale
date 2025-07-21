@@ -6,10 +6,12 @@
       "recommended": true,
       "complexity": {
         "noStaticOnlyClass": "off",
-        "noBannedTypes": "off"
+        "noBannedTypes": "off",
+        "noForEach": "off"
       },
       "style": {
-        "useImportType": "off"
+        "useImportType": "off",
+        "useForOf": "off"
       }
     }
   },

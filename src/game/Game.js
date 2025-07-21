@@ -15,6 +15,7 @@ export class Game {
        * @type {GPUContext}
        */
       #ctx;
+      debug = false;
 
       /**
        * the camera used inside the scene.

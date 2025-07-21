@@ -7,5 +7,6 @@ function App() {
       `
 }
 
-GApp.registerComponent(Drawer)
+GApp
+.registerComponent(Drawer)
 .createRoot(App)
