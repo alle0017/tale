@@ -1,4 +1,4 @@
-import { $ref, html } from "@alle0017!/photonjs";
+import { $ref, html } from "../fw/index.js";
 
 /**
  * 
@@ -27,8 +27,8 @@ export default function Drawer(props) {
       }
      
       return html`
-            <div ref=${layout.bind}>
-                  <div class="drawer bg" style="z-index: var(--zi-front);" ref=${drawer.bind}>
+            <div ref=${layout}>
+                  <div class="drawer bg" style="z-index: 1000;" ref=${drawer}>
                         <div class="layout">
                               <div class="header row g-3 p-1 center">
                                     <h3 class="col">${props.header}</h3>
@@ -53,5 +53,5 @@ export default function Drawer(props) {
                         </div>
                   </div>
             </div>
-      `;
+      `
 }

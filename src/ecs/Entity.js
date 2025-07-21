@@ -4,7 +4,8 @@
 /**
  * @template {{}} T
  * @typedef {{
- *   add: <V extends string, X extends {}>(
+ *    has(key: string): boolean,
+ *    add: <V extends string, X extends {}>(
  *     component: Component<V, X>
  *   ) => Entity<T & { [K in V]: X }>
  * } & T} Entity
@@ -34,6 +35,12 @@ export const createEntity = () => {
                   map.set(component.$$name, component);
 
                   return this;
+            },
+            /**
+             * @param {string} key 
+             */
+            has(key) {
+                  return map.has(key);
             }
       }, {
             has(target, key) {

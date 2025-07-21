@@ -16,6 +16,9 @@
  * from system and a way to create it.
  */
 export const createComponent = (() => {
+      /**
+       * @type {Set<string>}
+       */
       const symbols = new Set();
 
       /**

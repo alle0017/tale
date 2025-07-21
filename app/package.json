@@ -7,9 +7,10 @@
     "@tweakpane/core": "^2.0.5",
     "monaco-editor": "^0.52.2",
     "tweakpane": "^4.0.5",
-    "vite": "^7.0.2"
+    "vite": "^7.0.5",
+    "@alle0017!/photonjs": "^1.1.0"
   },
   "scripts": {
-    "dev": "vite serve"
+    "dev": "vite --force serve"
   }
 }

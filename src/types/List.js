@@ -87,3 +87,37 @@ export function push(list, value) {
 
       return n;
 }
+/**
+ * @template T
+ * @param {Root<T>} list 
+ * @param {T} value
+ */
+export function has(list, value) {
+      let head = list.head;
+
+      while (head) {
+            if (head.value === value) {
+                  return head;
+            }
+            head = head.next;
+      }
+      return null;
+}
+
+/**
+ * @template T
+ * @param {Root<T>} list 
+ * @param {T} value
+ */
+export function unique(list, value) {
+      let newNode = has(list, value);
+      if (newNode) {
+            return;
+      }
+
+      newNode = node(value);
+
+      append(list,newNode);
+
+      return newNode;
+}

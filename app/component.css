@@ -13,9 +13,17 @@
       --c2: #81a1c1;
       --c3: #5e81ac;
 
-      --fs0: 14px;
-      --fs1: 18px;
+      --fs0: 12px;
+      --fs1: 16px;
       --fs2: 20px;
+
+      --br0: 4px;
+      --br1: 8px;
+      --br-circle: 50%;
+      --br-pill: 999px;
+
+      --zi-front: 10000;
+      --zi-deep: -10000;
 
       --tp-base-background-color: var(--n0);
       --tp-base-shadow-color: var(--n1);
