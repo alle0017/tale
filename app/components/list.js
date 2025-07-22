@@ -4,16 +4,22 @@ import { html } from "@alle0017!/photonjs";
  * 
  * @param {{
  *    items: string[],
- *    onClick?: (value: string) => void
+ *    icon?: string,
+ *    onClick?: (value: string) => void,
  *}} param0 
  */
-export default function List({ items, onClick, ...props }) {
-      console.log(props, onClick)
+export default function List({ items, onClick, icon }) {
       /**
-       * 
-       * @param {HTMLElement} el 
+       * @param {PointerEvent} event
        */
-      function click(el) {
+      function click(event) {
+            
+            let el = /**@type {HTMLElement}*/(event.target);
+
+            while (!el.hasAttribute('value')) {
+                  el = el.parentElement;
+            }
+
             if (!onClick) {
                   return;
             }
@@ -25,11 +31,15 @@ export default function List({ items, onClick, ...props }) {
             <ul class="list-container">
                   ${items.map(v => html`
                         <li 
+                              style="display: flex; align-items: center; gap: 10px;"
                               class="item" 
                               value=${v} 
                               @click=${click}
                               >
-                              ${v}
+                              ${icon ? html`<img src=${icon} width="16"/>`: ''}
+                              <span>
+                                    ${v}
+                              </span>
                         </li>`
                   )}
             </ul>

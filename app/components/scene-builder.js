@@ -16,9 +16,9 @@ export default function SceneBuilder() {
 
       e.add(usePosition());
 
+      $watcher(() => console.log(entities.value), entities);
       addEntity(e);      
 
-      $watcher(() => console.log(entities), entities);
 
       return html`
             <div style="position: absolute; left: 5px; top: 0px; border-right: var(--border0); height: 100%; width: 250px;">
@@ -26,9 +26,13 @@ export default function SceneBuilder() {
                         <div class="mb-1">Name of the scene</div>
                         <input type="text" model=${model(name)}/>
                   </div>
-                  ${$effect(() => 
-                        html`<List items=${entities.value.map((_,i) => `entity-${i}`)} @click=${console.log}/>`,entities)
-                  }
+                  ${$effect(() => html`
+                        <List 
+                              icon="./icons/entity.svg"
+                              items=${entities.value.map(e => `# ${e.id}`)} 
+                              @click=${console.log}
+                        />`,
+                  entities)}
             </div>
             <div id="cvs-root" style="position: absolute; left: 300px; top: 0px;" use=${move}></div>
       `
