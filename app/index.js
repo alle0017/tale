@@ -3,6 +3,7 @@ import { $error, $ref, $signal, GApp, html, } from "@alle0017!/photonjs";
 import Drawer from "./components/drawer";
 import SceneBuilder from "./components/scene-builder";
 import Tree from "./components/tree";
+import List from "./components/list";
 
 function App() {
       $error.catch(console.error)
@@ -13,6 +14,7 @@ function App() {
 
 GApp
 .registerComponent(Tree)
+.registerComponent(List)
 .registerComponent(Drawer)
 .registerComponent(SceneBuilder)
 .createRoot(App)

@@ -308,6 +308,22 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
       max-height: 80vh;
       width: 100%;
 }
+.list-container {
+      list-style-type: none;
+      text-indent: 5px;
+      padding-inline-start: 20px;
+}
+.item {
+      width: 200px;
+      height: 18px;
+      padding: 5px;
+      border-radius: 7px;
+      list-style-type: none;
+}
+.item:hover {
+      background-color: var(--n1);
+      cursor: pointer;
+}
 
 .file {
      width: 70px; 

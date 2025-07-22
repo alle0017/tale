@@ -27,7 +27,6 @@ export default function Tree({ content }) {
                         list-style-type: none;
                         text-indent: 5px;
                         padding-inline-start: 20px;
-                        border-left: 0.01px solid var(--c3);
                   }
                   li {
                         width: 200px;

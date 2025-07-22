@@ -27,21 +27,7 @@ export default function SceneBuilder() {
                         <input type="text" model=${model(name)}/>
                   </div>
                   ${$effect(() => 
-                        html`<Tree content=${
-                              { 
-                                    name: '', 
-                                    children: entities.value.map(e => {
-                                          return { 
-                                                name: 'entity', 
-                                                children: [...e.tags].map(v => {
-                                                      return { children: [], name: v, tooltip: `Tag: ${v}` };
-                                                }).concat([...e.getAll().entries()].map(([c, v]) => {
-                                                      return { children: [], name: c, tooltip: `${c}: ${JSON.stringify(v.state)}` };
-                                                })),
-                                          }
-                                    })
-                              }
-                        }/>`,entities)
+                        html`<List items=${entities.value.map((_,i) => `entity-${i}`)} @click=${console.log}/>`,entities)
                   }
             </div>
             <div id="cvs-root" style="position: absolute; left: 300px; top: 0px;" use=${move}></div>
