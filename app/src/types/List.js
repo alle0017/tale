@@ -84,6 +84,21 @@ export default class List {
 
             return n;
       }
+      /**
+       * @param {T} value 
+       */
+      delete(value) {
+            let head = this.#head;
+
+            while (head) {
+                  if (head.value === value) {
+                        this.remove(head);
+                        return true;
+                  }
+                  head = head.next;
+            }
+            return false;
+      }
       * [Symbol.iterator]() {
             let head = this.#head;
 

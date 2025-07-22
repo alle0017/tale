@@ -1,4 +1,6 @@
 :root {
+      --border0: 1px solid var(--n1);
+      --border1: 1px solid var(--n2);
       --n0: #2e3440;
       --n1: #3b4252;
       --n2: #434c5e;
@@ -57,8 +59,37 @@
       background-color: var(--n0);
 }
 
+input {
+      background-color: var(--n1);
+      border-radius: var(--br0);
+      border: var(--border1);
+      padding: 8px;
+}
+
+input:active, input:focus {
+      outline: none;
+}
+
 img,span {
       background-color: transparent;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  background-color: var(--n1);
+  color: var(--c0);
+  text-align: center;
+  border-radius: var(--br0);
+  border: var(--border1);
+  padding: 5%;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
 }
 
 .drawer {
@@ -68,7 +99,7 @@ img,span {
       position: fixed;
       right: 0px;
       top: 0px;
-      border: 1px solid var(--n1);
+      border: var(--border0);
 }
 
 .icon-btn {
@@ -104,7 +135,7 @@ img,span {
 .header {
       height: 32px;
       font-size: var(--fs1);
-      border-bottom: 1px solid var(--n1);
+      border-bottom: var(--border0);
       width: 100%;
 }
 
@@ -130,7 +161,7 @@ ul.navbar {
       list-style: none;
       margin: 0px;
       padding: 0px;
-      border-bottom: 1px solid var(--n1);
+      border-bottom: var(--border0);
 }
 
 ul.navbar > li {
@@ -218,6 +249,28 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
 .mt-5 {
       margin-top: 25%;
 }
+.ml-1 {
+      margin-left: 5%;
+}
+.ml-2 {
+      margin-left: 10%;
+}
+.ml-3 {
+      margin-left: 15%;
+}
+.ml-4 {
+      margin-left: 20%;
+}
+.ml-5 {
+      margin-left: 25%;
+}
+.mb-1 {
+      margin-bottom: 5%;
+}
+.my-3 {
+      margin-top: 15%;
+      margin-bottom: 15%;
+}
 .px-1 {
       padding-left: 5%;
       padding-right: 5%;
@@ -279,7 +332,7 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
 }
 
 .bottom-drawer {
-      border-top: 1px solid var(--n1);
+      border-top: var(--border0);
       height: 300px;
       width: 100%;
       min-width: 100%;

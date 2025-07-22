@@ -1,8 +1,14 @@
-import { $ref, $signal, GApp, html, Shadow } from "@alle0017!/photonjs";
+import { $ref, $signal, html, } from "@alle0017!/photonjs";
 /**@import {Ref} from "@alle0017!/photonjs";*/
 
 
-/**@typedef {{ name: string, children: Tree[]}} Tree*/
+/**
+ * @typedef {{ 
+ *    name: string, 
+ *    tooltip?: string,
+ *    children: Tree[]
+ *}} Tree
+ */
 /**
  * 
  * @param {{
@@ -28,6 +34,7 @@ export default function Tree({ content }) {
                         height: 18px;
                         padding: 5px;
                         border-radius: 7px;
+                        list-style-type: none;
                   }
                   li:hover {
                         background-color: var(--n1);
@@ -36,8 +43,7 @@ export default function Tree({ content }) {
             </style>
             <li 
                   style="font-weight: bolder;" 
-                  class="parent" 
-                  title=${content.name}
+                  class="parent tooltip" 
                   @click=${() => {
                         if (label.value === OPEN) {
                               ul.element.style.display = 'none';
@@ -56,7 +62,14 @@ export default function Tree({ content }) {
                               return Tree({ content: child });
                         }
 
-                        return html`<li title=${child.name}> ${child.name} </li>`
+                        return html`
+                              <li class="tooltip"> 
+                                    ${child.name} 
+                                    <span class="tooltip-text">
+                                          ${child.tooltip? child.tooltip: child.name}
+                                    </span>
+                              </li>
+                        `
                   })}
             </ul>
       `

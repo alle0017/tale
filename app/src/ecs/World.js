@@ -24,6 +24,12 @@ export class World {
       get entities() {
             return [...this.#entities];
       }
+      set entities(value) {
+            this.#entities.clear();
+            for (let i = 0; i < value.length; i++) {
+                  this.#entities.add(value[i]);
+            }
+      }
 
       constructor() {
             this.#hooks.set('change', new Set());

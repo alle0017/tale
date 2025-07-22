@@ -1,6 +1,5 @@
 import { $signal, } from "@alle0017!/photonjs";
-import Effect from "@alle0017!/photonjs/signals/Effect.js";
-/**@import {Signal,} from "@alle0017!/photonjs" */
+/**@import {Signal,Effect} from "@alle0017!/photonjs" */
 /**
  * @template {{}} T
  * @typedef {<K>(accessor: (t: T) => K) => Effect<K>} Accessor
@@ -17,6 +16,9 @@ import Effect from "@alle0017!/photonjs/signals/Effect.js";
 /**
  * @template {{}} T
  * @typedef {<K extends string[]>(...path: K) => State<ValueOf<T,K>>} Deriver
+ */
+/**
+ * @typedef {<T>(value: T) => T} Cloner
  */
 /**
  * @template {{}} K
@@ -40,7 +42,11 @@ import Effect from "@alle0017!/photonjs/signals/Effect.js";
  *    derive: Deriver<T>
  * }} State
  */
-
+/**
+ * @param {{}} obj 
+ * @returns {string[]}
+ */
+const keys = obj => Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
 /**
  * 
  * @param {unknown} a 
@@ -109,7 +115,7 @@ const equal = (a,b) => {
             }
       }
 
-      for (const key of Object.keys(a)) {
+      for (const key of keys(a)) {
             if (!equal(a[key], b[key])) {
                   return false;
             }
@@ -166,7 +172,7 @@ const extractAndPatch = (state, path) => {
  */
 const patch = (old,newVal) => {
 
-      for (const k of Object.keys(old)) {
+      for (const k of keys(old)) {
             if (!newVal?.[k]) {
                   old[k] = null;
             }
@@ -176,36 +182,38 @@ const patch = (old,newVal) => {
             return;
       }
 
-      for (const k of Object.keys(newVal)) {
+      for (const k of keys(newVal)) {
             old[k] = newVal[k];
       }
 }
+
 /**
  * @template {{}} T
  * @template {string[]} V
  * @param {T} state 
  * @param {V} path
+ * @param {Cloner} [deepClone=null]
  * @param {Signal<T>} [dep=null]
  * @returns {State<ValueOf<T, V>>}
  */
-const toState = (state, path, dep = null) => {
+const toState = (state, path, deepClone = null, dep = null) => {
       const signal = $signal(state);
-      let clone = structuredClone(extract(signal.value, path));
+      const cloner = deepClone || (value => structuredClone(value));
+      let clone = deepClone(extract(signal.value, path));
       /**@param {ValueOf<T,V>} value */
       const apply = value => {
             if (equal(extract(signal.value, path), value)) {
                   return;
             }
-
             patch(extractAndPatch(signal.value, path), value);
-            clone = structuredClone(extract(signal.value, path));
+            clone = deepClone(extract(signal.value, path));
             signal.set(signal.value);
       }
 
       if (dep) {
             dep.subscribe(() => {
                   signal.set(dep.value);
-                  clone = structuredClone(extract(signal.value, path));
+                  clone = deepClone(extract(signal.value, path));
             });
       }
 
@@ -244,7 +252,7 @@ const toState = (state, path, dep = null) => {
             },
             //@ts-ignore
             derive: (...subpath) => {
-                  return toState(signal.value, [...path, ...subpath], signal);
+                  return toState(signal.value, [...path, ...subpath], cloner, signal);
             }
       }
 }
@@ -266,7 +274,8 @@ const toState = (state, path, dep = null) => {
  * corruption can be avoided.
  * @template {{}} T
  * @param {T} state 
+ * @param {Cloner} cloner
  * @returns {State<T>}
  */
 //@ts-ignore
-export const createState = state => toState(state, []);
+export const createState = (state, cloner = null) => toState(state, [], cloner);
