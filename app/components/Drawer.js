@@ -27,7 +27,7 @@ export default function Drawer(props) {
             });
       }
 
-     
+      console.log(props.children)
       return html`
             <div ref=${layout.bind}>
                   <div class="drawer bg" style="z-index: var(--zi-front); display: none;" ref=${drawer.bind}>

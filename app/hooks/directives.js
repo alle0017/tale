@@ -9,12 +9,12 @@ export const model = signal => {
        * @param {HTMLInputElement} el
        */
       return el => {
-            el.value = signal.value;
+            el.setAttribute('value', signal.value);
             el.addEventListener('change', () => {
                   signal.value = el.value;
             });
             $watcher(() => {
-                  el.value = signal.value;
+                  el.setAttribute('value', signal.value);
             }, signal);
       }
 }
