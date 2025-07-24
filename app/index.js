@@ -1,3 +1,4 @@
+
 import { $error, $ref, $signal, GApp, html, } from "@alle0017!/photonjs";
 /**@import {Ref} from "@alle0017!/photonjs";*/
 import Drawer from "./components/drawer";
@@ -6,9 +7,14 @@ import Tree from "./components/tree";
 import List from "./components/list";
 
 function App() {
+      /**@type {Ref<{ toggle(): void, }>} */
+      const drawer = $ref();
+
       $error.catch(console.error)
+
       return html`
-            <SceneBuilder/>
+            <SceneBuilder @click=${e => drawer.element.toggle()}/>
+            <Drawer ref=${drawer}/>
       `
 }
 

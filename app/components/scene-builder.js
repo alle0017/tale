@@ -3,14 +3,32 @@ import { useGame, useWorld, createComponent, createEntity, usePosition } from ".
 import { model } from "../hooks/directives.js";
 import { entities, WORLD, addEntity } from "../stores/scene.js";
 
-
-export default function SceneBuilder() {
+/**
+ * 
+ * @param {{
+ *     onClick?: (el: import("../src/ecs/Entity.js").Entity<{}>) => void,
+ * }} param0 
+ * @returns 
+ */
+export default function SceneBuilder({ onClick }) {
       const name = $signal('scene');
       /**@param {HTMLElement} el */
       const move = el => {
             useGame().ctx.moveRoot(el);
       };
-
+      /**
+       * 
+       * @param {string} e 
+       * @returns 
+       */
+      const click = e => {
+            if (!onClick) {
+                  return;
+            }
+            const id = e.replace('# ', '');
+            
+            onClick(entities.value.filter(e => e.id === id).at(0));
+      };
       const e = createEntity()
       e.tags.push('Wall')
 
@@ -30,7 +48,7 @@ export default function SceneBuilder() {
                         <List 
                               icon="./icons/entity.svg"
                               items=${entities.value.map(e => `# ${e.id}`)} 
-                              @click=${console.log}
+                              @click=${click}
                         />`,
                   entities)}
             </div>

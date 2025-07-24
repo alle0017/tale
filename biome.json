@@ -12,6 +12,9 @@
       "style": {
         "useImportType": "off",
         "useForOf": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off"
       }
     }
   },

@@ -35,7 +35,7 @@ export default function List({ items, onClick, icon }) {
                               class="item" 
                               value=${v} 
                               @click=${click}
-                              >
+                        >
                               ${icon ? html`<img src=${icon} width="16"/>`: ''}
                               <span>
                                     ${v}
