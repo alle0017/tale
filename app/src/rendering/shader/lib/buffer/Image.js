@@ -11,15 +11,19 @@ export default (() => {
              */
             preload(img, name) {
                   const image = new Image();
-
-                  image.src = img;
-
-                  return new Promise((resolve) => {
+                  const promise = new Promise((resolve) => {
                         image.addEventListener('load', () => {
                               cache.set(name, image);
                               resolve();
                         });   
                   });
+                  image.addEventListener('error', (err) => {
+                        console.error('Image failed to load:', img, err);
+                  });
+
+                  image.src = img;
+
+                  return promise;
             },
             /**
              * @param {string} img

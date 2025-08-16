@@ -72,7 +72,11 @@ export class Game {
       async preload(imgs) {
 
             for (const[k,v] of Object.entries(imgs)) {
-                  await Image.preload(v, k);
+                  try {
+                        await Image.preload(v, k);
+                  } catch (e) {
+                        console.error(e);
+                  }
             }
       }
 }
