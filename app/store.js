@@ -46,13 +46,14 @@ import { $signal, } from "@alle0017!/photonjs";
  * @param {{}} obj 
  * @returns {string[]}
  */
-const keys = obj => Object.getOwnPropertyNames(Object.getPrototypeOf(obj))
+const keys = obj => [...Object.getOwnPropertyNames(Object.getPrototypeOf(obj)), ...Object.keys(obj)]
 /**
  * 
  * @param {unknown} a 
  * @param {unknown} b 
  */
 const equal = (a,b) => {
+
       if (a === b) {
             return true;
       }
@@ -186,7 +187,35 @@ const patch = (old,newVal) => {
             old[k] = newVal[k];
       }
 }
+/**
+ * 
+ * @param {{}} obj 
+ * @returns 
+ */
+const stripFunctions = obj => {
+      if (obj === null || typeof obj !== "object") 
+            return obj;
+      if (Array.isArray(obj)) 
+            return obj.map(stripFunctions);
 
+      const copy = {};
+      for (const key of Object.keys(obj)) {
+            const val = obj[key];
+
+            if (typeof val !== "function") {
+                  copy[key] = stripFunctions(val);
+            }
+      }
+      return copy;
+};
+/**
+ * 
+ * @param {{}} value 
+ */
+const cloneAlgorithm = value => {
+      console.log(value)
+      return structuredClone(stripFunctions(value));
+}
 /**
  * @template {{}} T
  * @template {string[]} V
@@ -198,22 +227,22 @@ const patch = (old,newVal) => {
  */
 const toState = (state, path, deepClone = null, dep = null) => {
       const signal = $signal(state);
-      const cloner = deepClone || (value => structuredClone(value));
-      let clone = deepClone(extract(signal.value, path));
+      const cloner = deepClone || cloneAlgorithm;
+      let clone = cloner(extract(signal.value, path));
       /**@param {ValueOf<T,V>} value */
       const apply = value => {
             if (equal(extract(signal.value, path), value)) {
                   return;
             }
             patch(extractAndPatch(signal.value, path), value);
-            clone = deepClone(extract(signal.value, path));
+            clone = cloner(extract(signal.value, path));
             signal.set(signal.value);
       }
 
       if (dep) {
             dep.subscribe(() => {
                   signal.set(dep.value);
-                  clone = deepClone(extract(signal.value, path));
+                  clone = cloner(extract(signal.value, path));
             });
       }
 

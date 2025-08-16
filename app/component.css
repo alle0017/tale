@@ -336,6 +336,7 @@ ul.navbar > li:has(.active), ul.navbar > li.active {
      padding: 10px;
      box-sizing: border-box;
      cursor: pointer;
+     flex-direction: column;
 }
 
 .h-container {
