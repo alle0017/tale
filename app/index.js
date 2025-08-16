@@ -8,16 +8,9 @@ import SceneBuilder from "./components/scene-builder";
 import Tree from "./components/tree";
 import List from "./components/list";
 import { BottomBarController } from "./components/controller/bottom-bar";
-import { items, push } from "./stores/bottom-bar";
+import { items, onClick, push, setVisibility } from "./stores/bottom-bar";
 function App() {
       $error.catch(console.error)
-      setTimeout(() => {
-            push({
-                  name: 'item',
-                  image: 'components/t.jpg'
-            })
-            console.log(items.value)
-      }, 1000)
       return html`
             <BottomBarController/>
       `
