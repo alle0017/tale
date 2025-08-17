@@ -213,7 +213,6 @@ const stripFunctions = obj => {
  * @param {{}} value 
  */
 const cloneAlgorithm = value => {
-      console.log(value)
       return structuredClone(stripFunctions(value));
 }
 /**

@@ -3,19 +3,22 @@ import { $ref, $signal, html, } from "@alle0017!/photonjs";
 
 
 /**
+ * @template {{}} T
  * @typedef {{ 
  *    name: string, 
  *    tooltip?: string,
- *    children: Tree[]
+ *    children: Tree<T>[],
+ *    data?: T,
  *}} Tree
  */
 /**
- * 
+ * @template T
  * @param {{
- *    content: Tree
+ *    content: Tree<T>,
+ *    onClick?: (child: Tree<T>) => void
  * }} param0 
  */
-export default function Tree({ content }) {
+export default function Tree({ content, onClick }) {
       const CLOSE = `▶ ${content.name} ...`;
       const OPEN = `▼ ${content.name}`;
       const label = $signal(OPEN);
@@ -62,7 +65,7 @@ export default function Tree({ content }) {
                         }
 
                         return html`
-                              <li class="tooltip"> 
+                              <li class="tooltip" @click=${() => onClick?.(child)}> 
                                     ${child.name} 
                                     <span class="tooltip-text">
                                           ${child.tooltip? child.tooltip: child.name}
