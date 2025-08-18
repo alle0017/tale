@@ -20,6 +20,7 @@ export default function List({ items, onClick, icon }) {
                   el = el.parentElement;
             }
 
+            console.log(onClick)
             if (!onClick) {
                   return;
             }

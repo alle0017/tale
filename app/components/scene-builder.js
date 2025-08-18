@@ -1,7 +1,8 @@
 import { html, $signal, $effect, $watcher } from "@alle0017!/photonjs"
-import { useGame, useWorld, createComponent, createEntity, usePosition } from "../src/index.js"
+import { useGame, useWorld, createComponent, createEntity, usePosition, useSprite } from "../src/index.js"
 import { model } from "../hooks/directives.js";
 import { entities, WORLD, addEntity } from "../stores/scene.js";
+import Image from "../src/rendering/shader/lib/buffer/Image.js";
 
 /**
  * 
@@ -31,11 +32,14 @@ export default function SceneBuilder({ onClick }) {
       };
       const e = createEntity()
       e.tags.push('Wall')
+      useGame().preload({ 
+            't': './components/t.jpg'
+      }).then(() => {
+            e.add(usePosition());
+            addEntity(e);      
+            $watcher(() => console.log(entities.value), entities);
+      })
 
-      e.add(usePosition());
-
-      $watcher(() => console.log(entities.value), entities);
-      addEntity(e);      
 
 
       return html`

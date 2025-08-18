@@ -6,15 +6,18 @@ import List from "./components/list";
 import { BottomBarController } from "./components/controller/bottom-bar";
 import { items, onClick, push, setVisibility } from "./stores/bottom-bar";
 import { TreeController } from "./components/controller/tree";
+import { DrawerController } from "./components/controller/drawer";
 function App() {
       $error.catch(console.error)
       return html`
+            <DrawerController/>
             <TreeController/>
             <BottomBarController/>
       `
 }
 
 GApp
+.registerComponent(DrawerController)
 .registerComponent(TreeController)
 .registerComponent(BottomBarController)
 .registerComponent(List)
