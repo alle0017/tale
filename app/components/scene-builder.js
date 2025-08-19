@@ -1,61 +1,24 @@
-import { html, $signal, $effect, $watcher } from "@alle0017!/photonjs"
-import { useGame, useWorld, createComponent, createEntity, usePosition, useSprite } from "../src/index.js"
-import { model } from "../hooks/directives.js";
-import { entities, WORLD, addEntity } from "../stores/scene.js";
-import Image from "../src/rendering/shader/lib/buffer/Image.js";
+import { $watcher } from "@alle0017!/photonjs";
+import * as BottomBar from "../stores/bottom-bar";
+import * as Drawer from "../stores/drawer";
+import * as Tree from "../stores/tree";
+import { _state, createScene, scenes } from "../stores/project/project";
+export default function SceneBuilder() {
+      $watcher(() => {
+            BottomBar.replaceAll(Object.keys(scenes.value).map(scene => ({
+                        name: scene,
+                        image: './icons/scene.svg'
+                  })
+            ))
+      }, scenes);
 
-/**
- * 
- * @param {{
- *     onClick?: (el: import("../src/ecs/Entity.js").Entity<{}>) => void,
- * }} param0 
- * @returns 
- */
-export default function SceneBuilder({ onClick }) {
-      const name = $signal('scene');
-      /**@param {HTMLElement} el */
-      const move = el => {
-            useGame().ctx.moveRoot(el);
-      };
-      /**
-       * 
-       * @param {string} e 
-       * @returns 
-       */
-      const click = e => {
-            if (!onClick) {
-                  return;
-            }
-            const id = e.replace('# ', '');
-            
-            onClick(entities.value.filter(e => e.id === id).at(0));
-      };
-      const e = createEntity()
-      e.tags.push('Wall')
-      useGame().preload({ 
-            't': './components/t.jpg'
-      }).then(() => {
-            e.add(usePosition());
-            addEntity(e);      
-            $watcher(() => console.log(entities.value), entities);
-      })
-
-
-
-      return html`
-            <div style="position: absolute; left: 5px; top: 0px; border-right: var(--border0); height: 100%; width: 250px;">
-                  <div class="my-3">
-                        <div class="mb-1">Name of the scene</div>
-                        <input type="text" model=${model(name)}/>
-                  </div>
-                  ${$effect(() => html`
-                        <List 
-                              icon="./icons/entity.svg"
-                              items=${entities.value.map(e => `# ${e.id}`)} 
-                              @click=${click}
-                        />`,
-                  entities)}
-            </div>
-            <div id="cvs-root" style="position: absolute; left: 300px; top: 0px;" use=${move}></div>
-      `
+      BottomBar.replaceAll(Object.keys(scenes.value).map(scene => ({
+                  name: scene,
+                  image: './icons/scene.svg'
+            })
+      ));
+      setTimeout(() => {
+            console.log(scenes.value)
+            createScene('Default')
+      }, 1000)
 }

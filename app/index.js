@@ -4,11 +4,14 @@ import { $error, $ref, $signal, $watcher, GApp, html, } from "@alle0017!/photonj
 /**@import {Component} from "./src/ecs/Component";*/
 import List from "./components/list";
 import { BottomBarController } from "./components/controller/bottom-bar";
-import { items, onClick, push, setVisibility } from "./stores/bottom-bar";
 import { TreeController } from "./components/controller/tree";
 import { DrawerController } from "./components/controller/drawer";
+import SceneBuilder from "./components/scene-builder";
 function App() {
       $error.catch(console.error)
+      setTimeout(() => {
+            SceneBuilder()
+      }, 1000)
       return html`
             <DrawerController/>
             <TreeController/>

@@ -116,7 +116,13 @@ const equal = (a,b) => {
             }
       }
 
-      for (const key of keys(a)) {
+      const aKeys = keys(a);
+      
+      if (aKeys.length !== keys(b).length) {
+            return false;
+      }
+
+      for (const key of aKeys) {
             if (!equal(a[key], b[key])) {
                   return false;
             }
@@ -230,7 +236,9 @@ const toState = (state, path, deepClone = null, dep = null) => {
       let clone = cloner(extract(signal.value, path));
       /**@param {ValueOf<T,V>} value */
       const apply = value => {
+
             if (equal(extract(signal.value, path), value)) {
+                  console.warn('skip apply')
                   return;
             }
             patch(extractAndPatch(signal.value, path), value);
