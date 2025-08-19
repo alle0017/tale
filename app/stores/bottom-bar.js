@@ -1,3 +1,4 @@
+import { $signal } from "@alle0017!/photonjs";
 import { createState } from "../store";
 /**@import {Entity} from "../src/ecs/Entity" */
 /**@import {Item} from "../components/ui/bottom-bar" */
@@ -10,15 +11,14 @@ const {accessor, mutator,} = createState({
        * @type {Item[]}
        */
       items: [],
-      /**
-       * @type {(name: string) => void}
-       */
-      onClick: undefined
 });
 
 export const items = accessor(state => state.items);
 export const visible = accessor(state => state.visible);
-export const clickHandler = accessor(state => state.onClick);
+/**
+ * @type {import("@alle0017!/photonjs").Signal<(name: string) => void>}
+ */
+export const onClick = $signal(undefined);
 /**
  * append to the tree
  * @type {(item: Item) => void}
@@ -49,12 +49,5 @@ export const replaceAll = mutator((state, items) => {
  */
 export const setVisibility = mutator((state, visible) => { 
       state.visible = visible;
-      return state;
-});
-/**
- * @type {(handler: (item: string) => void) => void}
- */
-export const onClick = mutator((state, handler) => { 
-      state.onClick = handler;
       return state;
 });

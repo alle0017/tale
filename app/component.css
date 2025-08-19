@@ -25,6 +25,10 @@
       --br-pill: 999px;
 
       --zi-front: 10000;
+      --zi-front0: 10;
+      --zi-front1: 100;
+      --zi-front2: 1000;
+
       --zi-deep: -10000;
 
       --tp-base-background-color: var(--n0);

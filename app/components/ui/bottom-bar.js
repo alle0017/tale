@@ -19,9 +19,10 @@ import { html } from "@alle0017!/photonjs";
 export function BottomBar({ items, height, width, onClick }) {
       width ||= 100;
       height ||= 100;
+      console.log(onClick)
 
       return html`
-            <div class="bottom-drawer">
+            <div class="bottom-drawer"  style="z-index: var(--zi-front3);">
                   <div style=${`height: ${height}px;`} class="h-container">
                         ${items.map(item => html`
                         <div 
@@ -29,7 +30,7 @@ export function BottomBar({ items, height, width, onClick }) {
                               style=${`width: ${width}px; height: ${height}px;`} 
                               @click=${() => onClick?.(item.name)}
                         >
-                              <img src=${item.image} alt=${item.name} style=${`width: ${width}px; height: ${height}px;`}/>
+                              <img src=${item.image} alt=${item.name} width="32" height="32"/>
                               <span>${item.name.length > 15? item.name.substring(0,14) + '...': item.name}</span>
                         </div>      
                         `)}
