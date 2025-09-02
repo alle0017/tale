@@ -19,7 +19,6 @@ import { html } from "@alle0017!/photonjs";
 export function BottomBar({ items, height, width, onClick }) {
       width ||= 100;
       height ||= 100;
-      console.log(onClick)
 
       return html`
             <div class="bottom-drawer"  style="z-index: var(--zi-front3);">
