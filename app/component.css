@@ -62,15 +62,23 @@
 .bg, body {
       background-color: var(--n0);
 }
-
-input {
+textarea, input, select {
       background-color: var(--n1);
       border-radius: var(--br0);
       border: var(--border1);
+}
+input, select {
       padding: 8px;
 }
-
-input:active, input:focus {
+.inline-input {
+      height: 16px; 
+      padding: 2px;
+}
+select.inline-input {
+      height: 22px;
+      padding: 2px;
+}
+input:active, input:focus, textarea:active, textarea:focus {
       outline: none;
 }
 
