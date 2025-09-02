@@ -3,7 +3,8 @@ type Attribute = {
 } & ({
       children: Attribute[],
 } | {
-      value: 'number' | 'string' | 'boolean',
+      type: 'number' | 'string' | 'boolean',
+      value: string
 })
 
 type Component = {
