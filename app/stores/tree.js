@@ -1,3 +1,4 @@
+import { $signal } from "@alle0017!/photonjs";
 import { createState } from "../store";
 /**@import {Tree} from "../components/ui/tree" */
 
@@ -23,7 +24,10 @@ const {accessor, mutator,} = createState({
 
 export const tree = accessor(state => state.tree);
 export const visible = accessor(state => state.visible);
-export const clickHandler = accessor(state => state.onClick);
+/**
+ * @type {import("@alle0017!/photonjs").Signal<(name: Tree<TreeData>) => void>}
+ */
+export const onClick = $signal(undefined);
 
 /**
  * append to the tree
@@ -55,12 +59,5 @@ export const replaceAll = mutator((state, tree) => {
  */
 export const setVisibility = mutator((state, visible) => { 
       state.visible = visible;
-      return state;
-});
-/**
- * @type {(handler: (item: Tree<TreeData>) => void) => void}
- */
-export const onClick = mutator((state, handler) => { 
-      state.onClick = handler;
       return state;
 });

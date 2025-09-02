@@ -26,26 +26,26 @@ export default function Tree({ content, onClick }) {
       const ul = $ref();
       return html`
             <style>
-                  ul {
+                  ul.tree {
                         list-style-type: none;
                         text-indent: 5px;
                         padding-inline-start: 20px;
                   }
-                  li {
+                  li.tree {
                         width: 200px;
                         height: 18px;
                         padding: 5px;
                         border-radius: 7px;
                         list-style-type: none;
                   }
-                  li:hover {
+                  li.tree:hover {
                         background-color: var(--n1);
                         cursor: pointer;
                   }
             </style>
             <li 
                   style="font-weight: bolder;" 
-                  class="parent tooltip" 
+                  class="parent tooltip tree" 
                   @click=${() => {
                         if (label.value === OPEN) {
                               ul.element.style.display = 'none';
@@ -58,7 +58,7 @@ export default function Tree({ content, onClick }) {
             >
                   ${label}
             </li>
-            <ul ref=${ul.bind}>
+            <ul ref=${ul.bind} class="tree">
                   ${content.children.map(child => {
                         if (child.children.length > 0) {
                               return Tree({ content: child });
