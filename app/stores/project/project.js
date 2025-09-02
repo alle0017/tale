@@ -5,10 +5,15 @@ import { createState } from "../../store";
 
 const { accessor, mutator, derive } = /**@type {State<Project>}*/(createState({
       scenes: {},
-      entities: {},
+      entities: {
+            None: {
+                  components: []
+            }
+      },
 }))
 export {derive}
 export const scenes = accessor(state => state.scenes);
+export const entities = accessor(state => state.entities);
 export const _state = accessor(state => state);
 
 /**
