@@ -17,7 +17,9 @@ export class WorldManager {
        * @param {World} world 
        */
       static use(world) {
-            WorldManager.#current.onLeave();
+            if (WorldManager.#current) {
+                  WorldManager.#current.onLeave();
+            }
             WorldManager.#current = world;
             world.onEnter();
       }

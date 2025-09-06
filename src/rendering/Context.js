@@ -57,6 +57,14 @@ export default class Context {
       }
 
       /**
+       * 
+       * @param {HTMLElement} element
+       */
+      moveRoot(element) {
+            element.append(/**@type {HTMLCanvasElement}*/(this.#ctx.canvas));
+      }
+
+      /**
        * Draws all textures and shapes in their respective buckets.
        */
       draw() {

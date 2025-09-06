@@ -1,12 +1,15 @@
 /**@import {Component,Query} from "./Component.js" */
-
+import List from "../types/List.js";
 
 /**
  * @template {{}} T
  * @typedef {{
+ *    id: string,
+ *    tags: List<string>,
  *    has(key: string): boolean,
+ *    getAll(): Map<string, Component<string, unknown>>,
  *    add: <V extends string, X extends {}>(
- *     component: Component<V, X>
+ *     component: Component<V, X>,
  *   ) => Entity<T & { [K in V]: X }>
  * } & T} Entity
  */
@@ -27,6 +30,8 @@ export const createEntity = () => {
 
       // @ts-ignore
       return new Proxy({
+            id: 'Entity',
+            tags: new List(),
             add(component) {
                   if (!component) {
                         throw new Error("illegal component addition");
@@ -41,13 +46,20 @@ export const createEntity = () => {
              */
             has(key) {
                   return map.has(key);
+            },
+            /**
+             * 
+             * @returns 
+             */
+            getAll() {
+                  return map;
             }
       }, {
             has(target, key) {
                   return map.has(key.toString()) || key in target;
             },
             get(target, key) {
-                  if (key.toString() === 'add') {
+                  if (target[key.toString()]) {
                         return target[key];
                   }
 

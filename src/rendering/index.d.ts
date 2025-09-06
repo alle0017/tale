@@ -52,4 +52,10 @@ export default interface GPUContext {
        * remove all current drawn entities.
        */
       removeAll(): void;
+      /**
+       * move the canvas to a new root
+       * @param element - the element used to attach 
+       *     the canvas to
+       */
+      moveRoot(element: HTMLElement): void;
 }
