@@ -26,6 +26,9 @@ export default class List {
                   value,
             }
       }
+      get length() {
+            return [...this].length;
+      }
 
 
       /**

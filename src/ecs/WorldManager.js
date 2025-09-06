@@ -5,6 +5,9 @@ import EventManager from "./Event.js";
  * class that handles {@link World} lifecycle.
  */
 export class WorldManager {
+      /**
+       * @type {EventManager<'enter'>}
+       */
       static #events = new EventManager();
       /**
        * current world in execution
@@ -24,6 +27,7 @@ export class WorldManager {
                   WorldManager.#current.onLeave();
             }
             WorldManager.#current = world;
+            WorldManager.events.trigger('enter', world);
             world.onEnter();
       }
       /**
