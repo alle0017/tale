@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/suspicious/useIterableCallbackReturn: <explanation> */
 import ChunkIterator from "./ChunkIterator.js";
 import { createComponent } from "../../ecs/Component.js";
 import { WorldManager } from "../../ecs/WorldManager.js";

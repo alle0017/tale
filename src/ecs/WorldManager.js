@@ -1,8 +1,11 @@
 /**@import {World} from "./World" */
+import EventManager from "./Event.js";
+
 /**
  * class that handles {@link World} lifecycle.
  */
 export class WorldManager {
+      static #events = new EventManager();
       /**
        * current world in execution
        * @type {World}
@@ -28,5 +31,8 @@ export class WorldManager {
        */
       static get current() {
             return WorldManager.#current;
+      }
+      static get events() {
+            return WorldManager.#events;
       }
 }

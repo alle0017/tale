@@ -1,5 +1,6 @@
 /**@import {Entity} from "./Entity" */
 import { useTaskManager } from "./TaskManager.js";
+import EventManager from "./Event.js";
 
 /**
  * class that handles world.
@@ -10,9 +11,9 @@ import { useTaskManager } from "./TaskManager.js";
  */
 export class World {
       /**
-       * @type {Map<'change'|'enter'|'leave',Set<() => void>>}
+       * @type {EventManager<'change' | 'leave' | 'enter'>}
        */
-      #hooks = new Map();
+      #events = new EventManager();
       /**
        * @type {Set<Entity<{}>>}
        */
@@ -31,11 +32,10 @@ export class World {
             }
       }
 
-      constructor() {
-            this.#hooks.set('change', new Set());
-            this.#hooks.set('enter', new Set());
-            this.#hooks.set('leave', new Set());
+      get events() {
+            return this.#events;
       }
+
       /**
        * add new entity into the world. 
        * from the moment an entity is added,
@@ -46,9 +46,7 @@ export class World {
        */
       add(entity) {
             this.#entities.add(entity);
-            for (const hook of this.#hooks.get('change')) {
-                  hook();
-            }
+            this.#events.trigger('change');
       }
       /**
        * remove the specified entity from the world
@@ -56,9 +54,7 @@ export class World {
        */
       remove(entity) {
             this.#entities.delete(entity);
-            for (const hook of this.#hooks.get('change')) {
-                  hook();
-            }
+            this.#events.trigger('change');
       }
 
       /**
@@ -77,9 +73,7 @@ export class World {
        */
       onLeave() {
             useTaskManager().clearAll();
-            for (const hook of this.#hooks.get('leave')) {
-                  hook();
-            }
+            this.#events.trigger('leave');
       }
 
       /**
@@ -95,9 +89,7 @@ export class World {
                         useTaskManager().addTask(system);
                   }
             });
-            for (const hook of this.#hooks.get('enter')) {
-                  hook();
-            }
+            this.#events.trigger('enter');
       }
 
       /**
@@ -106,21 +98,18 @@ export class World {
        * @param {() => void} hook 
        */
       onStateChange(hook) {
-            this.#hooks.get('change').add(hook);
-            return () => this.#hooks.get('change').delete(hook);
+            return this.#events.on('change', hook);
       }
       /**
        * @param {() => void} callback
        */
       onResume(callback) {
-            this.#hooks.get('enter').add(callback);
-            return () => this.#hooks.get('enter').delete(callback);
+            return this.#events.on('enter', callback);
       }
       /**
        * @param {() => void} callback
        */
       onStop(callback) {
-            this.#hooks.get('leave').add(callback);
-            return () => this.#hooks.get('leave').delete(callback);
+            return this.#events.on('leave', callback);
       }
 }
