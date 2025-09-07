@@ -34,7 +34,7 @@ export default function Tree({ content, onClick }) {
                               ul.element.style.display = 'none';
                               label.value = CLOSE;
                         } else {
-                              ul.element.style.display = 'block';
+                              ul.element.style.display = 'flex';
                               label.value = OPEN;
                         }
                   }}
@@ -48,9 +48,9 @@ export default function Tree({ content, onClick }) {
                         }
 
                         return html`
-                              <li class="tooltip" @click=${() => onClick?.(child)}> 
+                              <li class="tooltip hv" @click=${() => onClick?.(child)}> 
                                     ${child.name} 
-                                    <span class="tooltip-text" style="border: 1px solid black; border-radius: 5px;">
+                                    <span class="tooltip-text">
                                           ${child.tooltip? child.tooltip: child.name}
                                     </span>
                               </li>

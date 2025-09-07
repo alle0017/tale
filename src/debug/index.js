@@ -1,4 +1,4 @@
-import { GApp, html, $signal, $effect, $watcher } from "../../node_modules/@alle0017!/photonjs/index.js"
+import { GApp, html, $signal, $effect, } from "../../node_modules/@alle0017!/photonjs/index.js"
 import { useGame, Game } from "../game/Game.js"
 import Tree from "./components/tree.js";
 /**@import {Signal} from  "../../node_modules/@alle0017!/photonjs/index.js"*/
@@ -25,16 +25,18 @@ function startDebugging(game) {
       GApp
       .createRoot(() => html`
             <style>${css}</style>
-            ${$effect(() => Tree({ 
-                  content: { 
-                        name: '', 
-                        children:  entities.value.map(e => ({ 
-                              name: e.id, 
-                              children: [], 
-                              tooltip: `tags: [${e.tags.length > 0 ? [...e.tags].join(','): 'None'}]`
-                        }))
-                  }
-            }), entities)}
+            <div style="height: 80%; position: fixed; top: 10%; width: 250px; left: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px;">
+                  ${$effect(() => Tree({ 
+                        content: { 
+                              name: '', 
+                              children:  entities.value.map(e => ({ 
+                                    name: e.id, 
+                                    children: [], 
+                                    tooltip: `tags: [${e.tags.length > 0 ? [...e.tags].join(','): 'None'}]`
+                              }))
+                        }
+                  }), entities)}
+            </div>
       `)   
 }
 startDebugging.initialized = false;
