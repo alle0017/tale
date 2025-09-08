@@ -1,8 +1,12 @@
 export default /*css*/`
             :root {
-                  --bg: #151515ff;
-                  --bg2: #292929ff;
+                  --bg: #292929ff;
+                  --bg2: #636363ff;
                   --color: #fff; 
+                  --font: monospace;
+            }
+            * {
+                  font-family: var(--font);
             }
             .tooltip .tooltip-text {
                   visibility: hidden;
@@ -42,5 +46,6 @@ export default /*css*/`
             .hv:hover {
                   background-color: var(--bg2);
                   border-radius: 5px;
+                  cursor: pointer;
             }
       `;

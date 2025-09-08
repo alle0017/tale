@@ -4,6 +4,7 @@ import Tree from "./components/tree.js";
 /**@import {Signal} from  "../../node_modules/@alle0017!/photonjs/index.js"*/
 /**@import {Entity} from "../ecs/Entity" */
 import css from "./components/css.module.js";
+import Collapsable from "./components/collapsable.js";
 /**
  * 
  * @param {Game} game 
@@ -23,9 +24,10 @@ function startDebugging(game) {
       });
 
       GApp
+      .registerComponent(Collapsable)
       .createRoot(() => html`
             <style>${css}</style>
-            <div style="height: 80%; position: fixed; top: 10%; width: 250px; left: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px;">
+            <div style="height: 80%; position: fixed; top: 10%; width: 250px; left: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2);">
                   ${$effect(() => Tree({ 
                         content: { 
                               name: '', 

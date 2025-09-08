@@ -20,42 +20,22 @@ import { $ref, $signal, html, } from "../../../node_modules/@alle0017!/photonjs/
  * @returns {VNode<HTMLElement>[]}
  */
 export default function Tree({ content, onClick }) {
-      const CLOSE = `▶ ${content.name} ...`;
-      const OPEN = `▼ ${content.name}`;
-      const label = $signal(OPEN);
-      /**@type {Ref<HTMLElement>} */
-      const ul = $ref();
       return html`
-            <li 
-                  style="font-weight: bolder;" 
-                  class="parent tooltip tree" 
-                  @click=${() => {
-                        if (label.value === OPEN) {
-                              ul.element.style.display = 'none';
-                              label.value = CLOSE;
-                        } else {
-                              ul.element.style.display = 'flex';
-                              label.value = OPEN;
-                        }
-                  }}
-            >
-                  ${label}
-            </li>
-            <ul ref=${ul.bind} class="tree">
+            <Collapsable label=${content.name} style="flex-direction: column; gap: 5px;" indent=${15}>
                   ${content.children.map(child => {
                         if (child.children.length > 0) {
                               return Tree({ content: child });
                         }
 
                         return html`
-                              <li class="tooltip hv" @click=${() => onClick?.(child)}> 
+                              <div class="tooltip hv" @click=${() => onClick?.(child)} style="padding: 2px;"> 
                                     ${child.name} 
                                     <span class="tooltip-text">
                                           ${child.tooltip? child.tooltip: child.name}
                                     </span>
-                              </li>
+                              </div>
                         `
                   })}
-            </ul>
+            </Collapsable>
       `
 }
