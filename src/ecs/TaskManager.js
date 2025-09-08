@@ -1,3 +1,5 @@
+import EventManager from "./Event.js";
+
 /**
  * @enum {number}
  */
@@ -11,28 +13,41 @@ export class TaskManager {
        * @type {TaskManager}
        */
       static #instance;
-
+      
       static get() {
             if (!TaskManager.#instance) {
                   TaskManager.#instance = new TaskManager();
             }
-
+            
             return TaskManager.#instance;
       }
-
+      
       /**
        * @type {Set<() => void>}
        * @readonly
-       */
+      */
       #lpTasks;
-      /**
-       * @type {Set<() => void>}
-       * @readonly
-       */
+     /**
+      * @type {Set<() => void>}
+      * @readonly
+     */
       #hpTasks;
       #idleId = -1;
       #animId = -1;
+      /**@type {EventManager<'change'>} */
+      #events = new EventManager();
 
+      get events() {
+            return this.#events;
+      }
+
+      get lowPriorityTask() {
+            return [...this.#lpTasks];
+      }
+
+      get highPriorityTask() {
+            return [...this.#hpTasks];
+      }
 
       constructor() {
             this.#lpTasks = new Set();
@@ -43,7 +58,11 @@ export class TaskManager {
 
       #idleCallback = () => {
             for (const task of this.#lpTasks) {
-                  task();
+                  try {
+                        task();
+                  } catch (e) {
+                        console.error(e)
+                  }
             }
             this.#idleId = requestIdleCallback(this.#idleCallback);
       }
@@ -59,12 +78,14 @@ export class TaskManager {
        */
       addTask(task) {
             this.#lpTasks.add(task);
+            this.#events.trigger('change');
 
             if (this.#lpTasks.size === 1) {
                   this.#idleCallback();
             }
 
             return () => {
+                  this.#events.trigger('change');
                   this.#lpTasks.delete(task);
 
                   if (this.#lpTasks.size <= 0) {
@@ -79,12 +100,14 @@ export class TaskManager {
        */
       addAnimationTask(task) {
             this.#hpTasks.add(task);
+            this.#events.trigger('change');
 
             if (this.#hpTasks.size === 1) {
                   this.#animationCallback();
             }
 
             return () => {
+                  this.#events.trigger('change');
                   this.#hpTasks.delete(task);
 
                   if (this.#hpTasks.size <= 0) {
@@ -96,6 +119,7 @@ export class TaskManager {
        * remove all tasks actually in execution
        */
       clearAll() {
+            this.#events.trigger('change');
             this.#lpTasks.clear();
             this.#hpTasks.clear();
 
