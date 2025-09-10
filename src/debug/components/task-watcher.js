@@ -6,9 +6,9 @@ import { TaskManager,} from "../../ecs/TaskManager.js";
 
 export default function TaskWatcher() {
       /**@type {Signal<(() => void)[]>} */
-      const hptasks = $signal([]);
+      const hptasks = $signal(TaskManager.get().highPriorityTask);
       /**@type {Signal<(() => void)[]>} */
-      const lptasks = $signal([]);
+      const lptasks = $signal(TaskManager.get().lowPriorityTask);
 
       TaskManager.get().events.on('change', () => {
             hptasks.value = TaskManager.get().highPriorityTask;

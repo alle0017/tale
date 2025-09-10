@@ -4,15 +4,16 @@ import Tree from "./tree.js";
 /**@import {Signal, VNode} from  "../../../node_modules/@alle0017!/photonjs/index.js"*/
 /**@import {Entity} from "../../ecs/Entity" */
 import ComponentBox from "./component-box.js";
+import { view } from "./main.js";
 
 export default function EntityExplorer() {
       const game = useGame();
       /**@type {Signal<Entity<{}>[]>} */
-      const entities = $signal([]);
-      const selected = $signal(undefined);
+      const entities = $signal(game.worlds.current? game.worlds.current.entities: []);
 
       /**@type {() => boolean} */
       let unsubscribe;
+
       game.worlds.events.on('enter', () => {
             if (unsubscribe) {
                   unsubscribe();
@@ -24,7 +25,7 @@ export default function EntityExplorer() {
             });
       })
       return html`
-            ${$effect(() => (!selected.value ? Tree({ 
+            ${$effect(() => Tree({ 
                         content: { 
                               name: 'entities', 
                               children:  entities.value.map(e => ({ 
@@ -35,10 +36,9 @@ export default function EntityExplorer() {
                               }))
                         },
                         onClick: e => {
-                              selected.value = e.data;
+                              view.value = ComponentBox({ entity: e.data });
                         }
-                  }): 
-                  ComponentBox({ entity: selected.value }))
-            ,entities, selected)}
+                  })
+            ,entities)}
       `
 }

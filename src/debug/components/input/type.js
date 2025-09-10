@@ -17,7 +17,7 @@ import { html } from "../../../../node_modules/@alle0017!/photonjs/index.js";
  */
 export const TYPES = {
       number: { 
-            input: ref => html`<input type="number" ref=${ref.bind} class="inline-input" value="0.0"/>`,
+            input: ref => html`<input type="number" ref=${ref.bind} class="inline-input"/>`,
             default: '0.0',
             converter: parseFloat
       },

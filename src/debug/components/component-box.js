@@ -1,4 +1,6 @@
-import { html, } from "../../../node_modules/@alle0017!/photonjs/index.js";
+import { $signal, $watcher, html, } from "../../../node_modules/@alle0017!/photonjs/index.js";
+import Home from "./home.js";
+import { view } from "./main.js";
 /**@import {Ref,VNode} from "../../../node_modules/@alle0017!/photonjs/index.js";*/
 
 /**
@@ -8,24 +10,37 @@ import { html, } from "../../../node_modules/@alle0017!/photonjs/index.js";
  * }} param0 
  */
 export default function ComponentBox({ entity }) {
-      console.log([...entity
-                  .getAll()
-                  .entries()])
       if (!entity) {
             return;
       }
+      const state = $signal(true);
+      const components = [...entity.getAll().entries()];
+
+      components.forEach(([_,v]) => {
+            v.events.on('access', () => {
+                  state.value = !state.value
+            });
+      });
+      
       return html`
-      <div style="border-bottom: 1px solid var(--bg2); margin-bottom: 20px; width: 100%;">
-            ${entity.id.toUpperCase()}
+      <div style="border-bottom: 1px solid var(--bg2); margin-bottom: 20px; width: 100%; display: flex; align-items: center; height: 32px;">
+            <span>
+                  ${entity.id.toUpperCase()}
+            </span>
+            <span @click=${() => (view.value = Home())} style="position: absolute; right: 10px; font-size: 20px; width: 24px; height: 24px; text-align: center" class="hv">
+                  x
+            </span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px;">
-            ${[...entity.getAll().entries()]
-                  .map(([k,v]) => html`
-                        <div>
-                              <ObjectBinder label=${k} source=${v.state}/>
-                        </div>
-                  `)
-                  .flat(2)}
+            ${state.map(() => 
+                  components.map(([k,v]) => html`
+                              <div>
+                                    <ObjectBinder label=${k} source=${v.state}/>
+                              </div>
+                        `
+                  )
+                  .flat(3)
+            )}
       </div>
       `;
 }     

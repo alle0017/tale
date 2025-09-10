@@ -21,6 +21,7 @@ export function Input({ label, type, onChange, value, disabled, style }) {
       const input = $signal(TYPES[type].input(ref));
       ref.onLoad(el => {
             el.value = value || TYPES[type].default;
+            el.setAttribute('value', value)
             el.disabled = disabled || typeof disabled === 'boolean';
             el.setAttribute('style', style);
             if (!onChange) {

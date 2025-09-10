@@ -1,10 +1,11 @@
 import List from "../types/List.js";
+import EventManager from "./Event.js";
 /**@import {Entity} from "./Entity" */
 
 /**
  * @template {string} T
  * @template {{}} K
- * @typedef {{ $$name: T, state: K }} Component
+ * @typedef {{ $$name: T, state: K, events: EventManager<'access'> }} Component
  */
 /**
  * @template {string} K
@@ -48,7 +49,20 @@ export const createComponent = (() => {
                   name: key,
                   factory: (...props) => { 
                         //@ts-ignore
-                        return { state: factory(...props), $$name: key } 
+                        const state = factory(...props);
+                        let isAccessingState = false;
+                        return { 
+                              events: new EventManager(),
+                              get state() {
+                                    if (!isAccessingState) {
+                                          isAccessingState = true;
+                                          this.events.trigger('access');
+                                          isAccessingState = false;
+                                    }
+                                    return state;
+                              }, 
+                              $$name: key 
+                        } 
                   }
             });
 
