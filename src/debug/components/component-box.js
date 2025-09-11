@@ -23,8 +23,8 @@ export default function ComponentBox({ entity }) {
       });
       
       return html`
-      <div style="border-bottom: 1px solid var(--bg2); margin-bottom: 20px; width: 100%; display: flex; align-items: center; height: 32px;">
-            <span>
+      <div style="border-bottom: 1px solid var(--bg2); margin-bottom: 20px; width: 100%; display: flex; align-items: center; height: 50px;">
+            <span style="height: 32px; display: flex; align-items: center;">
                   ${entity.id.toUpperCase()}
             </span>
             <span @click=${() => (view.value = Home())} style="position: absolute; right: 10px; font-size: 20px; width: 24px; height: 24px; text-align: center" class="hv">

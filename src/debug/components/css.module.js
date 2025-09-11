@@ -8,6 +8,25 @@ export default /*css*/`
             * {
                   font-family: var(--font);
             }
+            button {
+                  color: var(--color);
+                  background-color: var(--bg2);
+                  border: none;
+                  border-radius: 5px;
+            }
+            button:active {
+                  filter: brightness(70%);
+            }
+            input {
+                  color: var(--color);
+                  background-color: var(--bg2);
+                  border: none;
+                  border-radius: 5px;
+                  padding: 5px;
+            }
+            input:focus {
+                  outline: none;
+            }
             .tooltip .tooltip-text {
                   visibility: hidden;
                   background-color: var(--bg);
