@@ -19,12 +19,12 @@ export default function ObjectBinder({ label, source, __path }) {
                         return ObjectBinder({ label: k, source: v, __path: [...__path, k] })
                   }
                   if (TYPES[typeof v]) {
-                        return Input({ label: k, type: typeof v, value: v });
+                        return Input({ label: k, type: typeof v, value: v, onChange: value => source[k] = value  });
                   }
                   if (typeof v === 'function') {
                         return Input({ label: k, type: 'string', value: 'f(x)', disabled: true, style: 'font-family: cursive;' });
                   }
-                  return Input({ label: k, type: 'string', value: v });
+                  return Input({ label: k, type: 'string', value: v, onChange: value => source[k] = value });
             })
             .flat(3);
       return html`

@@ -1,4 +1,4 @@
-import { $ref, $signal, html } from "../../../../node_modules/@alle0017!/photonjs/index.js";
+import { $ref, $signal, $watcher, html } from "../../../../node_modules/@alle0017!/photonjs/index.js";
 /**@import { VNode, Ref } from "../../../../node_modules/@alle0017!/photonjs/index.js";*/
 
 /**
@@ -12,6 +12,14 @@ export function ChipInput({ onChange, value }) {
       const $value = $signal(value || []);
       /**@type {Ref<HTMLInputElement>} */
       const ref = $ref();
+
+      $watcher(() => {
+            try {
+                  onChange?.($value.value);
+            } catch (e) {
+                  console.error(e);
+            }
+      }, $value);
 
       return html`
             <div style="display: flex; flex-direction: column; gap: 10px;">
