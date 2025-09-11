@@ -5,10 +5,14 @@ export default (() => {
        * @type {Map<string,HTMLImageElement>}
        */
       const cache = new Map();
+      /**
+       * @type {Map<string, HTMLImageElement>}
+       */
+      const aborted = new Map();
 
       return {
             /**
-             * @type {EventManager<'load'>}
+             * @type {EventManager<'load'|'abort'>}
              */
             events: new EventManager(),
             /**
@@ -17,16 +21,18 @@ export default (() => {
              */
             preload(img, name) {
                   const image = new Image();
-                  const promise = new Promise((resolve) => {
+                  const promise = new Promise((resolve,reject) => {
                         image.addEventListener('load', () => {
                               cache.set(name, image);
                               this.events.trigger('load');
                               resolve();
-                        });   
-                  });
-                  image.addEventListener('error', (err) => {
-                        console.error('Image failed to load:', img, err);
-                  });
+                        });
+                        image.addEventListener('error', (err) => {
+                              aborted.set(name, image);
+                              console.error('Image failed to load:', img, err);
+                              reject(new Error('failed to load image'));
+                        });
+                  });   
 
                   image.src = img;
 
@@ -42,7 +48,10 @@ export default (() => {
                   return cache.get(img);
             },
             getAllLoaded() {
-                  return [...cache.keys()]
+                  return cache;
+            },
+            getAllAborted() {
+                  return aborted;
             }
       }
 })()

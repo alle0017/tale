@@ -4,22 +4,37 @@ import Tree from "./tree.js";
 import Image from "../../rendering/shader/lib/buffer/Image.js";
 
 export default function ImageWatcher() {
-      /**@type {Signal<string[]>} */
+      /**@type {Signal<Map<string, HTMLImageElement>>} */
       const images = $signal(Image.getAllLoaded());
-
+      /**@type {Signal<Map<string, HTMLImageElement>>} */
+      const aborted = $signal(Image.getAllAborted());
 
 
       Image.events.on('load', () => {
             images.set(Image.getAllLoaded());
-      })
+      });
+      Image.events.on('abort', () => {
+            aborted.set(Image.getAllAborted());
+      });
       return html`
             ${images.map(() => Tree({ 
                         content: { 
                               name: 'loaded images', 
-                              children:  images.value.map(e => ({ 
-                                    name: e, 
+                              children:  [...images.value.entries()].map(([k,v]) => ({ 
+                                    name: k, 
                                     children: [], 
-                                    tooltip: e,
+                                    tooltip: v.src,
+                              }))
+                        },
+                  })
+            )}
+            ${aborted.map(() => Tree({ 
+                        content: { 
+                              name: 'aborted images', 
+                              children:  [...aborted.value.entries()].map(([k,v]) => ({ 
+                                    name: `⚠️ ${k}`, 
+                                    children: [], 
+                                    tooltip: v.src,
                               }))
                         },
                   })
