@@ -40,13 +40,17 @@ export default class Context {
       get entities() {
             return /**@type {GPUEntity2D[]}*/(this.#textures.entities).concat(/**@type {GPUEntity2D[]}*/(this.#shapes.entities))
       }
+
       /**
        * Initializes the WebGL context and associated buckets.
+       * @param {HTMLCanvasElement} cvs 
        */
-      constructor() {
-            const cvs = document.createElement('canvas');
+      constructor(cvs) {
+            cvs ||= document.createElement('canvas');
 
-            document.body.appendChild(cvs);
+            if (!cvs.isConnected) {
+                  document.body.appendChild(cvs);
+            }
 
             this.#ctx = cvs.getContext('webgl');
             this.#ctx.enable(this.#ctx.DEPTH_TEST);
@@ -54,8 +58,44 @@ export default class Context {
             this.#textures =  new TextureBucket(this.#ctx);
             this.#shapes = new ShapeBucket(this.#ctx);
             this.#camera = new Camera(this.#ctx);
+            this.#resize();
       }
+      /**
+       * 
+       * @param {HTMLElement} parent 
+       */
+      #getWidth(parent) {
+            if (parent.clientWidth <= 400) {
+                  return 400;
+            }
 
+            if (parent.clientWidth > (window.innerWidth - 10)) {
+                  return window.innerWidth - 10;
+            }
+
+            return parent.clientWidth;
+      }
+      /**
+       * 
+       * @param {HTMLElement} parent 
+       */
+      #getHeight(parent) {
+            return this.#getWidth(parent)*3/4;
+      }
+      #resize() {
+            const cvs = this.#ctx.canvas;
+            const parent = cvs instanceof HTMLCanvasElement && cvs.parentElement ? cvs.parentElement: document.body;
+
+            cvs.width = this.#getWidth(parent);
+            cvs.height = this.#getHeight(parent);
+            this.#ctx.viewport(0, 0, this.#ctx.canvas.width, this.#ctx.canvas.height);
+
+            parent.addEventListener('resize', () => {
+                  cvs.width = this.#getWidth(parent);
+                  cvs.height = this.#getHeight(parent);
+                  this.#ctx.viewport(0, 0, this.#ctx.canvas.width, this.#ctx.canvas.height);
+            });
+      }
       /**
        * 
        * @param {HTMLElement} element
