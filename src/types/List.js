@@ -102,6 +102,9 @@ export default class List {
             }
             return false;
       }
+      clear() {
+            this.#head = null;
+      }
       * [Symbol.iterator]() {
             let head = this.#head;
 

@@ -1,3 +1,4 @@
+import List from "../../../types/List.js";
 import { SharedUniformBuffer } from "../lib/buffer/SharedUniformBuffer.js";
 /**@import {Position} from "../../../lib/index.js" */
 export class Camera {
@@ -11,7 +12,10 @@ export class Camera {
        * @type {SharedUniformBuffer}
        */
       #buffer;
-      #dirty = false;
+      /**
+       * @type {List<WebGLProgram>}
+       */
+      #marked = new List();
       #data = [1,0,0,0];
 
       get focus() {
@@ -62,7 +66,7 @@ export class Camera {
             if (this.#data[idx] === value) {
                   return;
             }
-            this.#dirty = true;
+            this.#marked.clear();
             this.#data[idx] = value;
       }
 
@@ -75,7 +79,6 @@ export class Camera {
       #toMatrix() {
             const cos = Math.cos(this.rotation);
             const sin = Math.sin(this.rotation);
-
             const x = this.x/this.#gl.canvas.width;
             const y = this.y/this.#gl.canvas.height;
             const s = this.focus;
@@ -104,9 +107,9 @@ export class Camera {
        * to represent the camera
        */
       bind(program, name) {
-            if (this.#dirty) {
+            if (!this.#marked.has(program)) {
                   this.#buffer.write(this.#toMatrix());
-                  this.#dirty = false;
+                  this.#marked.push(program);
             }
             this.#buffer.bind(program, name);
       }
