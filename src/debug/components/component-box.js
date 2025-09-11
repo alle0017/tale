@@ -31,6 +31,7 @@ export default function ComponentBox({ entity }) {
                   x
             </span>
       </div>
+      <ChipInput value=${[...entity.tags]}/>
       <div style="display: flex; flex-direction: column; gap: 10px;">
             ${state.map(() => 
                   components.map(([k,v]) => html`

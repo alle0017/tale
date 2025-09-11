@@ -6,9 +6,10 @@ import Collapsable from "./components/collapsable.js";
 import ObjectBinder from "./components/object-binder.js";
 import TaskWatcher from "./components/task-watcher.js";
 import EntityExplorer from "./components/entity-explorer.js";
-import { useTaskManager } from "../ecs/TaskManager.js";
+import ImageWatcher from "./components/image-watcher.js";
 import Main, {view} from "./components/main.js";
 import Home from "./components/home.js";
+import { ChipInput } from "./components/input/chip-input.js";
 /**
  * 
  * @param {Game} game 
@@ -23,10 +24,12 @@ function startDebugging(game) {
 
       
       GApp
+      .registerComponent(ChipInput)
       .registerComponent(Collapsable)
       .registerComponent(ObjectBinder)
       .registerComponent(TaskWatcher)
       .registerComponent(EntityExplorer)
+      .registerComponent(ImageWatcher)
       .createRoot(Main)   
       
       view.value = Home();
