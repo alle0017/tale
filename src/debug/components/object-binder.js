@@ -11,10 +11,19 @@ import { TYPES } from "./input/type.js";
  * }} param0 
  */
 export default function ObjectBinder({ label, source, __path }) {
+      if (!source) {
+            return html``;
+      }
       __path ||= [];
-      const fields = Object
-            .entries(source)
-            .map(([k,v]) => {
+      const protoKeys = Object.getOwnPropertyNames(Object.getPrototypeOf(source) || {});
+      const fields = [...Object.keys(source), ...protoKeys]
+            .map((k) => {
+                  const v = source[k];
+                  
+                  if (k.startsWith('_')) {
+                        return html``;
+                  }
+
                   if (typeof v === 'object') {
                         return ObjectBinder({ label: k, source: v, __path: [...__path, k] })
                   }
@@ -22,6 +31,9 @@ export default function ObjectBinder({ label, source, __path }) {
                         return Input({ label: k, type: typeof v, value: v, onChange: value => source[k] = value  });
                   }
                   if (typeof v === 'function') {
+                        if (protoKeys.includes(k)) {
+                              return html``;
+                        }
                         return Input({ label: k, type: 'string', value: 'f(x)', disabled: true, style: 'font-family: cursive;' });
                   }
                   return Input({ label: k, type: 'string', value: v, onChange: value => source[k] = value });
