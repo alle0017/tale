@@ -28,7 +28,7 @@ export default function ImageWatcher() {
                         },
                   })
             )}
-            ${aborted.map(() => Tree({ 
+            ${aborted.map(() => aborted.value.size ? Tree({ 
                         content: { 
                               name: 'aborted images', 
                               children:  [...aborted.value.entries()].map(([k,v]) => ({ 
@@ -38,6 +38,6 @@ export default function ImageWatcher() {
                               }))
                         },
                   })
-            )}
+            : html``)}
       `  
 }
