@@ -1,35 +1,23 @@
-/** biome-ignore-all lint/suspicious/useIterableCallbackReturn: <explanation> */
 import ChunkIterator from "./ChunkIterator.js";
 import { createComponent } from "../../ecs/Component.js";
-import { WorldManager } from "../../ecs/WorldManager.js";
-import { useTaskManager, Priority } from "../../ecs/TaskManager.js";
 import List from "../../types/List.js"
+import { useUnhandledSystem } from "../../ecs/System.js";
+import EventManager from "../../ecs/Event.js";
 /**@import {RigidBody} from ".." */
+/**@import {Entity} from "../../ecs/Entity.js" */
+
 
 export const [body,useBody] = createComponent('body', /**@returns {RigidBody} */() => {
-      /**@type {List<(body: RigidBody) => void>} */
-      const subs = new List();
-
+      /**@type {List<(body: Entity<Record<'body',RigidBody>>) => void>} */
+      /**@type {EventManager<'collision'>} */
+      const events = new EventManager();
       
       return {
             x: 0,
             y: 0,
             width: 32,
             height: 32,
-            onCollision: watcher => {
-                  let node = subs.push(watcher);
-
-                  return () => {
-                        if (!node) {
-                              return;
-                        }
-                        subs.remove(node);
-                        node = null;
-                  };
-            },
-            triggerCollision(body) {
-                  subs.forEach(sub => sub(body))
-            }
+            events,
       }
 });
 /**
@@ -39,26 +27,17 @@ export const [body,useBody] = createComponent('body', /**@returns {RigidBody} */
  * something else, in that case triggers 
  * an event of collision
  */
-export function useCollisionSystem() {
-      const system = () => {
+export const useCollisionSystem = () => {
+      return useUnhandledSystem(entities => {
             const iterator = new ChunkIterator(entities);
 
             while (iterator.hasNext()) {
                   const chunk = iterator.getChunk();
 
                   for (const body of chunk) {
-                        iterator.getCurrent().triggerCollision(body);
+                        iterator.getCurrent().body.events.trigger('collision', body);
                   }
                   iterator.next();
             }
-      };
-      let entities = WorldManager.current.entities.filter(body);
-
-      WorldManager.current.onStateChange(() => {
-            entities = WorldManager.current.entities.filter(body);
-      });
-
-      WorldManager.current.addSystem(system, Priority.LOW);
-
-      useTaskManager().addTask(system);
+      }, body);
 }

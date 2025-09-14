@@ -1,3 +1,5 @@
+import { Entity } from "../ecs/Entity";
+import EventManager from "../ecs/Event";
 export type Position = {
       x: number,
       y: number;
@@ -35,6 +37,5 @@ export type RigidBody = {
       y: number,
       width: number,
       height: number,
-      onCollision(watcher: (body: RigidBody) => void): () => void;
-      triggerCollision(body: RigidBody): void;
+      events: EventManager<'collision'>
 }

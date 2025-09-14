@@ -1,22 +1,23 @@
 /** @import { RigidBody } from ".." */
+/**@import {Entity} from "../../ecs/Entity.js" */
 
 export default class ChunkIterator {
-      /** @type {RigidBody[]} */
+      /** @type {Entity<Record<'body',RigidBody>>[]} */
       #bodies;
       #current = 0;
       #chunkSize = 0;
 
       /**
-       * @param {RigidBody[]} bodies 
+       * @param {Entity<Record<'body',RigidBody>>[]} bodies 
        */
       constructor(bodies) {
             this.#bodies = [...bodies];
 
             // Set chunk size to a reasonable proximity range (e.g., max width)
-            this.#chunkSize = Math.max(...this.#bodies.map(b => b.width), 1);
+            this.#chunkSize = Math.max(...this.#bodies.map(b => b.body.width), 1);
 
             // Sort bodies by x for spatial locality
-            this.#bodies.sort((a, b) => a.x - b.x);
+            this.#bodies.sort((a, b) => a.body.x - b.body.x);
       }
 
       /**
@@ -46,11 +47,11 @@ export default class ChunkIterator {
             for (let i = this.#current - 1; i >= 0; i--) {
                   const other = this.#bodies[i];
 
-                  if (other.x + other.width < center.x - this.#chunkSize) {
+                  if (other.body.x + other.body.width < center.body.x - this.#chunkSize) {
                         break;
                   }
 
-                  if (this.#isColliding(center, other)) {
+                  if (this.#isColliding(center.body, other.body)) {
                         chunk.push(other);
                   }
             }
@@ -59,11 +60,11 @@ export default class ChunkIterator {
             for (let i = this.#current + 1; i < this.#bodies.length; i++) {
                   const other = this.#bodies[i];
 
-                  if (other.x > center.x + center.width + this.#chunkSize) {
+                  if (other.body.x > center.body.x + center.body.width + this.#chunkSize) {
                         break;
                   }
 
-                  if (this.#isColliding(center, other)) {
+                  if (this.#isColliding(center.body, other.body)) {
                         chunk.push(other);
                   }
             }

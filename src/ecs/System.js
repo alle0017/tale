@@ -12,7 +12,8 @@ import { WorldManager } from "./WorldManager.js";
  * create a `system` function, 
  * a method that is executed during each update.
  * Entities passed to it are the result of query execution
- * on all entities available into the game
+ * on all entities available into the game. 
+ * the update is called on each entity, once each.
  * @template {string} K
  * @template {{}} U
  * @template {Query<K,U>[]} Q
@@ -29,6 +30,28 @@ export const useSystem = (update, ...query) => {
                         update(entity);
                   }
             }
+      };
+
+      WorldManager.current.addSystem(system);
+
+      useTaskManager().addTask(system);    
+};
+/**
+ * create a `system` function, 
+ * a method that is executed during each update.
+ * Entities passed to it are the result of query execution
+ * on all entities available into the game.
+ * @template {string} K
+ * @template {{}} U
+ * @template {Query<K,U>[]} Q
+ * @param {(entities: Entity<Union<Q>>[]) => void} update
+ * @param {Q} query
+ */
+export const useUnhandledSystem = (update, ...query) => {
+      const system = () => {
+            const entities = WorldManager.current.entities.filter(entity => query.every(q => q(entity)));
+            // @ts-ignore – entity has passed all type guards
+            update(entities);
       };
 
       WorldManager.current.addSystem(system);
