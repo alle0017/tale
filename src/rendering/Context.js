@@ -45,7 +45,7 @@ export default class Context {
        * Initializes the WebGL context and associated buckets.
        * @param {HTMLCanvasElement} cvs 
        */
-      constructor(cvs) {
+      constructor(cvs = undefined) {
             cvs ||= document.createElement('canvas');
 
             if (!cvs.isConnected) {

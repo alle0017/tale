@@ -108,28 +108,47 @@ export default class ShapeBucket {
       /**
        * 
        * @param {1|2|3} vertices 
-       */
-      #toPrimitive(vertices) {
-            switch (vertices) {
-                  case 1: return this.#shader.gl.POINTS;
-                  case 2: return this.#shader.gl.LINES;
-                  case 3: return this.#shader.gl.TRIANGLES;
+      */
+     #toPrimitive(vertices) {
+           switch (vertices) {
+                 case 1: return this.#shader.gl.POINTS;
+                 case 2: return this.#shader.gl.LINES;
+                 case 3: return this.#shader.gl.TRIANGLES;
             }
       }
       /**
+       * write the needed buffers using data passed as argument
+       * @param {number[]} vertices 
+       * @param {number[]} colors 
+       * @param {number[]} transformations 
+       * @param {number[]} lights 
+       * @param {number[]} indices 
+       */
+      #writeBuffers(vertices, colors, transformations, lights, indices) {
+            this.#positions.write(vertices);
+            this.#colors.write(colors);
+            this.#transformation.write(transformations);
+            this.#light.write(lights);
+            this.#indices.write(indices);
+      }
+      /**
+       * add an entity that can be drawn to the bucket.
+       * entity in the bucket are drawn when the 
+       * {@link draw()} method is called
        * @param {Shape} shape 
        */
       add(shape) {
             this.#bucket.add(shape);
       }
-
       /**
+       * remove an entity from the bucket.
+       * this actions is used to stop drawing 
+       * a particular entity
        * @param {Shape} shape 
        */
       remove(shape) {
             this.#bucket.delete(shape);
       }
-
       draw() {
 
             if (this.#bucket.size <= 0) {
@@ -161,11 +180,7 @@ export default class ShapeBucket {
 
             for (let i = 0; i < shapes.length; i++) {
                   if (primitive !== shapes[i].primitive) {
-                        this.#positions.write(vertices);
-                        this.#colors.write(colors);
-                        this.#transformation.write(transformations);
-                        this.#light.write(lights);
-                        this.#indices.write(indices);
+                        this.#writeBuffers(vertices, colors, transformations, lights, indices);
 
                         this.#shader.drawIndexed(
                               indices.length,
@@ -202,11 +217,8 @@ export default class ShapeBucket {
                   offset += count;
             }
 
-            this.#positions.write(vertices);
-            this.#colors.write(colors);
-            this.#transformation.write(transformations);
-            this.#light.write(lights);
-            this.#indices.write(indices);
+            this.#writeBuffers(vertices, colors, transformations, lights, indices);
+
 
             this.#shader.drawIndexed(
                   indices.length,
