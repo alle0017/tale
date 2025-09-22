@@ -1,7 +1,10 @@
-import GPUEntity2D from "./GPUEntity2D.js";
+import GPUEntity2D, { Primitive } from "./GPUEntity2D.js";
 /**@import GPUContext from "../../index" */
+/**@import { Drawable, } from "./common.js" */
+
 
 /**
+ * @implements {Drawable}
  * @extends {GPUEntity2D}
  */
 export default class Shape extends GPUEntity2D {
@@ -17,13 +20,9 @@ export default class Shape extends GPUEntity2D {
        */
       colors;
       /**
-       * accepted values are:
-       *    - `3` for triangles primitive
-       *    - `2` for lines 
-       *    - `1` for points
-       * @type {1 | 2 | 3}
+       * @type {Primitive}
        */
-      primitive = 3;
+      primitive = Primitive.TRIANGLE;
 
       zIndex = 0;
 
