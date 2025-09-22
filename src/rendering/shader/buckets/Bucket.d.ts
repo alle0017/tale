@@ -1,3 +1,4 @@
+import { Primitive } from "../entity/GPUEntity2D";
 import Shader from "../lib/Shader";
 
 type BucketDescriptor<Attr extends string, Text extends string> = {
@@ -73,4 +74,5 @@ export abstract class Bucket<T, Attr extends string, Text extends string> {
        * @returns {T[]}
        */
       abstract getDrawPoints(shapes: T[]): T[];
+      abstract toPrimitive(shape: T): Primitive;
 }

@@ -109,4 +109,13 @@ export default class ShapeBucket extends Bucket {
       getDrawPoints(shapes) {
             return shapes.filter((shape,i) => i > 0 && shape.primitive !== shapes[i-1].primitive);
       }
+
+      /**
+       * 
+       * @param {Shape} shape 
+       * @returns 
+       */
+      toPrimitive(shape) {
+            return shape.primitive;
+      }
 }

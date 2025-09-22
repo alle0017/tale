@@ -1,7 +1,7 @@
 /**@import { Buffer } from "../lib/buffer/Buffer.js";*/
-/**@import Shape from "../entity/Shape.js";*/
 /**@import {BucketDescriptor} from "./Bucket.js";*/
 
+import { Primitive, toWebGLPrimitive } from "../entity/GPUEntity2D.js";
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
 import { Texture } from "../lib/buffer/Texture.js";
 import Shader from "../lib/Shader.js";
@@ -106,17 +106,6 @@ export class Bucket {
       }
 
       /**
-       * 
-       * @param {1|2|3} vertices 
-      */
-     #toPrimitive(vertices) {
-           switch (vertices) {
-                 case 1: return this.#shader.gl.POINTS;
-                 case 2: return this.#shader.gl.LINES;
-                 case 3: return this.#shader.gl.TRIANGLES;
-            }
-      }
-      /**
        * write the needed buffers using data passed as argument
        * @param {number[][]} source
        */
@@ -188,12 +177,21 @@ export class Bucket {
 
             for (let i = 0; i < shapes.length; i++) {
                   //check if need to draw
-                  if (drawPoints[drawPoint] === shapes[i]) {
+                  if (i > 0 && drawPoints[drawPoint] === shapes[i]) {
                         // perform draw
                         this.#writeAttributeBuffers(attributes);
                         this.#writeTextures(textures);
                         this.#indices.write(indices);
-                        this.#shader.drawIndexed(indices.length);
+                        
+                        this
+                              .#shader
+                              .drawIndexed(
+                                    indices.length, 
+                                    toWebGLPrimitive(
+                                          this.toPrimitive(shapes[i-1]), 
+                                          this.shader.gl
+                                    )
+                              );
 
                         // reset
                         for (let j = 0; j < this.#attributes.length; j++) {
@@ -318,5 +316,14 @@ export class Bucket {
        */
       getDrawPoints(shapes) {
             throw new Error("getDrawPoints method must be implemented into Buckets")
+      }
+
+      /**
+       * @abstract
+       * @param {T} shape
+       * @return {Primitive}
+      */
+      toPrimitive(shape) {
+            throw new Error("toPrimitive method must be implemented into Buckets")
       }
 }

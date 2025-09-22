@@ -138,4 +138,12 @@ export default class TextureBucket extends Bucket {
       getDrawPoints(textures) {
             return textures.filter((texture,i) => i > 0 && texture.image !== textures[i-1].image);
       }
+      /**
+       * 
+       * @param {TextureEntity} shape 
+       * @returns 
+       */
+      toPrimitive(shape) {
+            return shape.primitive;
+      }
 }
