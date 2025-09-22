@@ -1,5 +1,6 @@
 import Shape from "../entity/Shape.js";
 import { Bucket } from "./Bucket.js";
+import { Camera } from "./Camera.js";
 
 /**
  * @extends {Bucket<Shape, 'positions' | 'colors' | 'transformation' | 'light', never>}
@@ -53,6 +54,16 @@ export default class ShapeBucket extends Bucket {
                   }
                   `
             });
+      }
+      /**
+       * bind the camera to this bucket.
+       * this passage is needed to render correctly 
+       * the texture
+       * @param {Camera} camera 
+       */
+      bindCamera(camera) {
+            this.shader.bind();
+            camera.bind(this.shader.program, 'u_camera');
       }
       /**
        * 

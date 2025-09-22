@@ -1,5 +1,6 @@
 import { Primitive } from "../entity/GPUEntity2D";
 import Shader from "../lib/Shader";
+import { Camera } from "./Camera";
 
 type BucketDescriptor<Attr extends string, Text extends string> = {
       attributes: Record<Attr,string>;
@@ -11,6 +12,7 @@ type BucketDescriptor<Attr extends string, Text extends string> = {
 export abstract class Bucket<T, Attr extends string, Text extends string> {
       readonly gl: WebGLRenderingContext;
       readonly shader: Shader;
+      readonly entities: T[];
       /**
        * @param {WebGLRenderingContext} gl 
        * @param {BucketDescriptor<{},Attr,Text>} descriptor 
@@ -75,4 +77,16 @@ export abstract class Bucket<T, Attr extends string, Text extends string> {
        */
       abstract getDrawPoints(shapes: T[]): T[];
       abstract toPrimitive(shape: T): Primitive;
+
+      add(shape: T): void;
+      remove(shape: T): void;
+      removeAll(): void;
+      draw(): void;
+      /**
+       * method to extend to add behavior to the
+       * specific bucket matter T, when a camera is 
+       * used.
+       * @param camera 
+       */
+      bindCamera(camera: Camera): void;
 }

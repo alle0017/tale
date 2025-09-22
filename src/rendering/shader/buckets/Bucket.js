@@ -1,11 +1,13 @@
 /**@import { Buffer } from "../lib/buffer/Buffer.js";*/
 /**@import {BucketDescriptor} from "./Bucket.js";*/
 
-import { Primitive, toWebGLPrimitive } from "../entity/GPUEntity2D.js";
+import { toWebGLPrimitive } from "../entity/GPUEntity2D.js";
 import { IndexBuffer } from "../lib/buffer/IndexBuffer.js";
 import { Texture } from "../lib/buffer/Texture.js";
 import Shader from "../lib/Shader.js";
 import { Camera } from "./Camera.js";
+/**@import { Primitive } from "../entity/GPUEntity2D.js";*/
+
 /**
  * @template T
  * @template K
@@ -93,16 +95,6 @@ export class Bucket {
                   const second = mapper(source[/**@type {K}*/(keys[i])]);
                   couple.push([first, second]);
             }
-      }
-      /**
-       * bind the camera to this bucket.
-       * this passage is needed to render correctly 
-       * the texture
-       * @param {Camera} camera 
-       */
-      bindCamera(camera) {
-            this.#shader.bind();
-            camera.bind(this.#shader.program, 'u_camera');
       }
 
       /**
@@ -249,11 +241,11 @@ export class Bucket {
        * function used to sort shapes
        * before drawing them
        * @abstract
-       * @param {T} a
-       * @param {T} b  
+       * @param {T} _
+       * @param {T} __ 
        * @returns {-1|0|1}
        */
-      sorter(a, b) {
+      sorter(_, __) {
             throw new Error("sorter method must be implemented into Buckets")
       }
 
@@ -261,30 +253,30 @@ export class Bucket {
        * function used to create buffers
        * used to draw the shape
        * @abstract
-       * @param {T} shape
+       * @param {T}_
        * @returns {Record<Attr,number[]>}
        */
-      toAttributeBuffers(shape) {
+      toAttributeBuffers(_) {
             throw new Error("toAttributeBuffers method must be implemented into Buckets")
       }
 
       /**
        * function used to generate indices buffer
        * @abstract
-       * @param {T} shape
+       * @param {T}_
        * @returns {number[]}
        */
-      toIndicesBuffer(shape) {
+      toIndicesBuffer(_) {
             throw new Error("toIndicesBuffer method must be implemented into Buckets")
       }
 
        /**
        * function used to generate indices buffer
        * @abstract
-       * @param {T} shape
+       * @param {T}_
        * @returns {Record<Text,string>}
        */
-      toTextures(shape) {
+      toTextures(_) {
             throw new Error("toTextures method must be implemented into Buckets")
       }
 
@@ -311,19 +303,27 @@ export class Bucket {
        * > draw-points: [a,b] ✅
        *
        * @abstract
-       * @param {T[]} shapes
+       * @param {T[]} _
        * @returns {T[]}
        */
-      getDrawPoints(shapes) {
+      getDrawPoints(_) {
             throw new Error("getDrawPoints method must be implemented into Buckets")
       }
 
       /**
        * @abstract
-       * @param {T} shape
+       * @param {T} _
        * @return {Primitive}
       */
-      toPrimitive(shape) {
+      toPrimitive(_) {
             throw new Error("toPrimitive method must be implemented into Buckets")
       }
+
+      /**
+       * bind the camera to this bucket.
+       * this passage is needed to render correctly 
+       * the texture
+       * @param {Camera} _ 
+       */
+      bindCamera(_) {}
 }
