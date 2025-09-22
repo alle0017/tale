@@ -1,6 +1,7 @@
 /**@import {World} from "../ecs/World";*/
 import List from "../types/List.js"
 import { WorldManager } from "../ecs/WorldManager.js";
+import EventManager from "../ecs/Event.js";
 
 /**
  * hook used to define input events.
@@ -20,10 +21,13 @@ export const useInput = (() => {
             tasks.forEach(task => task(e));
       });
 
+      window.addEventListener('keyup', e => {
+            tasks.forEach(task => task(e));
+      });
+
       return () => {
             const scene = WorldManager.current;
-            /**@type {Map<string,List<() => void>>} */
-            const listeners = new Map();
+            const events = new EventManager();
             /**@type {Map<string,string>} */
             const resolver = new Map();
             
@@ -43,18 +47,18 @@ export const useInput = (() => {
              * @type {(e: KeyboardEvent)=>void}
              */
             const handler = e => {
+                  if (e.type === 'keyup') {
+                        events.trigger('keyup')
+                        return;
+                  }
+
                   const key = e.key.toLowerCase();
                   let ev = key;
 
                   if (resolver.has(key)) {
                         ev = resolver.get(key);
                   }
-
-                  if (!listeners.has(ev)) {
-                        return;
-                  }
-
-                  listeners.get(ev).forEach(sub => sub());
+                  events.trigger(ev);
             };
 
             let node = tasks.push(handler);
@@ -71,29 +75,8 @@ export const useInput = (() => {
                   node = null;
             });
 
-
             return {
-                  /**
-                   * set an event handler attached 
-                   * to an abstract event.
-                   * @param {string} event 
-                   * @param {() => void} handler 
-                   */
-                  on: (event, handler) => {
-                        if (!listeners.has(event)) {
-                              listeners.set(event, new List());
-                        }
-
-                        let node = listeners.get(event).push(handler);
-
-                        return () => {
-                              if (!node) {
-                                    return;
-                              }
-                              listeners.get(event).remove(node);
-                              node = null;
-                        };
-                  },
+                  events,
                   /**
                    * map an abstract event onto a key.
                    * @param {string} ev 
