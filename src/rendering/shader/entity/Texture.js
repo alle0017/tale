@@ -1,7 +1,14 @@
-import GPUEntity2D from "./GPUEntity2D.js";
+import GPUEntity2D, { Primitive } from "./GPUEntity2D.js";
 import Image from "../lib/buffer/Image.js";
 /**@import GPUContext from "../../index" */
+/**@import { Drawable, FrameSource, SingularImage } from "./common.js" */
 
+
+/**
+ * @implements {Drawable}
+ * @implements {FrameSource}
+ * @implements {SingularImage}
+ */
 export default class TextureEntity extends GPUEntity2D {
       /**
        * @type {number[]}
@@ -18,6 +25,7 @@ export default class TextureEntity extends GPUEntity2D {
        */
       image;
       zIndex = 0;
+      primitive = Primitive.TRIANGLE;
       get textureCoords() {
             return this.#textureCoords;
       }

@@ -1,5 +1,25 @@
 /**@import GPUContext from "../../index" */
 /**
+ * @enum {number}
+ */
+export const Primitive = {
+      TRIANGLE: 3,
+      LINES: 2,
+      POINTS: 1,
+}
+/**
+ * 
+ * @param {Primitive} primitive 
+ * @param {WebGLRenderingContext} gl
+ */
+export const toWebGLPrimitive = (primitive, gl) => {
+      switch (primitive) {
+            case Primitive.TRIANGLE: return gl.POINTS;
+            case Primitive.LINES: return gl.LINES;
+            case Primitive.POINTS: return gl.TRIANGLES;
+      }
+}
+/**
  * @abstract
  */
 export default class GPUEntity2D {
@@ -9,6 +29,7 @@ export default class GPUEntity2D {
       scaleX = 1;
       rotation = 0;
       light = 1;
+      zIndex = 0;
       /**
        * @abstract
        * @param {GPUContext} ctx 
