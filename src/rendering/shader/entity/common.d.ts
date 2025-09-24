@@ -15,4 +15,6 @@ export interface FrameSource {
       startY: number;
       endX: number;
       endY: number;
+      width: number;
+      height: number;
 }

@@ -75,6 +75,14 @@ export default class TextureEntity extends GPUEntity2D {
             return this.#textureCoords[4] * w;
       }
 
+      get width() {
+            return Image.get(this.image).width;
+      }
+
+      get height() {
+            return Image.get(this.image).height;
+      }
+
       set endX(value) {
             const w = Image.get(this.image).width;
 
