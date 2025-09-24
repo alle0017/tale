@@ -39,6 +39,10 @@ export const createEntity = () => {
 
                   map.set(component.$$name, component);
 
+                  component.prototypes.forEach(proto => { 
+                        map.set(proto, component)
+                  });
+
                   return this;
             },
             /**
