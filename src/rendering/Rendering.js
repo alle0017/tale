@@ -1,7 +1,8 @@
 import { useTaskManager, Priority } from "../ecs/TaskManager.js";
-import { sprite } from "../lib/Sprite.js";
 import { WorldManager } from "../ecs/WorldManager.js";
 import { useGame } from "../index.js";
+import { drawable } from "../lib/Drawable.js";
+/**@import {Entity} from "../ecs/Entity.js" */
 
 
 
@@ -15,20 +16,23 @@ export const useRendering = () => {
             game.ctx.clear();
             game.ctx.draw();
       };
-      let entities = WorldManager.current.entities.filter(sprite);
+      
+      let entities = WorldManager.current.entities.filter(drawable);
 
       game.ctx.removeAll();
 
       for (const entity of entities) {
-            entity.sprite.draw(game.ctx);
+            entity.drawable.draw(game.ctx);
       }
 
+
       WorldManager.current.onStateChange(() => {
-            entities = WorldManager.current.entities.filter(sprite);
+            entities = WorldManager.current.entities.filter(drawable);
+
             game.ctx.removeAll();
 
             for (const entity of entities) {
-                  entity.sprite.draw(game.ctx);
+                  entity.drawable.draw(game.ctx);
             }
       });
 

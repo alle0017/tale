@@ -1,6 +1,7 @@
 import { useGame } from "../game/Game.js"
 import { createComponent } from "../ecs/Component.js";
 import TextureEntity from "../rendering/shader/entity/Texture.js";
+import { DrawablePrototype } from "./Drawable.js";
 /**@import {Position} from "./index.js" */
 
 /**
@@ -52,4 +53,4 @@ export const [sprite, useSprite] = createComponent('sprite', /**@param {string} 
       })
 
       return sprite
-});
+}, DrawablePrototype);
