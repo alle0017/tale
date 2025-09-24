@@ -91,7 +91,7 @@ export default class TextureBucket extends Bucket {
        * @param {TextureEntity} textureEntity 
        */
       toAttributeBuffers(textureEntity) {
-            const count = textureEntity.vertices.length;
+            const count = 4;
             const sin = Math.sin(textureEntity.rotation);
             const cos = Math.cos(textureEntity.rotation);
             const transf = [

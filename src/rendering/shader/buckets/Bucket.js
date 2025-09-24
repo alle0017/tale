@@ -227,6 +227,8 @@ export class Bucket {
                         }
                   }
 
+                  max++;
+
                   indices = indices.concat(ind.map(i => i + offset));
                   offset += max;
             }
