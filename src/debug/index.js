@@ -9,6 +9,7 @@ import EntityExplorer from "./components/entity-explorer.js";
 import ImageWatcher from "./components/image-watcher.js";
 import Main, {view} from "./components/main.js";
 import Home from "./components/home.js";
+import FrameRate from "./components/frame-rate.js";
 import { ChipInput } from "./components/input/chip-input.js";
 /**
  * 
@@ -24,6 +25,7 @@ function startDebugging(game) {
 
       
       GApp
+      .registerComponent(FrameRate)
       .registerComponent(ChipInput)
       .registerComponent(Collapsable)
       .registerComponent(ObjectBinder)
