@@ -48,6 +48,8 @@ export default class Context {
       constructor(cvs = undefined) {
             cvs ||= document.createElement('canvas');
 
+            cvs.style.imageRendering = 'pixelated'
+
             if (!cvs.isConnected) {
                   document.body.appendChild(cvs);
             }

@@ -7,7 +7,17 @@ export default function Main() {
       return html`
             <style>${css}</style>
             <FrameRate/>
-            <div style="height: 80%; position: fixed; top: 10%; width: 300px; left: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2); display: flex; flex-direction: column; gap: 20px; overflow-y: scroll; overflow-x: hidden;">
+            <div style="height: 20px; position: fixed; top: 10%; width: 300px; left: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2); display: flex; flex-direction: column; gap: 20px; overflow-y: scroll; overflow-x: hidden;">
+                  <span 
+                  class="hv"
+                  @click=${() => {
+                        window.open('https://www.pixilart.com/draw', "mozillaWindow", "popup")
+                  }}>
+                        Pixel editor
+                  </span>
+            </div>
+            <div style="height: 60%; position: fixed; top: 20%; width: 300px; left: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2); display: flex; flex-direction: column; gap: 20px; overflow-y: scroll; overflow-x: hidden;">
+                  
                   ${view}
             </div>
       `
