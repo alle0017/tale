@@ -11,6 +11,8 @@ import { useTaskManager } from "./ecs/TaskManager.js";
 import { useRendering } from "./rendering/Rendering.js";
 import { usePhysicsSystem, usePhysics, physics } from "./lib/Physics.js";
 import { createComponent } from "./ecs/Component.js";
+import FrameWrapper from "./lib/frame-wrapper.js";
+import { useRect } from "./lib/Rect.js";
 
 export const Query = {
       sprite,
@@ -35,7 +37,9 @@ export {
       useBody,
       useTaskManager,
       useRendering,
-      createComponent
+      createComponent,
+      useRect,
+      FrameWrapper,
 }
 
 export const useWorld = () => {

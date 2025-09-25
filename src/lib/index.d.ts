@@ -1,5 +1,5 @@
-import { Entity } from "../ecs/Entity";
 import EventManager from "../ecs/Event";
+
 export type Position = {
       x: number,
       y: number;
