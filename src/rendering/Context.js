@@ -41,6 +41,10 @@ export default class Context {
             return /**@type {GPUEntity2D[]}*/(this.#textures.entities).concat(/**@type {GPUEntity2D[]}*/(this.#shapes.entities))
       }
 
+      get canvas() {
+            return this.#ctx.canvas;
+      }
+
       /**
        * Initializes the WebGL context and associated buckets.
        * @param {HTMLCanvasElement} cvs 

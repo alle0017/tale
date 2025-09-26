@@ -1,7 +1,7 @@
 import { useGame } from "../game/Game.js"
 import { createComponent } from "../ecs/Component.js";
 import TextureEntity from "../rendering/shader/entity/Texture.js";
-import { DrawablePrototype } from "./Drawable.js";
+import { DrawablePrototype, createDrawable } from "./Drawable.js";
 /**@import {Position} from "./index.js" */
 
 /**
@@ -10,7 +10,7 @@ import { DrawablePrototype } from "./Drawable.js";
  *    unbind(): void; 
  * }}
  */
-export const [rect, useRect] = createComponent('rect', 
+export const [rect, useRect] = createDrawable('rect', 
       /**
        * 
        * @param {number} width 
@@ -62,4 +62,4 @@ export const [rect, useRect] = createComponent('rect',
       })
 
       return rect;
-}, DrawablePrototype);
+});

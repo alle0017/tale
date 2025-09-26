@@ -9,6 +9,7 @@ import type TextureEntity from "./shader/entity/Texture.js";
 export default interface GPUContext {
       camera: Camera;
       entities: GPUEntity2D[];
+      canvas: { width: number, height: number };
       /**
        * Draws all entities added to the current context
        */

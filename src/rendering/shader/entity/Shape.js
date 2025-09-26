@@ -26,6 +26,9 @@ export default class Shape extends GPUEntity2D {
 
       zIndex = 0;
 
+      width = 10;
+      height = 10;
+
       get coords() {
             const coords = [];
 

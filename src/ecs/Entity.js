@@ -4,16 +4,18 @@ import List from "../types/List.js";
 /**
  * @template {{}} T
  * @typedef {{
+ *    remove: <V extends keyof T>(
+ *     component: V,
+ *    ) => void,
  *    id: string,
  *    tags: List<string>,
  *    has(key: string): boolean,
  *    getAll(): Map<string, Component<string, unknown>>,
  *    add: <V extends string, X extends {}>(
  *     component: Component<V, X>,
- *   ) => Entity<T & { [K in V]: X }>
+ *   ) => Entity<T & { [K in V]: X }>,
  * } & T} Entity
  */
-
 
 /**
  * function that creates an entity.
@@ -28,9 +30,10 @@ export const createEntity = () => {
        */
       const map = new Map();
 
+
       // @ts-ignore
       return new Proxy({
-            id: 'Entity',
+            id: `Entity_${createEntity.id++}`,
             tags: new List(),
             add(component) {
                   if (!component) {
@@ -42,6 +45,25 @@ export const createEntity = () => {
                   component.prototypes.forEach(proto => { 
                         map.set(proto, component)
                   });
+
+                  component.events.trigger('attached');
+
+                  return this;
+            },
+            remove(component) {
+                  const key = /**@type {string}*/(component);
+
+                  if (!map.has(key)) {
+                        throw new Error("illegal component remove");
+                  }
+                  const e = map.get(key);
+
+                  
+                  map.delete(key);
+                  
+                  e.prototypes.forEach(proto => map.delete(proto));
+                  
+                  e.events.trigger('removed');
 
                   return this;
             },
@@ -74,8 +96,15 @@ export const createEntity = () => {
                   return map.get(key.toString()).state;
             },
             set(target, key, value) {
+
+                  if (target[key.toString()]) {
+                        target[key.toString()] = value;
+                        return true;
+                  }
+
                   throw new Error("components cannot be overwritten");
             }
       })
 };
 
+createEntity.id = 0;

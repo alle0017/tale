@@ -8,7 +8,7 @@ import EventManager from "./Event.js";
  * @typedef {{ 
  *    $$name: T, 
  *    state: K, 
- *    events: EventManager<'access'>,
+ *    events: EventManager<'access'|'attached'|'removed'>,
  *    prototypes: string[]
  * }} Component
  */

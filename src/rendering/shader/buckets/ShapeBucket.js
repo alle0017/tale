@@ -41,15 +41,12 @@ export default class ShapeBucket extends Bucket {
                   varying vec4 v_color;
 
                   void main() {
-                        gl_Position = vec4(
-                              u_camera
-                              *
-                              vec3(
-                                    a_pos.x * a_transform.x + a_transform.z, 
-                                    a_pos.y * a_transform.y + a_transform.w, 
-                                    a_pos.z
-                              )
-                        ,1);
+                        vec3 pos = vec3(
+                              a_pos.x * a_transform.x + a_transform.z, 
+                              a_pos.y * a_transform.y + a_transform.w, 
+                              a_pos.z
+                        );
+                        gl_Position = vec4(u_camera * pos, 1.);
                         v_color = vec4(clamp(a_color*a_light, 0., 1.));
                   }
                   `
@@ -79,12 +76,12 @@ export default class ShapeBucket extends Bucket {
        * @param {Shape} shape 
        */
       toAttributeBuffers(shape) {
-            const count = shape.coords.length;
+            const count = 4;
             const sin = Math.sin(shape.rotation);
             const cos = Math.cos(shape.rotation);
             const transf = [
-                  shape.scaleX * (sin + cos), 
-                  shape.scaleY * (-sin + cos), 
+                  shape.scaleX * (sin + cos) * shape.width/this.gl.canvas.width, 
+                  shape.scaleY * (-sin + cos) * shape.height/this.gl.canvas.height, 
                   shape.x/this.gl.canvas.width, 
                   shape.y/this.gl.canvas.height
             ];

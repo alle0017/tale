@@ -1,7 +1,7 @@
 import { useGame } from "../game/Game.js"
 import { createComponent } from "../ecs/Component.js";
 import TextureEntity from "../rendering/shader/entity/Texture.js";
-import { DrawablePrototype } from "./Drawable.js";
+import { createDrawable, DrawablePrototype } from "./Drawable.js";
 /**@import {Position} from "./index.js" */
 
 /**
@@ -10,7 +10,7 @@ import { DrawablePrototype } from "./Drawable.js";
  *    unbind(): void; 
  * }}
  */
-export const [sprite, useSprite] = createComponent('sprite', /**@param {string} asset*/asset => {
+export const [sprite, useSprite] = createDrawable('sprite', /**@param {string} asset*/asset => {
       const sprite = useGame().ctx.image();
       let ticket;
 
@@ -53,4 +53,4 @@ export const [sprite, useSprite] = createComponent('sprite', /**@param {string} 
       })
 
       return sprite
-}, DrawablePrototype);
+});

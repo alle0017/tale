@@ -11,6 +11,7 @@ import Main, {view} from "./components/main.js";
 import Home from "./components/home.js";
 import FrameRate from "./components/frame-rate.js";
 import { ChipInput } from "./components/input/chip-input.js";
+import CollisionWatcher from "./components/collision-watcher.js";
 /**
  * 
  * @param {Game} game 
@@ -25,6 +26,7 @@ function startDebugging(game) {
 
       
       GApp
+      .registerComponent(CollisionWatcher)
       .registerComponent(FrameRate)
       .registerComponent(ChipInput)
       .registerComponent(Collapsable)
