@@ -16,11 +16,9 @@ export default function ComponentBox({ entity }) {
       const state = $signal(true);
       const components = [...entity.getAll().entries()];
 
-      components.forEach(([_,v]) => {
-            v.events.on('access', () => {
-                  state.value = !state.value
-            });
-      });
+      setInterval(() => {
+            state.value = !state.value;
+      }, 100);
       
       return html`
       <div style="border-bottom: 1px solid var(--bg2); margin-bottom: 20px; width: 100%; display: flex; align-items: center; height: 50px;">
