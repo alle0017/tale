@@ -21,8 +21,8 @@ export const [rect, useRect] = createDrawable('rect',
       const rect = useGame().ctx.rect();
       let ticket;
 
-      rect.scaleX = width;
-      rect.scaleY = height;
+      rect.width= width;
+      rect.height = height;
 
       Object.defineProperties(rect, {
             bind: {
