@@ -11,11 +11,14 @@ export default class ChunkIterator {
        * @param {Entity<Record<'body',RigidBody>>[]} bodies 
        */
       constructor(bodies) {
-            this.#bodies = [...bodies];
+            this.#bodies = [];
 
-            // Set chunk size to a reasonable proximity range (e.g., max width)
-            this.#chunkSize = Math.max(...this.#bodies.map(b => b.body.width), 1);
-
+            for (let i = 0; i < bodies.length; i++) {
+                  this.#bodies.push(bodies[i]);
+                  if (bodies[i].body.width > this.#chunkSize) {
+                        this.#chunkSize = bodies[i].body.width; 
+                  } 
+            }
             // Sort bodies by x for spatial locality
             this.#bodies.sort((a, b) => a.body.x - b.body.x);
       }
@@ -27,12 +30,19 @@ export default class ChunkIterator {
        * @returns 
        */
       #isColliding(a, b) {
-            return (
-                  a.x < b.x + b.width &&
-                  a.x + a.width > b.x &&
-                  a.y < b.y + b.height &&
-                  a.y + a.height > b.y
-            );
+            const al = a.x - a.width;
+            const ar = a.x + a.width;
+            const ab = a.y - a.height;
+            const at = a.y + a.height;
+
+            const bl = b.x - b.width;
+            const br = b.x + b.width;
+            const bb = b.y - b.height;
+            const bt = b.y + b.height;
+
+            // True if intervals overlap in both axes.
+            // Use strict inequalities so edge-touching does NOT count as collision.
+            return al < br && ar > bl && ab < bt && at > bb;
       }
 
       getCurrent() {
@@ -43,8 +53,18 @@ export default class ChunkIterator {
             const chunk = [];
             const center = this.getCurrent();
 
+            for (let i = 0; i < this.#bodies.length; i++) {
+                  if (center === this.#bodies[i]) {
+                        continue;
+                  }
+
+                  if (this.#isColliding(center.body, this.#bodies[i].body)) {
+                        chunk.push(this.#bodies[i]);
+                  }
+            }
+
             // Scan left
-            for (let i = this.#current - 1; i >= 0; i--) {
+            /*for (let i = this.#current - 1; i >= 0; i--) {
                   const other = this.#bodies[i];
 
                   if (other.body.x + other.body.width < center.body.x - this.#chunkSize) {
@@ -67,7 +87,7 @@ export default class ChunkIterator {
                   if (this.#isColliding(center.body, other.body)) {
                         chunk.push(other);
                   }
-            }
+            }*/
 
             return chunk;
       }
@@ -80,3 +100,4 @@ export default class ChunkIterator {
             this.#current++;
       }
 }
+
