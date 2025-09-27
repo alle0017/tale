@@ -57,7 +57,7 @@ export const [physics, usePhysics] = createComponent('physics', () => {
                   };
             },
       };
-});
+}, 'position');
 
 export const usePhysicsSystem = () => {
       let last = performance.now();
