@@ -108,4 +108,21 @@ export default class Shape extends GPUEntity2D {
       remove(ctx) {
             ctx.clearShape(this);
       }
+
+      /**
+       * 
+       * @param {[number, number, number, number]} color 
+       * @param {number} times 
+       */
+      setColors(color, times = 1) {
+            /**
+             * @type {number[]}
+             */
+            let colors = [];
+
+            for (let i = 0; i < times; i++) {
+                  colors = colors.concat(color);
+            }
+            this.colors = colors;
+      }
 }
