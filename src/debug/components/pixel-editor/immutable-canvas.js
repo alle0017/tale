@@ -50,6 +50,9 @@ export default class ImmutableCanvas {
             }
       }
       undo() {
+            if (this.#stack.length <= 1) {
+                  return;
+            }
             this.#state = this.#stack.pop();
             this.#events.trigger('statechange');
       }
