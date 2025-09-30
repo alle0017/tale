@@ -10,7 +10,7 @@ export default function ColorPicker({ onSelect }) {
       /**
        * @type {Signal<string[]>}
        */
-      const stack = $signal([]);
+      const stack = $signal(['#000']);
       /**
        * 
        * @param {string} value 
