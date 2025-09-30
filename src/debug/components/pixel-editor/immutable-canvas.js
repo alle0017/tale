@@ -40,12 +40,12 @@ export default class ImmutableCanvas {
       /**
        * method that uses {@link #cloneState} to 
        * clone the state and push it onto the stack.
-       * the stack is kept for last 20 values
+       * the stack is kept for last 100 values
        */
       #clone() {
             this.#stack.push(this.#cloneState());
 
-            if (this.#stack.length > 20) {
+            if (this.#stack.length > 100) {
                   this.#stack.shift();
             }
       }
