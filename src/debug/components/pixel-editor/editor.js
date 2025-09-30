@@ -29,7 +29,7 @@ export default function Editor() {
       }, cvswidth, cvsheight);
 
       layer.events.on('statechange', () => {
-            drawLayer(ctx, layer.state, width, height);
+            drawLayer(ctx, layer.state, width, height, false);
       });
 
       /**
@@ -45,8 +45,22 @@ export default function Editor() {
        * @type {(e: MouseEvent) => void}
       */
       const pen = e => {
-           const [i,j] = toCanvasCoordinates(e, width, height);
-           layer.insert(select, i, j);
+            /**
+             * @param {MouseEvent} e 
+             */
+            const draw =  e => {
+                  const [i,j] = toCanvasCoordinates(e, width, height);
+                  layer.insert(select, i, j);
+            };
+            const cleaner = () => {
+                  ctx.canvas.removeEventListener('mousemove', draw);
+                  ctx.canvas.removeEventListener('mouseout', cleaner);
+                  ctx.canvas.removeEventListener('mouseup', cleaner);
+            };
+            draw(e);
+            ctx.canvas.addEventListener('mousemove', draw);
+            ctx.canvas.addEventListener('mouseout', cleaner);
+            ctx.canvas.addEventListener('mouseup', cleaner);
       };
       /**
        * first event used when the user clicks on the canvas.
@@ -76,22 +90,30 @@ export default function Editor() {
        * @param {MouseEvent} e 
        */
       const onCanvasClicked = e => canvasClickedHandler?.(e);
+      const save = () => {
+            drawLayer(ctx, layer.state, width, height, false);
+            console.log(ctx.canvas.toDataURL());
+            drawLayer(ctx, layer.state, width, height);
+      }
 
       return html`
             <div style="display: flex; gap: 10px; position: absolute; top: 10%; height: 100%;">
                   <div style="display: flex; flex-direction: column; gap: 10px;">
                         <div style="display: flex; gap: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2); font-size: 32px;">
                               <div @click=${() => layer.undo()} class="hv" style="padding: 2px 5px;">
-                                    ↩
+                                    ↩️
                               </div>
                               <div @click=${() => {canvasClickedHandler = pen; select = NULL;}} class="hv" style="padding: 1px 5px;">
-                                    ⌫
+                                    🧽
                               </div>
                               <div @click=${() => canvasClickedHandler = circleStart} class="hv" style="padding: 1px 5px;">
-                                    ○
+                                    ⬤
                               </div>
                               <div @click=${() => canvasClickedHandler = pen} class="hv" style="padding: 1px 5px;">
-                                    ✎
+                                    ✏️
+                              </div>
+                              <div @click=${save} class="hv" style="padding: 1px 5px;">
+                                    💾
                               </div>
                         </div>
                         <Resizer width=${16} height=${16} @change=${(width, height) => {
