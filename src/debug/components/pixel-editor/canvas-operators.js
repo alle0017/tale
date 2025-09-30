@@ -17,7 +17,6 @@ export function toCanvasCoordinates(event, width, height) {
             Math.floor(y/height)
       ];
 }
-
 /**
  * 
  * @param {CanvasRenderingContext2D} ctx 
@@ -25,8 +24,44 @@ export function toCanvasCoordinates(event, width, height) {
  * @param {number} width 
  * @param {number} height 
  */
-export function drawLayer(ctx, layer, width, height) {
+export function drawGrid(ctx, layer, width, height) {
+
+      for (let i = 0; i < layer.length; i++) {
+            for (let j = 0; j < layer[i].length; j++) {
+                  ctx.fillStyle = (i + j)%2 ? '#fff' : '#aaa';
+                  ctx.fillRect(
+                        i*width,
+                        j*height,
+                        width,
+                        height
+                  );
+            }
+      }
+}     
+/**
+ * 
+ * @param {CanvasRenderingContext2D} ctx 
+ * @param {string[][]} layer 
+ * @param {number} width 
+ * @param {number} height 
+ */
+export function drawLayer(ctx, layer, width, height, grid = true) {
       ctx.clearRect(0,0,ctx.canvas.width, ctx.canvas.height);
+
+      if (grid) {
+            drawGrid(ctx, layer, width, height);
+      }
+      for (let i = 0; i < layer.length; i++) {
+            for (let j = 0; j < layer[i].length; j++) {
+                  ctx.fillStyle = (i + j)%2 ? '#fff' : '#aaa';
+                  ctx.fillRect(
+                        i*width,
+                        j*height,
+                        width,
+                        height
+                  );
+            }
+      }
 
       for (let i = 0; i < layer.length; i++) {
             for (let j = 0; j < layer[i].length; j++) {
@@ -65,7 +100,7 @@ function setPixel(matrix, x, y, value) {
  */
 export function drawCircle(matrix, cx, cy, r, value) {
       if (r < 0) {
-            return;
+            return matrix;
       }
       const steps = Math.max(8, Math.ceil(2 * Math.PI * r * 1.2)); // ~circumference sampling
       for (let i = 0; i < steps; i++) {
@@ -74,4 +109,5 @@ export function drawCircle(matrix, cx, cy, r, value) {
             const y = Math.round(cy + r * Math.sin(a));
             setPixel(matrix, x, y, value);
       }
+      return matrix;
 }
