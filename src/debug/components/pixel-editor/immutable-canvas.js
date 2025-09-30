@@ -42,7 +42,7 @@ export default class ImmutableCanvas {
        * clone the state and push it onto the stack.
        * the stack is kept for last 20 values
        */
-      #cloneAndPush() {
+      #clone() {
             this.#stack.push(this.#cloneState());
 
             if (this.#stack.length > 20) {
@@ -62,8 +62,8 @@ export default class ImmutableCanvas {
        * @param {number} i 
        * @param {number} j 
       */
-     insert(value, i, j) {
-           this.#cloneAndPush();
+      insert(value, i, j) {
+           this.#clone();
            this.#state[i][j] = value;
            this.#events.trigger('statechange');
       }
@@ -74,7 +74,7 @@ export default class ImmutableCanvas {
        * @param {T} NULL 
        */
       resize(width, height, NULL) {
-            this.#cloneAndPush();
+            this.#clone();
             if (this.#state.length > height) {
                   this.#state.length = height;
             } else {
@@ -98,5 +98,15 @@ export default class ImmutableCanvas {
             }
 
             this.#events.trigger('statechange');
+      }
+      /**
+       * 
+       * @param {(matrix: T[][]) => T[][]} lambda 
+       */
+      execute(lambda) {
+            this.#clone();
+            const matrix = lambda(this.#state);
+            this.#state = matrix;
+            this.events.trigger('statechange');
       }
 }
