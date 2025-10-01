@@ -78,10 +78,11 @@ export function drawLayer(ctx, layer, width, height, grid = true) {
 
 /**
  * set a pixel in safe way
- * @param {string[][]} matrix 
+ * @template T
+ * @param {T[][]} matrix 
  * @param {number} x 
  * @param {number} y 
- * @param {string} value 
+ * @param {T} value 
  */
 function setPixel(matrix, x, y, value) {
       if (y >= 0 && y < matrix.length && x >= 0 && x < matrix[0].length) {
@@ -90,12 +91,12 @@ function setPixel(matrix, x, y, value) {
 }
 
 /**
- * 
- * @param {string[][]} matrix 
+ * @template T
+ * @param {T[][]} matrix 
  * @param {number} cx 
  * @param {number} cy 
  * @param {number} r 
- * @param {string} value 
+ * @param {T} value 
  * @returns 
  */
 export function drawCircle(matrix, cx, cy, r, value) {
@@ -109,5 +110,109 @@ export function drawCircle(matrix, cx, cy, r, value) {
             const y = Math.round(cy + r * Math.sin(a));
             setPixel(matrix, x, y, value);
       }
+      return matrix;
+}
+
+/**
+ * @template T
+ * @param {T[][]} matrix 
+ * @param {number} x0 
+ * @param {number} y0 
+ * @param {number} x1 
+ * @param {number} y1 
+ * @param {T} value 
+ */
+function plotLineLow(matrix, x0, y0, x1, y1, value) {
+      let dx = x1 - x0;
+      let dy = y1 - y0;
+      let yi = 1;
+      if (dy < 0) {
+            yi = -1;
+            dy = -dy;
+      }
+
+      let D = (2 * dy) - dx;
+      let y = y0;
+
+      for (let x = x0; x <= x1; x++) {
+            setPixel(matrix, x, y, value);
+            if (D > 0) {
+                  y = y + yi;
+                  D = D + (2 * (dy - dx));
+            } else {
+                  D = D + 2*dy;
+            }
+      }
+}
+/**
+ * @template T
+ * @param {T[][]} matrix 
+ * @param {number} x0 
+ * @param {number} y0 
+ * @param {number} x1 
+ * @param {number} y1 
+ * @param {T} value 
+ */
+function plotLineHigh(matrix, x0, y0, x1, y1, value) {
+      let dx = x1 - x0;
+      let dy = y1 - y0;
+      let xi = 1;
+      if (dx < 0) {
+            xi = -1;
+            dx = -dx;
+      }
+
+      let D = (2 * dx) - dy;
+      let x = x0;
+
+      for (let y = y0; y <= y1; y++) {
+            setPixel(matrix, x, y, value);
+            if (D > 0) {
+                  x = x + xi;
+                  D = D + (2 * (dx - dy));
+            } else {
+                  D = D + 2*dx;
+            }
+      }
+}
+/**
+ * @template T
+ * @param {T[][]} matrix 
+ * @param {number} ax 
+ * @param {number} ay 
+ * @param {number} bx 
+ * @param {number} by 
+ * @param {T} value 
+ */
+export function drawLine(matrix, ax, ay, bx, by, value) {
+      if (matrix.length < 1 || matrix[0].length < 1) {
+            return matrix;
+      }
+
+      if (Math.abs(by - ay) < Math.abs(bx - ax)) {
+            if (ax > bx) {
+                  const cx = ax;
+                  const cy = ay;
+
+                  ax = bx;
+                  ay = by;
+                  bx = cx;
+                  by = cy;
+            }
+            plotLineLow(matrix, ax, ay, bx, by, value);
+      } else {
+            if (ay > by) {
+                  const cx = ax;
+                  const cy = ay;
+
+                  ax = bx;
+                  ay = by;
+                  bx = cx;
+                  by = cy;
+            }
+            plotLineHigh(matrix, ax, ay, bx, by, value);
+      }
+
+
       return matrix;
 }

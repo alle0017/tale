@@ -1,6 +1,6 @@
 import { $effect, $signal, html, } from "../../../../node_modules/@alle0017!/photonjs/index.js";
 import ImmutableCanvas from "./immutable-canvas.js";
-import { drawCircle, drawLayer, toCanvasCoordinates } from "./canvas-operators.js";
+import { drawCircle, drawLayer, drawLine, toCanvasCoordinates } from "./canvas-operators.js";
 /**@import {VNode, Signal} from "../../../../node_modules/@alle0017!/photonjs/index.js";*/
 
 export default function Editor() {
@@ -80,6 +80,30 @@ export default function Editor() {
                   canvasClickedHandler = circleStart;
             };
       };
+
+      /**
+       * first event used when the user clicks on the canvas.
+       * it selects the center
+       * @type {(e: MouseEvent) => void}
+      */
+      const lineStart = e => {
+            const [ay,ax] = toCanvasCoordinates(e, width, height);
+            canvasClickedHandler = ev => {
+                  const [by,bx] = toCanvasCoordinates(ev, width, height);
+
+                  layer.execute(matrix => drawLine(
+                              matrix, 
+                              ax, 
+                              ay, 
+                              bx, 
+                              by, 
+                              select
+                        )
+                  );
+                  canvasClickedHandler = lineStart;
+            };
+      };
+      
       /**
        * 
        * @type {(e: MouseEvent) => void}
@@ -108,6 +132,9 @@ export default function Editor() {
                               </div>
                               <div @click=${() => canvasClickedHandler = circleStart} class="hv" style="padding: 1px 5px;">
                                     ⬤
+                              </div>
+                              <div @click=${() => canvasClickedHandler = lineStart} class="hv" style="padding: 1px 5px;">
+                                    📏
                               </div>
                               <div @click=${() => canvasClickedHandler = pen} class="hv" style="padding: 1px 5px;">
                                     ✏️
