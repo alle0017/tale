@@ -1,8 +1,6 @@
 import { useGame } from "../game/Game.js"
-import { createComponent } from "../ecs/Component.js";
-import TextureEntity from "../rendering/shader/entity/Texture.js";
-import { createDrawable, DrawablePrototype } from "./Drawable.js";
-/**@import {Position} from "./index.js" */
+import { createDrawable, } from "./Drawable.js";
+/**@import {Coordinates} from "./index.js" */
 
 /**
  * @returns {TextureEntity & { 
@@ -10,7 +8,7 @@ import { createDrawable, DrawablePrototype } from "./Drawable.js";
  *    unbind(): void; 
  * }}
  */
-export const [sprite, useSprite] = createDrawable('sprite', /**@param {string} asset*/asset => {
+export const Sprite = createDrawable(/**@param {string} asset*/asset => {
       const sprite = useGame().ctx.image();
       let ticket;
 
@@ -23,7 +21,7 @@ export const [sprite, useSprite] = createDrawable('sprite', /**@param {string} a
                    * position component changes the sprite
                    * will follow it. Every position that 
                    * was previously bind will be unbind
-                   * @param {Position} position 
+                   * @param {Coordinates} position 
                    */
                   value: (position) => {
                         if (ticket) {

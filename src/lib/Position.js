@@ -1,17 +1,13 @@
-/**@import {PhysicsPosition, Position} from "." */
+/**@import {PhysicsPosition, Coordinates} from "." */
 import { createComponent } from "../ecs/Component.js";
 import List from "../types/List.js"
 
-export const [
-      position, 
+/**
+ * @type {import("../ecs/Component.js").Component<Coordinates, unknown[]>}
+ */
+export const Position = createComponent(() => {
       /**
-       * position component that represent any point 
-       * that can be moved in 2D space.
-       */
-      usePosition
-] = createComponent('position', () => {
-      /**
-       * @type {List<(pos: Position) => void>}
+       * @type {List<(pos: Coordinates) => void>}
        */
       const subs = new List();
       let x = 0;
@@ -44,7 +40,7 @@ export const [
             },
             /**
              * 
-             * @param {(pos: Position) => void} callback 
+             * @param {(pos: Coordinates) => void} callback 
              * @returns {() => void} - unsubscribe method
              */
             onMove(callback) {

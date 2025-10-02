@@ -15,7 +15,7 @@ export class World {
        */
       #events = new EventManager();
       /**
-       * @type {Set<Entity<{}>>}
+       * @type {Set<Entity>}
        */
       #entities = new Set();
       /**
@@ -42,7 +42,7 @@ export class World {
        * until it is removed with {@link World.remove()}, 
        * the entity will be affected to systems
        * that can query it.
-       * @param {Entity<{}>} entity 
+       * @param {Entity} entity 
        */
       add(entity) {
             this.#entities.add(entity);
@@ -50,7 +50,7 @@ export class World {
       }
       /**
        * remove the specified entity from the world
-       * @param {Entity<{}>} entity 
+       * @param {Entity} entity 
        */
       remove(entity) {
             this.#entities.delete(entity);

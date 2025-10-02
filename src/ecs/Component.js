@@ -1,27 +1,22 @@
-import List from "../types/List.js";
 import EventManager from "./Event.js";
 /**@import {Entity} from "./Entity" */
 
 /**
- * @template {string} T
  * @template {{}} K
+ * @template {unknown[]} X
  * @typedef {{ 
- *    $$name: T, 
- *    state: K, 
+ *    prototypes: readonly Component<unknown,unknown[]>[]
  *    events: EventManager<'access'|'attached'|'removed'>,
- *    prototypes: string[]
+ *    create(...args: X): K,
+ *    attach(entity: number, component: K): K,
+ *    get(entity: number): K,
+ *    delete(entity: number): K,
  * }} Component
  */
 /**
  * @template {string} K
  * @template {{}} T
- * @typedef {(e: Entity<{}>) => e is Entity<Record<K,T>>} Query
- */
-/**
- * @typedef {{ 
- *    name: string, 
- *    factory: (...args: unknown[]) => Component<string,{}> 
- * }} $Component
+ * @typedef {(e: Entity) => e is Entity} Query
  */
 /**
  * hook responsible for component creation.
@@ -29,61 +24,81 @@ import EventManager from "./Event.js";
  * from system and a way to create it. Prototype can be assigned
  * as other ways to access the same component with different queries.
  * this is useful to implement inheritance into the component system
+ * @template {{}} K
+ * @template {unknown[]} X
+ * @param {(...params: X) => K} factory 
+ * @param {Component<unknown,unknown[]>[]} prototypes
+ * @returns {Component<K, X>}
  */
-export const createComponent = (() => {
+export const createComponent = (factory, ...prototypes) => {
       /**
-       * @type {List<$Component>}
+       * @type {K[]}
        */
-      const symbols = new List();
+      const entities = [];
 
-      /**
-       * @template {string} T
-       * @template {{}} K
-       * @template {unknown[]} X
-       * @param {T} key
-       * @param {(...params: X) => K} factory 
-       * @param {string[]} prototypes
-       * @returns {[Query<T,K>, (...args: X) => Component<T,K>]}
-       */
-      const create = (key, factory, ...prototypes) => {
+      return { 
+            prototypes,
+            events: new EventManager(),
+            create: factory,
+            attach(e, component) {
+                  entities[e] = component;
 
-            for (const comp of symbols) {
-                  if (comp.name === key) {
-                        throw new Error(`Illegal key used for component declaration: ${key}`);
+                  for (let i = 0; i < prototypes.length; i++) {
+                        prototypes[i].attach(e, entities[e]);
                   }
+
+                  return entities[e];
+            },
+            get(e) {
+                  return entities[e];
+            },
+            delete(e) {
+                  const component = entities[e];
+                  entities[e] = undefined;
+                  return component;
             }
-
-            const node = symbols.push({
-                  name: key,
-                  factory: (...props) => { 
-                        //@ts-ignore
-                        const state = factory(...props);
-                        let isAccessingState = false;
-                        return { 
-                              prototypes,
-                              events: new EventManager(),
-                              get state() {
-                                    if (!isAccessingState) {
-                                          isAccessingState = true;
-                                          this.events.trigger('access');
-                                          isAccessingState = false;
-                                    }
-                                    return state;
-                              }, 
-                              $$name: key 
-                        } 
-                  }
-            });
-
-            return [
-                  // @ts-ignore
-                  e => e.has(key),
-                  //@ts-ignore
-                  node.value.factory
-            ];
       };
+}
 
-      create.getAllComponents = () => symbols;
+/**
+ * hook responsible for component creation.
+ * it will return a way to query the component
+ * from system and a way to create it. Prototype can be assigned
+ * as other ways to access the same component with different queries.
+ * this is useful to implement inheritance into the component system
+ * @template {{}} K
+ * @template {unknown[]} X
+ * @param {Component<unknown,unknown[]>[]} prototypes
+ * @returns {Component<K, X>}
+ */
+export const createAbstractComponent = (...prototypes) => {
+      /**
+       * @type {K[]}
+       */
+      const entities = [];
 
-      return create;
-})()
+      return { 
+            prototypes,
+            events: new EventManager(),
+            create() {
+                  throw new Error('abstract components cannot be instantiated')
+            },
+            attach(e, component) {
+                  entities[e] = component;
+
+                  for (let i = 0; i < prototypes.length; i++) {
+                        prototypes[i].attach(e, entities[e]);
+                  }
+
+                  return entities[e];
+            },
+            get(e) {
+                  return entities[e];
+            },
+            delete(e) {
+                  const component = entities[e];
+                  entities[e] = undefined;
+                  return component;
+            }
+      };
+}

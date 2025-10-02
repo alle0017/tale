@@ -1,26 +1,35 @@
 /** @import { RigidBody } from ".." */
 /**@import {Entity} from "../../ecs/Entity.js" */
+/**@import {Component} from "../../ecs/Component.js" */
+
 
 export default class ChunkIterator {
-      /** @type {Entity<Record<'body',RigidBody>>[]} */
+      /** @type {Entity[]} */
       #bodies;
       #current = 0;
       #chunkSize = 0;
+      /**
+       * @readonly
+       * @type {Component<RigidBody,unknown[]>}
+       */
+      #component;
 
       /**
-       * @param {Entity<Record<'body',RigidBody>>[]} bodies 
+       * @param {Entity[]} bodies 
+       * @param {Component<RigidBody,unknown[]>} component 
        */
-      constructor(bodies) {
+      constructor(bodies, component) {
             this.#bodies = [];
 
             for (let i = 0; i < bodies.length; i++) {
                   this.#bodies.push(bodies[i]);
-                  if (bodies[i].body.width > this.#chunkSize) {
-                        this.#chunkSize = bodies[i].body.width; 
+                  if (bodies[i].get(component).width > this.#chunkSize) {
+                        this.#chunkSize = bodies[i].get(component).width; 
                   } 
             }
             // Sort bodies by x for spatial locality
-            this.#bodies.sort((a, b) => a.body.x - b.body.x);
+            this.#bodies.sort((a, b) => a.get(component).x - b.get(component).x);
+            this.#component = component;
       }
 
       /**
@@ -58,36 +67,10 @@ export default class ChunkIterator {
                         continue;
                   }
 
-                  if (this.#isColliding(center.body, this.#bodies[i].body)) {
+                  if (this.#isColliding(center.get(this.#component), this.#bodies[i].get(this.#component))) {
                         chunk.push(this.#bodies[i]);
                   }
             }
-
-            // Scan left
-            /*for (let i = this.#current - 1; i >= 0; i--) {
-                  const other = this.#bodies[i];
-
-                  if (other.body.x + other.body.width < center.body.x - this.#chunkSize) {
-                        break;
-                  }
-
-                  if (this.#isColliding(center.body, other.body)) {
-                        chunk.push(other);
-                  }
-            }
-
-            // Scan right
-            for (let i = this.#current + 1; i < this.#bodies.length; i++) {
-                  const other = this.#bodies[i];
-
-                  if (other.body.x > center.body.x + center.body.width + this.#chunkSize) {
-                        break;
-                  }
-
-                  if (this.#isColliding(center.body, other.body)) {
-                        chunk.push(other);
-                  }
-            }*/
 
             return chunk;
       }

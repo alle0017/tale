@@ -2,109 +2,54 @@
 import List from "../types/List.js";
 
 /**
- * @template {{}} T
  * @typedef {{
- *    remove: <V extends keyof T>(
- *     component: V,
- *    ) => void,
- *    id: string,
+ *    id: number,
  *    tags: List<string>,
- *    has(key: string): boolean,
- *    getAll(): Map<string, Component<string, unknown>>,
- *    add: <V extends string, X extends {}>(
- *     component: Component<V, X>,
- *   ) => Entity<T & { [K in V]: X }>,
- * } & T} Entity
+ *    has(key: Component<unknown,unknown[]>): boolean,
+ *    add: <X>(component: Component<X,unknown[]>, instance: X) => Entity,
+ *    get: <X>(component: Component<X,unknown[]>) => X,
+ *    remove: (component: Component<unknown, unknown[]>) => void,
+ * }} Entity
  */
 
 /**
  * function that creates an entity.
  * the entity must be added to the world to be queried, 
  * otherwise it will be **'invisible'** to systems
- * @template {{}} K
- * @return {Entity<K>}
+ * @return {Entity}
  */
 export const createEntity = () => {
+      const id = createEntity.id++;
       /**
-       * @type {Map<string,Component<Readonly<string>,unknown>>}
+       * @type {List<Component<unknown, unknown[]>>}
        */
-      const map = new Map();
+      const components = new List();
 
-
-      // @ts-ignore
-      return new Proxy({
-            id: `Entity_${createEntity.id++}`,
+      return {
+            id,
             tags: new List(),
-            add(component) {
-                  if (!component) {
-                        throw new Error("illegal component addition");
+            add(component, instance) {
+                  component.attach(id, instance);
+                  components.push(component);
+                  for (let i = 0; i < component.prototypes.length; i++) {
+                        components.push(component.prototypes[i]);
                   }
-
-                  map.set(component.$$name, component);
-
-                  component.prototypes.forEach(proto => { 
-                        map.set(proto, component)
-                  });
-
-                  component.events.trigger('attached');
-
                   return this;
+            },
+            get(component) {
+                  return component.get(id);
             },
             remove(component) {
-                  const key = /**@type {string}*/(component);
-
-                  if (!map.has(key)) {
-                        throw new Error("illegal component remove");
+                  component.delete(id);
+                  components.delete(component);
+                  for (let i = 0; i < component.prototypes.length; i++) {
+                        components.delete(component.prototypes[i]);
                   }
-                  const e = map.get(key);
-
-                  
-                  map.delete(key);
-                  
-                  e.prototypes.forEach(proto => map.delete(proto));
-                  
-                  e.events.trigger('removed');
-
-                  return this;
             },
-            /**
-             * @param {string} key 
-             */
-            has(key) {
-                  return map.has(key);
-            },
-            /**
-             * 
-             * @returns 
-             */
-            getAll() {
-                  return map;
+            has(component) {
+                  return Boolean(component.get(id));
             }
-      }, {
-            has(target, key) {
-                  return map.has(key.toString()) || key in target;
-            },
-            get(target, key) {
-                  if (target[key.toString()]) {
-                        return target[key];
-                  }
-
-                  if (!map.has(key.toString())) {
-                        throw new Error("illegal access to property");
-                  }
-
-                  return map.get(key.toString()).state;
-            },
-            set(target, key, value) {
-
-                  if (target[key.toString()]) {
-                        target[key.toString()] = value;
-                        return true;
-                  }
-
-                  throw new Error("components cannot be overwritten");
-            }
-      })
+      }
 };
 
 createEntity.id = 0;

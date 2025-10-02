@@ -1,9 +1,9 @@
 import EventManager from "../ecs/Event";
 
-export type Position = {
+export type Coordinates = {
       x: number,
       y: number;
-      onMove(callback: (pos: Position) => void): () => void;
+      onMove(callback: (pos: Coordinates) => void): () => void;
 }
 
 export type PhysicsPosition = {
@@ -13,7 +13,7 @@ export type PhysicsPosition = {
       vy: number,
       ax: number,
       ay: number,
-      onMove(callback: (pos: Position) => void): () => void;
+      onMove(callback: (pos: Coordinates) => void): () => void;
 }
 
 /**

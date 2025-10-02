@@ -8,8 +8,8 @@ import { useGame } from "../../game/Game.js";
 /**@import {Entity} from "../../ecs/Entity.js" */
 
 
-export const [body,useBody] = createComponent('body', /**@returns {RigidBody} */() => {
-      /**@type {List<(body: Entity<Record<'body',RigidBody>>) => void>} */
+export const Body = createComponent(/**@returns {RigidBody} */() => {
+      /**@type {List<(body: Entity) => void>} */
       /**@type {EventManager<'collision'>} */
       const events = new EventManager();
       
@@ -30,15 +30,15 @@ export const [body,useBody] = createComponent('body', /**@returns {RigidBody} */
  */
 export const useCollisionSystem = () => {
       return useUnhandledSystem(entities => {
-            const iterator = new ChunkIterator(entities);
+            const iterator = new ChunkIterator(entities, Body);
 
             while (iterator.hasNext()) {
                   const chunk = iterator.getChunk();
 
                   for (const body of chunk) {
-                        iterator.getCurrent().body.events.trigger('collision', body);
+                        iterator.getCurrent().get(Body).events.trigger('collision', body);
                   }
                   iterator.next();
             }
-      }, body);
+      }, Body);
 }

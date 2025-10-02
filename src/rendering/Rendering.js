@@ -1,7 +1,7 @@
 import { useTaskManager, Priority } from "../ecs/TaskManager.js";
 import { WorldManager } from "../ecs/WorldManager.js";
 import { useGame } from "../index.js";
-import { drawable } from "../lib/Drawable.js";
+import { Drawable, } from "../lib/Drawable.js";
 import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
 /**@import {Entity} from "../ecs/Entity.js" */
 
@@ -14,12 +14,12 @@ import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
 export const useRendering = () => {
       const game = useGame();
       const reload = () => {
-            entities = WorldManager.current.entities.filter(drawable);
+            entities = WorldManager.current.entities.filter(e => e.has(Drawable));
 
             game.ctx.removeAll();
 
             for (const entity of entities) {
-                  entity.drawable.draw(game.ctx);
+                  entity.get(Drawable).draw(game.ctx);
             }
       }
       const system = () => {
@@ -27,7 +27,7 @@ export const useRendering = () => {
             game.ctx.draw();
       };
       /**
-       * @type {Entity<{ drawable: GPUEntity2D }>[]}
+       * @type {Entity[]}
        */
       let entities = [];
 

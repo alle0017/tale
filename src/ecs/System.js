@@ -1,6 +1,6 @@
 import { useTaskManager } from "./TaskManager.js";
 import { WorldManager } from "./WorldManager.js";
-/**@import {Query} from "./Component.js" */
+/**@import {Component, Query} from "./Component.js" */
 /**@import {Entity} from "./Entity.js" */
 
 /**
@@ -14,19 +14,21 @@ import { WorldManager } from "./WorldManager.js";
  * Entities passed to it are the result of query execution
  * on all entities available into the game. 
  * the update is called on each entity, once each.
- * @template {string} K
- * @template {{}} U
- * @template {Query<K,U>[]} Q
- * @param {(entity: Entity<Union<Q>>) => void} update
- * @param {Q} query
+ * @param {(entity: Entity) => void} update
+ * @param {Component<unknown, unknown[]>[]} query
  */
 export const useSystem = (update, ...query) => {
       const system = () => {
             const allEntities = WorldManager.current.entities;
 
             for (const entity of allEntities) {
-                  if (query.every(q => q(entity))) {
-                        // @ts-ignore – entity has passed all type guards
+                  let flag = true;
+
+                  for (let i = 0; i < query.length && flag; i++) {
+                        flag &&= entity.has(query[i]);
+                  }
+
+                  if (flag) {
                         update(entity);
                   }
             }
@@ -41,16 +43,21 @@ export const useSystem = (update, ...query) => {
  * a method that is executed during each update.
  * Entities passed to it are the result of query execution
  * on all entities available into the game.
- * @template {string} K
- * @template {{}} U
- * @template {Query<K,U>[]} Q
- * @param {(entities: Entity<Union<Q>>[]) => void} update
- * @param {Q} query
+ * @param {(entities: Entity[]) => void} update
+ * @param {Component<unknown, unknown[]>[]} query
  */
 export const useUnhandledSystem = (update, ...query) => {
       const system = () => {
-            const entities = WorldManager.current.entities.filter(entity => query.every(q => q(entity)));
-            // @ts-ignore – entity has passed all type guards
+            const entities = WorldManager
+                  .current
+                  .entities
+                  .filter(entity => {
+                        let flag = true;
+                        for (let i = 0; i < query.length && flag; i++) {
+                              flag &&= entity.has(query[i]);
+                        }
+                        return flag;
+                  });
             update(entities);
       };
 

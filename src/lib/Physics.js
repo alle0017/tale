@@ -1,9 +1,13 @@
 import { useSystem } from "../ecs/System.js"
 import { createComponent } from "../ecs/Component.js";
 import List from "../types/List.js"
+import { Position } from "./Position.js";
 /**@import {PhysicsPosition} from "." */
 
-export const [physics, usePhysics] = createComponent('physics', () => {
+/**
+ * @type {import("../ecs/Component.js").Component<PhysicsPosition, unknown[]>}
+ */
+export const Physics = createComponent(() => {
       /**
        * @type {List<(pos: PhysicsPosition) => void>}
        */
@@ -57,14 +61,14 @@ export const [physics, usePhysics] = createComponent('physics', () => {
                   };
             },
       };
-}, 'position');
+}, Position);
 
 export const usePhysicsSystem = () => {
       let last = performance.now();
 
-      return useSystem(/**@param {{ physics: PhysicsPosition }} position */position => {
+      return useSystem(/**@param {import("../ecs/Entity.js").Entity} position */position => {
             const dt = performance.now() - last;
-            const pos = position.physics;
+            const pos = position.get(Physics);
             
             if (pos.ax) {
                   pos.vx += pos.ax*dt;
@@ -82,5 +86,5 @@ export const usePhysicsSystem = () => {
                   pos.y += pos.vy*dt + pos.ay*pos.ay*dt/2;
             }
             last = performance.now();
-      }, physics);
+      }, Physics);
 }

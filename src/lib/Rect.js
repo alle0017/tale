@@ -1,16 +1,14 @@
 import { useGame } from "../game/Game.js"
-import { createComponent } from "../ecs/Component.js";
-import TextureEntity from "../rendering/shader/entity/Texture.js";
-import { DrawablePrototype, createDrawable } from "./Drawable.js";
-/**@import {Position} from "./index.js" */
+import { createDrawable } from "./Drawable.js";
+/**@import {Coordinates} from "./index.js" */
 
 /**
  * @returns {TextureEntity & { 
- *    bind(position: Position): void;
+ *    bind(position: Coordinates): void;
  *    unbind(): void; 
  * }}
  */
-export const [rect, useRect] = createDrawable('rect', 
+export const Rect = createDrawable( 
       /**
        * 
        * @param {number} width 
@@ -32,7 +30,7 @@ export const [rect, useRect] = createDrawable('rect',
                    * position component changes the rect
                    * will follow it. Every position that 
                    * was previously bind will be unbind
-                   * @param {Position} position 
+                   * @param {Coordinates} position 
                    */
                   value: (position) => {
                         if (ticket) {
