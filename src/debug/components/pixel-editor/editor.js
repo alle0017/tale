@@ -6,7 +6,7 @@ import { drawCircle, drawLayer, drawLine, toCanvasCoordinates } from "./canvas-o
 /**
  * 
  * @param {{
- * onSave?: (url: ImmutableCanvas) => void
+ * onSave?: (cvs: ImmutableCanvas, url: string) => void
  * state?: ImmutableCanvas
  * }} param0 
  * @returns 
@@ -124,9 +124,9 @@ export default function Editor({ onSave, state }) {
        */
       const onCanvasClicked = e => canvasClickedHandler?.(e);
       const save = () => {
-            /*drawLayer(ctx, layer.state, width, height, false);
-            drawLayer(ctx, layer.state, width, height);*/
-            onSave?.(layer);
+            drawLayer(ctx, layer.state, width, height, false);
+            onSave?.(layer, ctx.canvas.toDataURL());
+            drawLayer(ctx, layer.state, width, height);
       }
 
       return html`
