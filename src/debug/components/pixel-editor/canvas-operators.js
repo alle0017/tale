@@ -51,17 +51,6 @@ export function drawLayer(ctx, layer, width, height, grid = true) {
       if (grid) {
             drawGrid(ctx, layer, width, height);
       }
-      for (let i = 0; i < layer.length; i++) {
-            for (let j = 0; j < layer[i].length; j++) {
-                  ctx.fillStyle = (i + j)%2 ? '#fff' : '#aaa';
-                  ctx.fillRect(
-                        i*width,
-                        j*height,
-                        width,
-                        height
-                  );
-            }
-      }
 
       for (let i = 0; i < layer.length; i++) {
             for (let j = 0; j < layer[i].length; j++) {

@@ -3,7 +3,14 @@ import ImmutableCanvas from "./immutable-canvas.js";
 import { drawCircle, drawLayer, drawLine, toCanvasCoordinates } from "./canvas-operators.js";
 /**@import {VNode, Signal} from "../../../../node_modules/@alle0017!/photonjs/index.js";*/
 
-export default function Editor() {
+/**
+ * 
+ * @param {{
+ * onSave?: (url: string) => void
+ * }} param0 
+ * @returns 
+ */
+export default function Editor({ onSave }) {
       const NULL = '#fff0';
       /**
        * @type {ImmutableCanvas<string>}
@@ -18,6 +25,7 @@ export default function Editor() {
       const height = 32;
       const cvswidth = $signal(0);
       const cvsheight = $signal(0);
+
       
       $effect(() => {
             if (ctx) {
@@ -29,7 +37,7 @@ export default function Editor() {
       }, cvswidth, cvsheight);
 
       layer.events.on('statechange', () => {
-            drawLayer(ctx, layer.state, width, height, false);
+            drawLayer(ctx, layer.state, width, height);
       });
 
       /**
@@ -116,7 +124,7 @@ export default function Editor() {
       const onCanvasClicked = e => canvasClickedHandler?.(e);
       const save = () => {
             drawLayer(ctx, layer.state, width, height, false);
-            console.log(ctx.canvas.toDataURL());
+            onSave?.(ctx.canvas.toDataURL());
             drawLayer(ctx, layer.state, width, height);
       }
 
