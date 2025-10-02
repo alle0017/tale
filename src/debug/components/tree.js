@@ -1,4 +1,4 @@
-import { $ref, $signal, html, } from "../../../node_modules/@alle0017!/photonjs/index.js";
+import { html, } from "../../../node_modules/@alle0017!/photonjs/index.js";
 /**@import {Ref,VNode} from "../../../node_modules/@alle0017!/photonjs/index.js";*/
 
 

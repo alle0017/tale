@@ -1,9 +1,9 @@
-import { html, $signal, } from "../../../node_modules/@alle0017!/photonjs/index.js"
+import { html, } from "../../../node_modules/@alle0017!/photonjs/index.js"
 import { createComponent } from "../../ecs/Component.js";
 import { useSystem } from "../../ecs/System.js";
 import { useGame } from "../../game/Game.js";
 import { body } from "../../lib/collisions/Collision.js";
-import { rect, useRect } from "../../lib/Rect.js";
+import { useRect } from "../../lib/Rect.js";
 import { createEntity } from "../../ecs/Entity.js";
 import GPUEntity2D from "../../rendering/shader/entity/GPUEntity2D.js";
 /**@import {Entity} from "../../ecs/Entity.js" */
@@ -59,7 +59,7 @@ export default function CollisionWatcher() {
       /**
        * @type {[number,number,number]}
        */
-      let col = [0,0,colorInc]
+      const col = [0,0,colorInc]
 
       useSystem(e => {
             if (!show && e.has(COMPONENT)) {

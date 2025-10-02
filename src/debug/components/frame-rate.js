@@ -3,7 +3,6 @@ import { useTaskManager } from "../../ecs/TaskManager.js";
 import { useGame } from "../../game/Game.js";
 /**@import {Signal, VNode} from  "../../../node_modules/@alle0017!/photonjs/index.js"*/
 
-export const view = $signal(html``);
 export default function FrameRate() {
       const fps = $signal(30);
       const game = useGame();
