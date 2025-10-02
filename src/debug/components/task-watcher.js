@@ -2,7 +2,7 @@ import { GApp, html, $signal, $effect, $error, } from "../../../node_modules/@al
 import Tree from "./tree.js";
 import { TaskManager,} from "../../ecs/TaskManager.js";
 /**@import {Signal, VNode} from  "../../../node_modules/@alle0017!/photonjs/index.js"*/
-/**@import {Entity} from "../ecs/Entity" */
+/**@import {Entity} from "../../ecs/Entity" */
 
 export default function TaskWatcher() {
       /**@type {Signal<(() => void)[]>} */
