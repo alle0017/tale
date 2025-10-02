@@ -129,41 +129,39 @@ export default function Editor({ onSave }) {
       }
 
       return html`
-            <div style="display: flex; gap: 10px; position: absolute; top: 10%; height: 100%;">
-                  <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div style="display: flex; gap: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2); font-size: 32px;">
-                              <div @click=${() => layer.undo()} class="hv" style="padding: 2px 5px;">
-                                    ↩️
-                              </div>
-                              <div @click=${() => {canvasClickedHandler = pen; select = NULL;}} class="hv" style="padding: 1px 5px;">
-                                    🧽
-                              </div>
-                              <div @click=${() => canvasClickedHandler = circleStart} class="hv" style="padding: 1px 5px;">
-                                    ⬤
-                              </div>
-                              <div @click=${() => canvasClickedHandler = lineStart} class="hv" style="padding: 1px 5px;">
-                                    📏
-                              </div>
-                              <div @click=${() => canvasClickedHandler = pen} class="hv" style="padding: 1px 5px;">
-                                    ✏️
-                              </div>
-                              <div @click=${save} class="hv" style="padding: 1px 5px;">
-                                    💾
-                              </div>
+            <div style="display: flex; flex-direction: column; gap: 10px; position: absolute; height: 100%;">
+                  <div style="display: flex; gap: 10px; color: var(--color); background-color: var(--bg); border-radius: 7px; padding: 10px; border: 1px solid var(--bg2); font-size: 32px;">
+                        <div @click=${() => layer.undo()} class="hv" style="padding: 2px 5px;">
+                              ↩️
                         </div>
-                        <Resizer width=${16} height=${16} @change=${(width, height) => {
-                              cvswidth.value = width;
-                              cvsheight.value = height;
-                        }}/>
-                        <ColorPicker @select=${value => (select = value)}/>
+                        <div @click=${() => {canvasClickedHandler = pen; select = NULL;}} class="hv" style="padding: 1px 5px;">
+                              🧽
+                        </div>
+                        <div @click=${() => canvasClickedHandler = circleStart} class="hv" style="padding: 1px 5px;">
+                              ⬤
+                        </div>
+                        <div @click=${() => canvasClickedHandler = lineStart} class="hv" style="padding: 1px 5px;">
+                              📏
+                        </div>
+                        <div @click=${() => canvasClickedHandler = pen} class="hv" style="padding: 1px 5px;">
+                              ✏️
+                        </div>
+                        <div @click=${save} class="hv" style="padding: 1px 5px;">
+                              💾
+                        </div>
                   </div>
+                  <Resizer width=${16} height=${16} @change=${(width, height) => {
+                        cvswidth.value = width;
+                        cvsheight.value = height;
+                  }}/>
                   <canvas 
-                        width=${512} 
-                        height=${512} 
-                        style="width: 512px; height: 512px;" 
-                        ref=${pickContext} 
-                        @mousedown=${onCanvasClicked}
+                  width=${512} 
+                  height=${512} 
+                  style="width: 512px; height: 512px;" 
+                  ref=${pickContext} 
+                  @mousedown=${onCanvasClicked}
                   ></canvas>
+                  <ColorPicker @select=${value => (select = value)}/>
             </div>
       `
 }
