@@ -1,4 +1,4 @@
-import { GApp, html, $signal, $effect, $error, } from "../../../node_modules/@alle0017!/photonjs/index.js"
+import { html, $signal, } from "../../../node_modules/@alle0017!/photonjs/index.js"
 import Tree from "./tree.js";
 import { TaskManager,} from "../../ecs/TaskManager.js";
 /**@import {Signal, VNode} from  "../../../node_modules/@alle0017!/photonjs/index.js"*/
