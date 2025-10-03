@@ -6,9 +6,10 @@ import List from "../types/List.js";
  *    id: number,
  *    tags: List<string>,
  *    has(key: Component<unknown,unknown[]>): boolean,
- *    add: <X>(component: Component<X,unknown[]>, instance: X) => Entity,
+ *    add: <X>(instance: X) => Entity,
  *    get: <X>(component: Component<X,unknown[]>) => X,
  *    remove: (component: Component<unknown, unknown[]>) => void,
+ *    getAll(): unknown[];
  * }} Entity
  */
 
@@ -28,11 +29,12 @@ export const createEntity = () => {
       return {
             id,
             tags: new List(),
-            add(component, instance) {
-                  component.attach(id, instance);
-                  components.push(component);
-                  for (let i = 0; i < component.prototypes.length; i++) {
-                        components.push(component.prototypes[i]);
+            add(instance) {
+                  const component = /**@type {{} & { $$proto: Component<{}, unknown[]> }} */(instance);
+                  component.$$proto.attach(id, instance);
+                  components.push(component.$$proto);
+                  for (let i = 0; i < component.$$proto.prototypes.length; i++) {
+                        components.push(component.$$proto.prototypes[i]);
                   }
                   return this;
             },
@@ -48,6 +50,9 @@ export const createEntity = () => {
             },
             has(component) {
                   return Boolean(component.get(id));
+            },
+            getAll() {
+                  return [...components].map(comp => comp.get(id));
             }
       }
 };

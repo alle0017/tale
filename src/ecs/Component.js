@@ -7,7 +7,7 @@ import EventManager from "./Event.js";
  * @typedef {{ 
  *    prototypes: readonly Component<unknown,unknown[]>[]
  *    events: EventManager<'access'|'attached'|'removed'>,
- *    create(...args: X): K,
+ *    create(...args: X): K & { $$proto: Component<K,X> },
  *    attach(entity: number, component: K): K,
  *    get(entity: number): K,
  *    delete(entity: number): K,
@@ -36,10 +36,18 @@ export const createComponent = (factory, ...prototypes) => {
        */
       const entities = [];
 
-      return { 
+      /**
+       * @type {Component<K, X>}
+       */
+      const component = { 
             prototypes,
             events: new EventManager(),
-            create: factory,
+            create: (...args) => {
+                  const instance = factory(...args);
+                  return Object.assign(instance, {
+                        $$proto: component,
+                  });
+            },
             attach(e, component) {
                   entities[e] = component;
 
@@ -58,6 +66,8 @@ export const createComponent = (factory, ...prototypes) => {
                   return component;
             }
       };
+
+      return component;
 }
 
 /**
