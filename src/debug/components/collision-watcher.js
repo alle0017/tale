@@ -22,7 +22,7 @@ const Visible = createComponent(
        */
       (color) => {
             const rect = Rect.create();
-            const entity = createEntity().add(Rect, rect);
+            const entity = createEntity().add(rect);
 
             rect.zIndex = -1;
 
@@ -78,7 +78,7 @@ export default function CollisionWatcher() {
                   }
                   comp.entity.tags.push(e.id + '');
 
-                  e.add(Visible, comp);
+                  e.add(comp);
             } 
             
             if (show) {

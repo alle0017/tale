@@ -37,7 +37,7 @@ export default function ComponentBox({ entity }) {
             ${state.map(() => 
                   components.map(([k,v]) => html`
                               <div>
-                                    <ObjectBinder label=${k} source=${v.state}/>
+                                    <ObjectBinder label=${k} source=${v}/>
                               </div>
                         `
                   )
