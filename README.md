@@ -1,69 +1,90 @@
-# 2D GAME ENGINE
+# Tale
 
-this repo is a simple game engine concept, inspired by principles of web programming, in particular reactivity system.
+## Project Overview
+Tale is a modular and extensible framework designed for building interactive applications, such as games or simulations. It provides a robust architecture for managing entities, components, systems, and rendering pipelines, making it easier to create and maintain complex projects. It is based around a functional-like ECS system, that encounter a little bit of OOP concepts like inheritance, to enhance code reusability
 
-## why?
+## Features
+- **Entity-Component-System (ECS)**: A flexible ECS architecture for managing game objects and their behaviors.
+- **Rendering Pipeline**: A customizable rendering system with support for shaders and buffers.
+- **Debugging Tools**: Includes a suite of debugging components like collision watchers, frame rate monitors, and entity explorers.
+- **Pixel Editor**: Tools for creating and editing pixel art directly within the application.
+- **Modular Design**: Organized into reusable modules for better maintainability and scalability.
 
-I always found game engine a fun part of programming. While growing as a programmer, I've sticked to js, and learned a lot from it, in particular about reactive programming, better known to non-js programmer as event-driven development or subscriber pattern. For me, this way of programming allow real declarative programming, defining what an action should look like, while the true process of execution is made under the hood by someone else. I think this concept is kind a cool to build a game engine on top. Generically, with this project, I'd like to achieve a small library, similar to [kaplay](https://kaplayjs.com/), based on strongly typed ECS and function similar to hooks for system management. As current state, I decided to build all the library on top of WebGL API, even if I know is outdated and being replaced by WebGPU (that as, remind, is not fully supported). This library doesn't aim to be a contender for bigger libraries like [phaser](https://phaser.io/), that have already made an awesome work, but aims to test new way of programming games in web.
+## Folder Structure
+The project is organized as follows:
 
-## how it looks now?
-
-at current state (very early) this is a simple script that draws 2 images onto the screen: 
-
-```javascript
-import { useRendering } from "./rendering/Rendering.js";
-import Image from "./rendering/shader/lib/buffer/Image.js";
-
-Image
-.preload("./.assets/t.jpg")
-.then(() => {
-      const [ctx,engine] = useRendering();
-      const img1 = ctx.image();
-      const img2 = ctx.image();
-
-      img1.image = "./.assets/t.jpg";
-      img2.image = "./.assets/t.jpg";
-      img1.scaleX = 0.5;
-      img1.scaleY = 0.5;
-      img2.scaleX = 0.3;
-      img2.scaleY = 0.3;
-      img2.x = -0.5;
-      img1.x = 0.5;
-      engine.add(img2)
-      engine.add(img1)
-});
+```
+src/
+├── index.js                # Entry point of the application
+├── debug/                 # Debugging tools and components
+│   ├── components/       # Individual debug components
+│   └── icons/            # Icons used in debugging tools
+├── ecs/                   # Entity-Component-System implementation
+├── game/                  # Core game logic and scenes
+├── lib/                   # Utility libraries and shared components
+├── rendering/             # Rendering pipeline and shader management
+├── types/                 # Type definitions and utilities
 ```
 
-this is obviously the core, in the near future this will be hidden to the end user, that should only call hooks to create entities. Simple entity declaration (**Not working yet**) look something like this:
+### Key Directories
+- **`src/ecs/`**: Contains the core ECS implementation, including `Component`, `Entity`, `System`, and `World` classes.
+- **`src/rendering/`**: Manages the rendering pipeline, including shaders, buffers, and rendering contexts.
+- **`src/debug/`**: Debugging tools such as `collision-watcher`, `frame-rate`, and `entity-explorer`.
+- **`src/game/`**: Game-specific logic, including the `Game` and `Scene` classes.
+- **`src/lib/`**: Shared utilities like `Drawable`, `Physics`, and `Sprite`.
 
-```javascript
-export function Player() {
-      const sprite = useSprite('./sprite.png');
-      const position = usePosition();
-      const controls = useControls();
+## Installation
 
-      sprite.bind(position);
-      controls.on('up', () => position.y += 1);
-      controls.on('down', () => position.y -= 1);
-      controls.on('left', () => position.x -= 1);
-      controls.on('right', () => position.x += 1);
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-username/tale.git
+   ```
 
-      return createEntity()
-            .add(sprite)
-            .add(position);
-}
-```
+2. Navigate to the project directory:
+   ```bash
+   cd tale
+   ```
 
-that later could be called in a scene like this
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-```javascript
-export const MainScene() {
-      const player = Player();
+4. Build the project (if applicable):
+   ```bash
+   npm run build
+   ```
 
-      game.add(player);
-      game.camera.follow(player);
-      return scene;
-}
+## Usage
 
-game.use(MainScene)
-```
+1. Start the development server:
+   ```bash
+   npm start
+   ```
+
+2. Open your browser and navigate to `http://localhost:3000`.
+
+3. Explore the application and its features.
+
+## Contributing
+
+Contributions are welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix:
+   ```bash
+   git checkout -b feature-name
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add new feature"
+   ```
+4. Push to your fork:
+   ```bash
+   git push origin feature-name
+   ```
+5. Open a pull request.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
