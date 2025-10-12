@@ -25,7 +25,14 @@ const toColorVector = color => {
       return result;
 }
 const COLOR_VEC_SIZE = 4;
-const EMPTY_CHAR = ' ';
+export const EMPTY_CHAR = ' ';
+export const PIXEL = '▀';
+/**
+ * 
+ * @param {number} idx 
+ */
+export const selectPrimitive = idx => idx%2 ? PIXEL: EMPTY_CHAR;
+
 const EMPTY = EMPTY_CHAR.charCodeAt(0);
 export default class Grid {
       /**
@@ -46,6 +53,15 @@ export default class Grid {
        * @type {number}
        */
       #height;
+
+      #dirty = true;
+
+      get width() {
+            return this.#width;
+      }
+      get height() {
+            return this.#height;
+      }
       /**
        * 
        * @param {number} width 
@@ -79,6 +95,7 @@ export default class Grid {
                   this.#screen[idx * COLOR_VEC_SIZE + i] = vec[i];
             }
             this.#primitive[idx] = primitive.charCodeAt(0);
+            this.#dirty = true;
       }
 
       /**
@@ -91,8 +108,12 @@ export default class Grid {
             for (let i = 0; i < this.#primitive.length; i++) {
                   this.#primitive[i] = 0;
             }
+            this.#dirty = true;
       }
       draw() {
+            if (!this.#dirty) {
+                  return;
+            }
             let buffer = '';
             for (let y = 0; y < this.#height/2; y += 2) {
                   for (let x = 0; x < this.#width; x++) {
@@ -136,6 +157,7 @@ export default class Grid {
                   }
                   buffer += '\n';
             }
-            console.log(buffer)
+            console.log(Codes.Clear + Codes.Home + buffer)
+            this.#dirty = false;
       }
 }
