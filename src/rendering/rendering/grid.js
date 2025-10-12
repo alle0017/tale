@@ -25,7 +25,8 @@ const toColorVector = color => {
       return result;
 }
 const COLOR_VEC_SIZE = 4;
-const EMPTY = ' '.charCodeAt(0);
+const EMPTY_CHAR = ' ';
+const EMPTY = EMPTY_CHAR.charCodeAt(0);
 export default class Grid {
       /**
        * @type {Uint8Array}
@@ -58,13 +59,19 @@ export default class Grid {
             this.clear();
       }
       /**
-       * 
+       * set a cell of the buffer with corresponding 
+       * color and character. Note that characters occupies 2 row, 
+       * so using different primitives instead of pixel must be done
+       * carefully. in particular must be done by setting a primitive every 2 rows.
+       * if a primitive is settled, it always uses the foreground color, while the the other raw impose 
+       * the background (ex. if you use 'A' with color red in column 0 row 0 and set White in column 0 row 1, 
+       * then 'A' will appear red on white)
        * @param {HexColor} color 
        * @param {number} x 
        * @param {number} y 
        * @param {string} primitive
        */
-      set(color, x, y, primitive) {
+      set(color, x, y, primitive = EMPTY_CHAR) {
             const idx = y * this.#width + x;
             const vec = toColorVector(color);
 
@@ -74,6 +81,9 @@ export default class Grid {
             this.#primitive[idx] = primitive.charCodeAt(0);
       }
 
+      /**
+       * clear all the buffer stored
+       */
       clear() {
             for (let i = 0; i < this.#screen.length; i++) {
                   this.#screen[i] = 0;
