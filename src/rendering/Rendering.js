@@ -1,8 +1,7 @@
 import { useTaskManager, Priority } from "../ecs/TaskManager.js";
 import { WorldManager } from "../ecs/WorldManager.js";
-import { useGame } from "../index.js";
 import { Drawable, } from "../lib/Drawable.js";
-import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
+import Context from "./Context.js";
 /**@import {Entity} from "../ecs/Entity.js" */
 
 
@@ -11,34 +10,35 @@ import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
  * create a rendering system that continues 
  * to draw entities onto the screen
  */
-export const useRendering = () => {
-      const game = useGame();
-      const reload = () => {
-            entities = WorldManager.current.entities.filter(e => e.has(Drawable));
-
-            game.ctx.removeAll();
-
-            for (const entity of entities) {
-                  entity.get(Drawable).draw(game.ctx);
-            }
-      }
-      const system = () => {
-            game.ctx.clear();
-            game.ctx.draw();
-      };
+export const useRendering = (() => {
       /**
        * @type {Entity[]}
        */
       let entities = [];
+      const ctx = new Context();
+      const reload = () => {
+            entities = WorldManager.current.entities.filter(e => e.has(Drawable));
 
-      reload();
+            ctx.removeAll();
 
-      WorldManager.current.onStateChange(() => {
+            for (const entity of entities) {
+                  ctx.addEntity(entity.get(Drawable));
+            }
+      }
+      const system = () => {
+            ctx.draw();
+      };
+      return () => {
+
             reload();
-      });
 
-      WorldManager.current.addSystem(system, Priority.HIGH);
+            WorldManager.current.onStateChange(() => {
+                  reload();
+            });
 
-      useTaskManager().addAnimationTask(system);
-};
+            WorldManager.current.addSystem(system, Priority.HIGH);
+
+            useTaskManager().addAnimationTask(system);
+      }
+})();
 
