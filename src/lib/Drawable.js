@@ -1,7 +1,7 @@
 import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js";
 import { createAbstractComponent, createComponent } from "../ecs/Component.js";
 import { useGame } from "../game/Game.js";
-/**@import {Query, Component} from "../ecs/Component";*/
+/**@import {Query, Component} from "../ecs/Component.js";*/
 /**
  * prototype to assign to any component
  * that should be queried by the renderer
