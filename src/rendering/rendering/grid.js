@@ -40,6 +40,10 @@ export default class Grid {
        */
       #screen;
       /**
+       * @type {Uint8Array}
+       */
+      #depthBuffer;
+      /**
        * @type {Uint16Array}
        */
       #primitive;
@@ -69,6 +73,7 @@ export default class Grid {
        */
       constructor(width, height) {
             this.#screen = new Uint8Array(width*height*COLOR_VEC_SIZE);
+            this.#depthBuffer = new Uint8Array(width*height);
             this.#primitive = new Uint16Array(width*height);
             this.#width = width;
             this.#height = height;
@@ -85,16 +90,22 @@ export default class Grid {
        * @param {HexColor} color 
        * @param {number} x 
        * @param {number} y 
+       * @param {number} z 
        * @param {string} primitive
        */
-      set(color, x, y, primitive = EMPTY_CHAR) {
+      set(color, x, y, z, primitive = EMPTY_CHAR) {
             const idx = y * this.#width + x;
+
+            if (this.#depthBuffer[idx] > z) {
+                  return;
+            } 
             const vec = toColorVector(color);
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
                   this.#screen[idx * COLOR_VEC_SIZE + i] = vec[i];
             }
             this.#primitive[idx] = primitive.charCodeAt(0);
+            this.#depthBuffer[idx] = z;
             this.#dirty = true;
       }
 
