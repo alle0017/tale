@@ -9,6 +9,10 @@ export default class Screen {
             return this.#pipe;
       }
 
+      get grid() {
+            return this.#grid;
+      }
+
       constructor() {
             this.#pipe.use(pixel => this.#setPixelOnScreen(pixel))
       }
