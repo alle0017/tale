@@ -1,4 +1,6 @@
-/**@import GPUContext from "../../index" */
+/**@import GPUContext from "../index.d.ts" */
+/**@import Screen from "../screen/screen.js";*/
+
 /**
  * @enum {number}
  */
@@ -31,18 +33,24 @@ export default class GPUEntity2D {
       light = 1;
       zIndex = 0;
       /**
-       * @abstract
-       * @param {GPUContext} ctx 
+       * @type {Screen}
        */
-      draw(ctx) {
-            throw new Error("draw is an abstract method that must be implemented");
-      }
+      #screen;
 
+      get screen() {
+            return this.#screen;
+      }
       /**
        * @abstract
-       * @param {GPUContext} ctx 
        */
-      remove(ctx) {
-            throw new Error("remove is an abstract method that must be implemented");
+      draw() {
+            throw new Error("draw is an abstract method that must be implemented");
+      }
+      /**
+       * 
+       * @param {Screen} screen 
+       */
+      $setScreen(screen) {
+            this.#screen = screen;
       }
 }

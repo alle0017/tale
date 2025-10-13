@@ -1,6 +1,7 @@
 import { useGame } from "../game/Game.js"
 import { createDrawable, } from "./Drawable.js";
-/**@import {Coordinates} from "./index.js" */
+/**@import {Coordinates} from "./index.d.ts" */
+import * as SpriteEntity from "../rendering/entities/sprite.js";
 
 /**
  * @returns {TextureEntity & { 
@@ -8,11 +9,10 @@ import { createDrawable, } from "./Drawable.js";
  *    unbind(): void; 
  * }}
  */
-export const Sprite = createDrawable(/**@param {string} asset*/asset => {
-      const sprite = useGame().ctx.image();
+export const Sprite = createDrawable(/**@param {TemplateStringsArray} asset*/asset => {
+      const sprite = new SpriteEntity.default(asset);
       let ticket;
 
-      sprite.image = asset;
       Object.defineProperties(sprite, {
             bind: {
                   /**

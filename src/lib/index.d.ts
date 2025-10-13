@@ -1,4 +1,4 @@
-import EventManager from "../ecs/Event";
+import EventManager from "../ecs/Event.js";
 
 export type Coordinates = {
       x: number,

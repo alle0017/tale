@@ -2,7 +2,7 @@ import { useTaskManager, Priority } from "../ecs/TaskManager.js";
 import { WorldManager } from "../ecs/WorldManager.js";
 import { useGame } from "../index.js";
 import { Drawable, } from "../lib/Drawable.js";
-import GPUEntity2D from "./shader/entity/GPUEntity2D.js";
+import GPUEntity2D from "./entities/GPUEntity2D.js";
 /**@import {Entity} from "../ecs/Entity.js" */
 
 
@@ -19,7 +19,7 @@ export const useRendering = () => {
             game.ctx.removeAll();
 
             for (const entity of entities) {
-                  entity.get(Drawable).draw(game.ctx);
+                  game.ctx.addEntity(entity.get(Drawable));
             }
       }
       const system = () => {

@@ -1,70 +1,36 @@
-import { Camera } from "./shader/buckets/Camera.js";
-import ShapeBucket from "./shader/buckets/ShapeBucket.js";
-import TextureBucket from "./shader/buckets/TextureBucket.js";
-import Shape from "./shader/entity/Shape.js";
-import TextureEntity from "./shader/entity/Texture.js";
-/**@import GPUEntity2D from "./shader/entity/GPUEntity2D.js";*/
-/**@import GPUContext from "./index.js"*/
+/**@import GPUEntity2D from "./entities/GPUEntity2D.js";*/
+/**@import GPUContext from "./index.d.ts"*/
+
+import OrderedList from "../types/OrderedList.js";
+import Screen from "./screen/screen.js";
 
 /**
  * Represents the rendering context for WebGL operations.
  * @implements {GPUContext}
  */
 export default class Context {
+
+     /* get camera() {
+            return this.#camera;
+      }*/
       /**
-       * @type {WebGLRenderingContext}
+       * @type {Screen}
        */
       #ctx;
-
       /**
-       * @type {TextureBucket}
-       * @readonly
+       * @type {OrderedList<GPUEntity2D>}
        */
-      #textures;
-
-      /**
-       * @type {ShapeBucket}
-       * @readonly
-       */
-      #shapes;
-
-      /**
-       * @type {Camera}
-       */
-      #camera;
-
-      get camera() {
-            return this.#camera;
-      }
-
+      #entities = new OrderedList();
       get entities() {
-            return /**@type {GPUEntity2D[]}*/(this.#textures.entities).concat(/**@type {GPUEntity2D[]}*/(this.#shapes.entities))
+            return [...this.#entities]
       }
 
       get canvas() {
-            return this.#ctx.canvas;
+            return this.#ctx.grid;
       }
 
-      /**
-       * Initializes the WebGL context and associated buckets.
-       * @param {HTMLCanvasElement} cvs 
-       */
-      constructor(cvs = undefined) {
-            cvs ||= document.createElement('canvas');
-
-            cvs.style.imageRendering = 'pixelated'
-
-            if (!cvs.isConnected) {
-                  document.body.appendChild(cvs);
-            }
-
-            this.#ctx = cvs.getContext('webgl');
-            this.#ctx.enable(this.#ctx.DEPTH_TEST);
-            
-            this.#textures =  new TextureBucket(this.#ctx);
-            this.#shapes = new ShapeBucket(this.#ctx);
-            this.#camera = new Camera(this.#ctx);
-            this.#resize();
+      constructor() {
+            this.#ctx = new Screen();
       }
       /**
        * 
@@ -88,101 +54,31 @@ export default class Context {
       #getHeight(parent) {
             return this.#getWidth(parent)*3/4;
       }
-      #resize() {
-            const cvs = this.#ctx.canvas;
-            const parent = cvs instanceof HTMLCanvasElement && cvs.parentElement ? cvs.parentElement: document.body;
 
-            cvs.width = this.#getWidth(parent);
-            cvs.height = this.#getHeight(parent);
-            this.#ctx.viewport(0, 0, this.#ctx.canvas.width, this.#ctx.canvas.height);
+      draw() {
+            this.#entities.forEach(e => e.draw());
+            this.#ctx.draw();
+      }
 
-            parent.addEventListener('resize', () => {
-                  cvs.width = this.#getWidth(parent);
-                  cvs.height = this.#getHeight(parent);
-                  this.#ctx.viewport(0, 0, this.#ctx.canvas.width, this.#ctx.canvas.height);
-            });
+      clear() {
+            this.#ctx.grid.clear();
+      }
+      removeAll() {
+            this.#entities.clear();
       }
       /**
        * 
-       * @param {HTMLElement} element
+       * @param {GPUEntity2D} entity 
        */
-      moveRoot(element) {
-            element.append(/**@type {HTMLCanvasElement}*/(this.#ctx.canvas));
+      addEntity(entity) {
+            entity.$setScreen(this.#ctx);
+            this.#entities.push(entity);
       }
-
       /**
-       * Draws all textures and shapes in their respective buckets.
+       * 
+       * @param {GPUEntity2D} entity 
        */
-      draw() {
-            this.#textures.bindCamera(this.#camera);
-            this.#textures.draw();
-            this.#shapes.bindCamera(this.#camera);
-            this.#shapes.draw();
-      }
-
-      /**
-       * Clears the WebGL context with a black background.
-       */
-      clear() {
-            this.#ctx.clearColor(0,0,0,1);
-            this.#ctx.clear(this.#ctx.DEPTH_BUFFER_BIT | this.#ctx.COLOR_BUFFER_BIT);
-      }
-
-      /**
-       * Creates a rectangle shape.
-       * @returns {Shape} A new rectangle shape.
-       */
-      rect() {
-            return new Shape([
-                  -1, -1,
-                  -1, 1,
-                  1, 1,
-                  1, -1,
-            ]);
-      }
-
-      /**
-       * Creates a new texture entity.
-       * @returns {TextureEntity} A new texture entity.
-       */
-      image() {
-            return new TextureEntity();
-      }
-
-      /**
-       * Adds a texture entity to the texture bucket for rendering.
-       * @param {TextureEntity} img - The texture entity to add.
-       */
-      drawImage(img) {
-            this.#textures.add(img);
-      }
-
-      /**
-       * Removes a texture entity from the texture bucket.
-       * @param {TextureEntity} img - The texture entity to remove.
-       */
-      clearImage(img) {
-            this.#textures.remove(img);
-      }
-
-      /**
-       * Adds a shape to the shape bucket for rendering.
-       * @param {Shape} shape - The shape to add.
-       */
-      drawShape(shape) {
-            this.#shapes.add(shape);
-      }
-
-      /**
-       * Removes a shape from the shape bucket.
-       * @param {Shape} shape - The shape to remove.
-       */
-      clearShape(shape) {
-            this.#shapes.remove(shape);
-      }
-
-      removeAll() {
-            this.#shapes.removeAll();
-            this.#textures.removeAll();
+      removeEntity(entity) {
+            this.#entities.delete(entity);
       }
 }

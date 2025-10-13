@@ -1,6 +1,6 @@
 import { useGame } from "../game/Game.js"
 import { createDrawable } from "./Drawable.js";
-/**@import {Coordinates} from "./index.js" */
+/**@import {Coordinates} from "./index.d.ts" */
 
 /**
  * @returns {TextureEntity & { 
@@ -8,13 +8,13 @@ import { createDrawable } from "./Drawable.js";
  *    unbind(): void; 
  * }}
  */
-export const Rect = createDrawable( 
+export const Rect = createDrawable( () => ({})
       /**
        * 
        * @param {number} width 
        * @param {number} height 
        * @returns 
-       */
+       *
       (width = 10, height = 10) => {
       const rect = useGame().ctx.rect();
       let ticket;
@@ -31,7 +31,7 @@ export const Rect = createDrawable(
                    * will follow it. Every position that 
                    * was previously bind will be unbind
                    * @param {Coordinates} position 
-                   */
+                   *
                   value: (position) => {
                         if (ticket) {
                               ticket();
@@ -48,7 +48,7 @@ export const Rect = createDrawable(
                    * detach previously bound 
                    * position.
                    * @throws {Error} if no position was bound
-                   */
+                   *
                   value: () => {
                         if (!ticket) {
                               throw new Error('unbinding failed: position was not bound');
@@ -59,5 +59,5 @@ export const Rect = createDrawable(
             }
       })
 
-      return rect;
-});
+      return rect;*/
+);

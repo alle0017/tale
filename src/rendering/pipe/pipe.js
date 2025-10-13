@@ -3,7 +3,7 @@
  * x: number, 
  * y: number, 
  * z: number, 
- * color: import("../rendering/grid").HexColor,
+ * color: import("../rendering/grid.js").HexColor,
  * primitive?: string,
  * }} Pixel
  */

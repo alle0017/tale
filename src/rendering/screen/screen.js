@@ -1,6 +1,6 @@
 import { Pipe } from "../pipe/pipe.js";
 import Grid, { selectPrimitive } from "../rendering/grid.js";
-/**@import {Pixel} from "../pipe/pipe" */
+/**@import {Pixel} from "../pipe/pipe.js" */
 export default class Screen {
       #grid = new Grid(100, 50);
       #pipe = new Pipe();
@@ -9,8 +9,12 @@ export default class Screen {
             return this.#pipe;
       }
 
+      get grid() {
+            return this.#grid;
+      }
+
       constructor() {
-            this.#pipe.use(this.#setPixelOnScreen)
+            this.#pipe.use(pixel => this.#setPixelOnScreen(pixel))
       }
 
       /**

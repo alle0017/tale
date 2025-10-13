@@ -1,4 +1,4 @@
-/**@import {Entity} from "./Entity" */
+/**@import {Entity} from "./Entity.js" */
 import { useTaskManager } from "./TaskManager.js";
 import EventManager from "./Event.js";
 

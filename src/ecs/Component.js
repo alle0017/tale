@@ -1,5 +1,5 @@
 import EventManager from "./Event.js";
-/**@import {Entity} from "./Entity" */
+/**@import {Entity} from "./Entity.js" */
 
 /**
  * @template {{}} K
