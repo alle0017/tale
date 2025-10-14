@@ -1,11 +1,12 @@
-import type GPUEntity2D from "./entities/GPUEntity2D.js";
+import type { Camera } from "./shaders/camera.js";
+import { Shader } from "./shaders/shader.js";
 
 /**
  * Represents the rendering context for WebGL operations.
  */
 export default interface GPUContext {
-      //camera: Camera;
-      entities: GPUEntity2D[];
+      camera: Camera;
+      entities: Shader[];
       canvas: { width: number, height: number };
       /**
        * Draws all entities added to the current context
@@ -19,6 +20,6 @@ export default interface GPUContext {
        * remove all current drawn entities.
        */
       removeAll(): void;
-      addEntity(entity: GPUEntity2D): void;
-      removeEntity(entity: GPUEntity2D): void;
+      addEntity(shader: Shader): void;
+      removeEntity(shader: Shader): void;
 }

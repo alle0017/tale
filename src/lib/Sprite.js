@@ -1,4 +1,5 @@
 import { useGame } from "../game/Game.js"
+import { Image } from "../rendering/shaders/image.js";
 import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
 import * as SpriteEntity from "../rendering/entities/sprite.js";
@@ -9,10 +10,10 @@ import * as SpriteEntity from "../rendering/entities/sprite.js";
  *    unbind(): void; 
  * }}
  */
-export const Sprite = createDrawable(/**@param {TemplateStringsArray} asset*/asset => {
-      const sprite = new SpriteEntity.default(asset);
+export const Sprite = createDrawable(/**@param {number[][]} asset*/asset => {
+      const sprite = new Image(asset);
       let ticket;
-
+      
       Object.defineProperties(sprite, {
             bind: {
                   /**

@@ -4,7 +4,6 @@
  * y: number, 
  * z: number, 
  * color: import("../rendering/grid.js").HexColor,
- * primitive?: string,
  * }} Pixel
  */
 

@@ -1,8 +1,8 @@
-/**@import GPUEntity2D from "./entities/GPUEntity2D.js";*/
-/**@import GPUContext from "./index.d.ts"*/
-
 import OrderedList from "../types/OrderedList.js";
 import Screen from "./screen/screen.js";
+import { Camera } from "./shaders/camera.js";
+/**@import {Shader} from "./shaders/shader.js";*/
+/**@import GPUContext from "./index.d.ts"*/
 
 /**
  * Represents the rendering context for WebGL operations.
@@ -10,75 +10,63 @@ import Screen from "./screen/screen.js";
  */
 export default class Context {
 
-     /* get camera() {
-            return this.#camera;
-      }*/
+      /**
+       * @type {OrderedList<Shader>}
+       */
+      #entities = new OrderedList();
+
+      /**
+       * @type {Camera}
+       */
+      #camera;
       /**
        * @type {Screen}
        */
-      #ctx;
-      /**
-       * @type {OrderedList<GPUEntity2D>}
-       */
-      #entities = new OrderedList();
+      #screen;
+
+      get camera() {
+            return this.#camera;
+      }
+
       get entities() {
             return [...this.#entities]
       }
 
       get canvas() {
-            return this.#ctx.grid;
+            return this.#screen.grid;
       }
 
       constructor() {
-            this.#ctx = new Screen();
+            this.#screen = new Screen();
+            this.#camera = new Camera();
       }
+
       /**
-       * 
-       * @param {HTMLElement} parent 
+       * Draws all textures and shapes in their respective buckets.
        */
-      #getWidth(parent) {
-            if (parent.clientWidth <= 400) {
-                  return 400;
-            }
-
-            if (parent.clientWidth > (window.innerWidth - 10)) {
-                  return window.innerWidth - 10;
-            }
-
-            return parent.clientWidth;
-      }
-      /**
-       * 
-       * @param {HTMLElement} parent 
-       */
-      #getHeight(parent) {
-            return this.#getWidth(parent)*3/4;
-      }
-
       draw() {
-            this.#entities.forEach(e => e.draw());
-            this.#ctx.draw();
+            this.#entities.forEach(entity => entity.draw(this.#screen));
+            this.#screen.draw();
       }
 
       clear() {
-            this.#ctx.grid.clear();
+            this.#screen.grid.clear();
       }
       removeAll() {
             this.#entities.clear();
       }
       /**
        * 
-       * @param {GPUEntity2D} entity 
+       * @param {Shader} shader 
        */
-      addEntity(entity) {
-            entity.$setScreen(this.#ctx);
-            this.#entities.push(entity);
+      addEntity(shader) {
+            this.#entities.push(shader);
       }
       /**
        * 
-       * @param {GPUEntity2D} entity 
+       * @param {Shader} shader 
        */
-      removeEntity(entity) {
-            this.#entities.delete(entity);
+      removeEntity(shader) {
+            this.#entities.delete(shader);
       }
 }

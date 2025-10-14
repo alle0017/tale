@@ -28,8 +28,7 @@ export default class Screen {
             if (pixel.y < 0 || pixel.y > this.#grid.height) {
                   return;
             }
-            const primitive = pixel.primitive || selectPrimitive(pixel.y);
-            this.#grid.set(pixel.color, pixel.x, pixel.y, pixel.z, primitive);
+            this.#grid.set(pixel.color, pixel.x, pixel.y, pixel.z);
             return pixel;
       }
 
