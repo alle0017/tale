@@ -2,9 +2,10 @@
 import { Shader } from "./shader.js";
 /**
  * @typedef {{ 
- * color: import("../rendering/grid.js").HexColor,
+ * color: import("../rendering/canvas.js").HexColor,
  * }} VirtualPixel
  */
+export const PIXEL = '▀';
 /**
  * @implements {Shader}
  */
@@ -14,7 +15,7 @@ export class Image extends Shader {
        */
       static map = new Map();
       /**
-       * @type {import("../pipe/pipe.js").Pixel[]}
+       * @type {import("../rendering/canvas.js").HexColor[][]}
        */
       #matrix;
       x = 0;
@@ -30,14 +31,14 @@ export class Image extends Shader {
             this.#matrix = [];
 
             for (let i = 0; i < asset.length; i++) {
+                  /**
+                   * @type {import("../rendering/canvas.js").HexColor[]}
+                   */
+                  const row = [];
                   for (let j = 0; j < asset[i].length; j++) {
-                        this.#matrix.push({
-                              x: j,
-                              y: i,
-                              z: 0,
-                              color: Image.map.get(asset[i][j])?.color || '#FFF',
-                        });
+                        row.push(Image.map.get(asset[i][j])?.color || '#FFF');
                   }
+                  this.#matrix.push(row);
             }
       }
       /**
@@ -45,13 +46,28 @@ export class Image extends Shader {
        * @param {Screen} screen 
        */
       draw(screen) {
-            for (let i = 0; i < this.#matrix.length; i++) {
-                  screen.set({
-                        x: this.#matrix[i].x + this.x,
-                        y: this.#matrix[i].y + this.y,
-                        z: this.#matrix[i].z + this.z,
-                        color: this.#matrix[i].color,
-                  });
+            /**
+             * @type {import("../rendering/canvas.js").HexColor[][]}
+             */
+            let matrix = [];
+
+            if (this.y%2 !== 0) {
+                  matrix.push(new Array(this.#matrix[0].length).fill('#000'));
+            }
+
+            matrix = matrix.concat(this.#matrix);
+
+            for (let i = 0; i < matrix.length; i += 2) {
+                  for (let j = 0; j < matrix[i].length; j++) {
+                        screen.set({
+                              x: j + this.x,
+                              y: i/2 + this.y,
+                              z: this.z,
+                              color: matrix[i]?.[j] || '#000',
+                              background: matrix[i + 1]?.[j] || '#000',
+                              char: PIXEL,
+                        });
+                  }
             }
       }
 }

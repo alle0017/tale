@@ -1,9 +1,10 @@
+/**@import {Cell} from "../rendering/canvas.js"; */
 /**
  * @typedef {{ 
  * x: number, 
  * y: number, 
  * z: number, 
- * color: import("../rendering/grid.js").HexColor,
+ * color: import("../rendering/canvas.js").HexColor,
  * }} Pixel
  */
 
@@ -11,13 +12,13 @@ import OrderedList from "../../types/OrderedList.js";
 
 export class Pipe {
       /**
-       * @type {OrderedList<(pixel: Pixel) => Pixel | undefined>}
+       * @type {OrderedList<(pixel: Cell) => Cell | undefined>}
        */
       #pipe = new OrderedList();     
 
       /**
        * 
-       * @param {Pixel} pixel 
+       * @param {Cell} pixel 
        */
       apply(pixel) {
             for (const filter of this.#pipe) {
@@ -30,14 +31,14 @@ export class Pipe {
       }
       /**
        * 
-       * @param {(pixel: Pixel) => Pixel | undefined} filter 
+       * @param {(pixel: Cell) => Cell | undefined} filter 
        */
       use(filter) {
             this.#pipe.push(filter);
       }
       /**
        * 
-       * @param {(pixel: Pixel) => Pixel | undefined} filter 
+       * @param {(pixel: Cell) => Cell | undefined} filter 
        */
       remove(filter) {
             this.#pipe.delete(filter);

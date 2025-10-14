@@ -1,8 +1,8 @@
 import { Pipe } from "../pipe/pipe.js";
-import Grid, { selectPrimitive } from "../rendering/grid.js";
-/**@import {Pixel} from "../pipe/pipe.js" */
+import Canvas from "../rendering/canvas.js";
+/**@import {Cell} from "../rendering/canvas.js"; */
 export default class Screen {
-      #grid = new Grid(100, 50);
+      #grid = new Canvas(100, 20);
       #pipe = new Pipe();
 
       get pipe() {
@@ -19,7 +19,7 @@ export default class Screen {
 
       /**
        * 
-       * @param {Pixel} pixel 
+       * @param {Cell} pixel 
        */
       #setPixelOnScreen(pixel) {
             if (pixel.x < 0 || pixel.x > this.#grid.width) {
@@ -28,7 +28,7 @@ export default class Screen {
             if (pixel.y < 0 || pixel.y > this.#grid.height) {
                   return;
             }
-            this.#grid.set(pixel.color, pixel.x, pixel.y, pixel.z);
+            this.#grid.set(pixel);
             return pixel;
       }
 
@@ -38,7 +38,7 @@ export default class Screen {
 
       /**
        * 
-       * @param {Pixel} pixel 
+       * @param {Cell} pixel 
        */
       set(pixel) {
             this.#pipe.apply(pixel);
