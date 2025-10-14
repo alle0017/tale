@@ -1,4 +1,5 @@
 import { useGame } from "../game/Game.js"
+import { Image } from "../rendering/shaders/image.js";
 import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.js" */
 
@@ -8,11 +9,10 @@ import { createDrawable, } from "./Drawable.js";
  *    unbind(): void; 
  * }}
  */
-export const Sprite = createDrawable(/**@param {string} asset*/asset => {
-      const sprite = useGame().ctx.image();
+export const Sprite = createDrawable(/**@param {number[][]} asset*/asset => {
+      const sprite = new Image(asset);
       let ticket;
-
-      sprite.image = asset;
+      
       Object.defineProperties(sprite, {
             bind: {
                   /**

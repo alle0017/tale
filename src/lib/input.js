@@ -17,13 +17,13 @@ export const useInput = (() => {
        */
       const tasks = new List();
 
-      window.addEventListener('keydown', e => {
+      /*window.addEventListener('keydown', e => {
             tasks.forEach(task => task(e));
       });
 
       window.addEventListener('keyup', e => {
             tasks.forEach(task => task(e));
-      });
+      });*/
 
       return () => {
             const scene = WorldManager.current;

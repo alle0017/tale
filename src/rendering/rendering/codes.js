@@ -1,4 +1,4 @@
-const PREFIX = '\x1b['
+export const PREFIX = '\x1b['
 /**
  * @param {number} r
  * @param {number} g

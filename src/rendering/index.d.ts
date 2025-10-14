@@ -1,4 +1,4 @@
-import type { Camera } from "./shaders/Camera.js";
+import type { Camera } from "./shaders/camera.js";
 import { Shader } from "./shaders/shader.js";
 
 /**

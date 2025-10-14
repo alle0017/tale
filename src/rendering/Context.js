@@ -1,6 +1,6 @@
 import OrderedList from "../types/OrderedList.js";
 import Screen from "./screen/screen.js";
-import { Camera } from "./shaders/Camera.js";
+import { Camera } from "./shaders/camera.js";
 /**@import {Shader} from "./shaders/shader.js";*/
 /**@import GPUContext from "./index.d.ts"*/
 
@@ -46,6 +46,7 @@ export default class Context {
        */
       draw() {
             this.#entities.forEach(entity => entity.draw(this.#screen));
+            this.#screen.draw();
       }
 
       /**

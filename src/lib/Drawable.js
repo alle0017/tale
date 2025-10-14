@@ -1,6 +1,4 @@
-import GPUEntity2D from "../rendering/shader/entity/GPUEntity2D.js";
 import { createAbstractComponent, createComponent } from "../ecs/Component.js";
-import { useGame } from "../game/Game.js";
 /**@import { Shader } from "../rendering/shaders/shader.js";*/
 /**@import {Query, Component} from "../ecs/Component.js";*/
 /**
