@@ -1,4 +1,4 @@
-import Codes, { PREFIX } from "./codes.js"
+import Codes from "./codes.js"
 
 /**@typedef {'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' } Hex */
 /**@typedef {`#${Hex}${Hex}${Hex}`} HexColor */
@@ -26,15 +26,20 @@ const toColorVector = color => {
 }
 const COLOR_VEC_SIZE = 4;
 export const EMPTY_CHAR = ' ';
-export const PIXEL = '▀';
-/**
- * 
- * @param {number} idx 
- */
-export const selectPrimitive = idx => idx%2 == 0 ? PIXEL: String.fromCharCode(0);
-
 const EMPTY = EMPTY_CHAR.charCodeAt(0);
-export default class Grid {
+
+
+/**
+ * @typedef {{
+ *    background: HexColor,
+ *    color: HexColor,
+ *    char: string,
+ *    x: number,
+ *    y: number, 
+ *    z: number,
+ * }} Cell
+ */
+export default class Canvas {
       /**
        * @type {Uint8Array}
        */
@@ -72,12 +77,44 @@ export default class Grid {
        * @param {number} height 
        */
       constructor(width, height) {
-            this.#screen = new Uint8Array(width*height*COLOR_VEC_SIZE);
+            this.#screen = new Uint8Array(width*height*COLOR_VEC_SIZE*2); // background + foreground
             this.#depthBuffer = new Uint8Array(width*height);
             this.#primitive = new Uint16Array(width*height);
             this.#width = width;
             this.#height = height;
             this.clear();
+      }
+      /**
+       * 
+       * @param {number} x 
+       * @param {number} y 
+       */
+      #getForegroundIndex(x, y) {
+            return y * this.#width + x;
+      }
+      /**
+       * 
+       * @param {number} x 
+       * @param {number} y 
+       */
+      #getDepthIndex(x, y) {
+            return y * this.#width + x;
+      }
+      /**
+       * 
+       * @param {number} x 
+       * @param {number} y 
+       */
+      #getPrimitiveIndex(x, y) {
+            return y * this.#width + x;
+      }
+      /**
+       * 
+       * @param {number} x 
+       * @param {number} y 
+       */
+      #getBackgroundIndex(x, y) {
+            return y * this.#width + x + this.#width * this.#height;
       }
       /**
        * set a cell of the buffer with corresponding 
@@ -87,22 +124,26 @@ export default class Grid {
        * if a primitive is settled, it always uses the foreground color, while the the other raw impose 
        * the background (ex. if you use 'A' with color red in column 0 row 0 and set White in column 0 row 1, 
        * then 'A' will appear red on white)
-       * @param {HexColor} color 
-       * @param {number} x 
-       * @param {number} y 
-       * @param {number} z 
+       * @param {Cell} cell
        */
-      set(color, x, y, z) {
-            const idx = y * this.#width + x;
+      set(cell) {
+            const fg = this.#getForegroundIndex(cell.x, cell.y);
+            const bg = this.#getBackgroundIndex(cell.x, cell.y);
+            const depth = this.#getDepthIndex(cell.x, cell.y);
+            const primitive = this.#getPrimitiveIndex(cell.x, cell.y);
 
-            if (this.#depthBuffer[idx] > z) {
+            if (this.#depthBuffer[depth] > cell.z) {
                   return;
             } 
-            const vec = toColorVector(color);
+            const foreground = toColorVector(cell.color);
+            const background = toColorVector(cell.background);
+
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
-                  this.#screen[idx * COLOR_VEC_SIZE + i] = vec[i];
+                  this.#screen[fg * COLOR_VEC_SIZE + i] = foreground[i];
+                  this.#screen[bg * COLOR_VEC_SIZE + i] = background[i];
             }
-            this.#depthBuffer[idx] = z;
+            this.#primitive[primitive] = cell.char.charCodeAt(0);
+            this.#depthBuffer[depth] = cell.z;
             this.#dirty = true;
       }
 
@@ -125,28 +166,26 @@ export default class Grid {
             }
             
             let buffer = '';
-            for (let y = 0; y < this.#height/2; y += 2) {
+            for (let y = 0; y < this.#height; y++) {
                   for (let x = 0; x < this.#width; x++) {
-                        const top = y * this.#width + x;
-                        const bottom = (y + 1)* this.#width + x;
+                        const primitive = this.#primitive[this.#getPrimitiveIndex(x, y)];
+                        const foreground = this.#getForegroundIndex(x,y);
+                        const background = this.#getBackgroundIndex(x,y);
 
-                        let fg;
-                        let bg;
-
-                        fg = Codes.Foreground(
-                              this.#screen[COLOR_VEC_SIZE*top],
-                              this.#screen[COLOR_VEC_SIZE*top + 1],
-                              this.#screen[COLOR_VEC_SIZE*top + 2],
-                              this.#screen[COLOR_VEC_SIZE*top + 3],
+                        const fg = Codes.Foreground(
+                              this.#screen[COLOR_VEC_SIZE*foreground],
+                              this.#screen[COLOR_VEC_SIZE*foreground + 1],
+                              this.#screen[COLOR_VEC_SIZE*foreground + 2],
+                              this.#screen[COLOR_VEC_SIZE*foreground + 3],
                         );
-                        bg = Codes.Background(
-                              this.#screen[COLOR_VEC_SIZE*bottom],
-                              this.#screen[COLOR_VEC_SIZE*bottom + 1],
-                              this.#screen[COLOR_VEC_SIZE*bottom + 2],
-                              this.#screen[COLOR_VEC_SIZE*bottom + 3],
+                        const bg = Codes.Background(
+                              this.#screen[COLOR_VEC_SIZE*background],
+                              this.#screen[COLOR_VEC_SIZE*background + 1],
+                              this.#screen[COLOR_VEC_SIZE*background + 2],
+                              this.#screen[COLOR_VEC_SIZE*background + 3],
                         );
 
-                        buffer += bg + fg + PIXEL + Codes.Reset;
+                        buffer += bg + fg + String.fromCharCode(primitive || EMPTY) + Codes.Reset;
                   }
                   buffer += '\n';
             }
