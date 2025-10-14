@@ -2,6 +2,7 @@
 
 /**
  * @abstract
+ * @interface
  */
 export class Shader {
       /**

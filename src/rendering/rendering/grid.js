@@ -1,4 +1,4 @@
-import Codes from "./codes.js"
+import Codes, { PREFIX } from "./codes.js"
 
 /**@typedef {'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' } Hex */
 /**@typedef {`#${Hex}${Hex}${Hex}`} HexColor */
@@ -31,7 +31,7 @@ export const PIXEL = '▀';
  * 
  * @param {number} idx 
  */
-export const selectPrimitive = idx => idx%2 ? PIXEL: EMPTY_CHAR;
+export const selectPrimitive = idx => idx%2 == 0 ? PIXEL: String.fromCharCode(0);
 
 const EMPTY = EMPTY_CHAR.charCodeAt(0);
 export default class Grid {
@@ -91,20 +91,17 @@ export default class Grid {
        * @param {number} x 
        * @param {number} y 
        * @param {number} z 
-       * @param {string} primitive
        */
-      set(color, x, y, z, primitive = EMPTY_CHAR) {
+      set(color, x, y, z) {
             const idx = y * this.#width + x;
 
             if (this.#depthBuffer[idx] > z) {
                   return;
             } 
             const vec = toColorVector(color);
-
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
                   this.#screen[idx * COLOR_VEC_SIZE + i] = vec[i];
             }
-            this.#primitive[idx] = primitive.charCodeAt(0);
             this.#depthBuffer[idx] = z;
             this.#dirty = true;
       }
@@ -122,9 +119,11 @@ export default class Grid {
             this.#dirty = true;
       }
       draw() {
+            
             if (!this.#dirty) {
                   return;
             }
+            
             let buffer = '';
             for (let y = 0; y < this.#height/2; y += 2) {
                   for (let x = 0; x < this.#width; x++) {
@@ -133,38 +132,21 @@ export default class Grid {
 
                         let fg;
                         let bg;
-                        let primitive;
 
-                        if (this.#primitive[bottom] != 0) {
-                              fg = Codes.Foreground(
-                                    this.#screen[COLOR_VEC_SIZE*bottom],
-                                    this.#screen[COLOR_VEC_SIZE*bottom + 1],
-                                    this.#screen[COLOR_VEC_SIZE*bottom + 2],
-                                    this.#screen[COLOR_VEC_SIZE*bottom + 3],
-                              );
-                              bg = Codes.Background(
-                                    this.#screen[COLOR_VEC_SIZE*top],
-                                    this.#screen[COLOR_VEC_SIZE*top + 1],
-                                    this.#screen[COLOR_VEC_SIZE*top + 2],
-                                    this.#screen[COLOR_VEC_SIZE*top + 3],
-                              );
-                              primitive = this.#primitive[bottom];
-                        } else {
-                              fg = Codes.Foreground(
-                                    this.#screen[COLOR_VEC_SIZE*top],
-                                    this.#screen[COLOR_VEC_SIZE*top + 1],
-                                    this.#screen[COLOR_VEC_SIZE*top + 2],
-                                    this.#screen[COLOR_VEC_SIZE*top + 3],
-                              );
-                              bg = Codes.Background(
-                                    this.#screen[COLOR_VEC_SIZE*bottom],
-                                    this.#screen[COLOR_VEC_SIZE*bottom + 1],
-                                    this.#screen[COLOR_VEC_SIZE*bottom + 2],
-                                    this.#screen[COLOR_VEC_SIZE*bottom + 3],
-                              );
-                              primitive = this.#primitive[top] != 0? this.#primitive[top]: EMPTY;
-                        }
-                        buffer += bg + fg + String.fromCharCode(primitive) + Codes.Reset;
+                        fg = Codes.Foreground(
+                              this.#screen[COLOR_VEC_SIZE*top],
+                              this.#screen[COLOR_VEC_SIZE*top + 1],
+                              this.#screen[COLOR_VEC_SIZE*top + 2],
+                              this.#screen[COLOR_VEC_SIZE*top + 3],
+                        );
+                        bg = Codes.Background(
+                              this.#screen[COLOR_VEC_SIZE*bottom],
+                              this.#screen[COLOR_VEC_SIZE*bottom + 1],
+                              this.#screen[COLOR_VEC_SIZE*bottom + 2],
+                              this.#screen[COLOR_VEC_SIZE*bottom + 3],
+                        );
+
+                        buffer += bg + fg + PIXEL + Codes.Reset;
                   }
                   buffer += '\n';
             }
