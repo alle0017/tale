@@ -1,4 +1,5 @@
 import Codes from "./codes.js"
+import { SnapshotBuffer } from "./snapshot-buffer.js";
 
 /**@typedef {'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' } Hex */
 /**@typedef {`#${Hex}${Hex}${Hex}`} HexColor */
@@ -49,15 +50,15 @@ const EMPTY = EMPTY_CHAR.charCodeAt(0);
  */
 export default class Canvas {
       /**
-       * @type {Uint8Array}
+       * @type {SnapshotBuffer<Uint8Array>}
        */
       #screen;
       /**
-       * @type {Uint8Array}
+       * @type {SnapshotBuffer<Uint8Array>}
        */
       #depthBuffer;
       /**
-       * @type {Uint16Array}
+       * @type {SnapshotBuffer<Uint16Array>}
        */
       #primitive;
       /**
@@ -85,9 +86,9 @@ export default class Canvas {
        * @param {number} height 
        */
       constructor(width, height) {
-            this.#screen = new Uint8Array(width*height*COLOR_VEC_SIZE*2); // background + foreground
-            this.#depthBuffer = new Uint8Array(width*height);
-            this.#primitive = new Uint16Array(width*height);
+            this.#screen = new SnapshotBuffer(new Uint8Array(width*height*COLOR_VEC_SIZE*2)); // background + foreground
+            this.#depthBuffer = new SnapshotBuffer(new Uint8Array(width*height));
+            this.#primitive = new SnapshotBuffer(new Uint16Array(width*height));
             this.#width = width;
             this.#height = height;
             this.clear();
@@ -139,8 +140,12 @@ export default class Canvas {
             const bg = this.#getBackgroundIndex(cell.x, cell.y);
             const depth = this.#getDepthIndex(cell.x, cell.y);
             const primitive = this.#getPrimitiveIndex(cell.x, cell.y);
+            const depthBuffer = this.#depthBuffer.peek();
+            const screen = this.#screen.peek();
+            const primitives = this.#primitive.peek();
 
-            if (this.#depthBuffer[depth] > cell.z) {
+
+            if (depthBuffer[depth] > cell.z) {
                   return;
             } 
             const foreground = toColorVector(cell.color);
@@ -148,26 +153,36 @@ export default class Canvas {
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
 
-                  if (this.#screen[fg * COLOR_VEC_SIZE + i] !== foreground[i] || this.#screen[bg * COLOR_VEC_SIZE + i] !== background[i]) {
+                  if (screen[fg * COLOR_VEC_SIZE + i] !== foreground[i] || screen[bg * COLOR_VEC_SIZE + i] !== background[i]) {
                         this.#dirty = true;
                   }
                   
-                  this.#screen[fg * COLOR_VEC_SIZE + i] = foreground[i];
-                  this.#screen[bg * COLOR_VEC_SIZE + i] = background[i];
+                  screen[fg * COLOR_VEC_SIZE + i] = foreground[i];
+                  screen[bg * COLOR_VEC_SIZE + i] = background[i];
             }
-            this.#primitive[primitive] = cell.char.charCodeAt(0);
-            this.#depthBuffer[depth] = cell.z;
+            primitives[primitive] = cell.char.charCodeAt(0);
+            depthBuffer[depth] = cell.z;
       }
 
       /**
        * clear all the buffer stored
        */
       clear() {
-            for (let i = 0; i < this.#screen.length; i++) {
-                  this.#screen[i] = 0;
-            }
-            for (let i = 0; i < this.#primitive.length; i++) {
-                  this.#primitive[i] = 0;
+            this.#depthBuffer.snapshot();
+            this.#primitive.snapshot();
+            this.#screen.snapshot();
+
+            const depthBuffer = this.#depthBuffer.peek();
+            const screen = this.#screen.peek();
+            const primitives = this.#primitive.peek();
+
+            for (let i = 0; i < primitives.length; i++) {
+                  for (let j = 0; j < COLOR_VEC_SIZE; j++) {
+                        screen[i * COLOR_VEC_SIZE + j] = 0;
+                        screen[i * COLOR_VEC_SIZE * 2 + j] = 0;
+                  }
+                  primitives[i] = 0;
+                  depthBuffer[i] = 0;
             }
             this.#dirty = true;
       }
@@ -176,25 +191,40 @@ export default class Canvas {
             if (!this.#dirty) {
                   return;
             }
+
+            if (this.#depthBuffer.isEqualToPrevious() && this.#screen.isEqualToPrevious() && this.#primitive.isEqualToPrevious()) {
+                  this.#depthBuffer.restore();
+                  this.#primitive.restore();
+                  this.#screen.restore();
+
+                  this.#screen.discardOld();
+                  this.#primitive.discardOld();
+                  this.#depthBuffer.discardOld();
+                  this.#dirty = false;
+                  return;
+            }
             
+            const screen = this.#screen.peek();
+            const primitives = this.#primitive.peek();
+
             let buffer = '';
             for (let y = 0; y < this.#height; y++) {
                   for (let x = 0; x < this.#width; x++) {
-                        const primitive = this.#primitive[this.#getPrimitiveIndex(x, y)];
+                        const primitive = primitives[this.#getPrimitiveIndex(x, y)];
                         const foreground = this.#getForegroundIndex(x,y);
                         const background = this.#getBackgroundIndex(x,y);
 
                         const fg = Codes.Foreground(
-                              this.#screen[COLOR_VEC_SIZE*foreground],
-                              this.#screen[COLOR_VEC_SIZE*foreground + 1],
-                              this.#screen[COLOR_VEC_SIZE*foreground + 2],
-                              this.#screen[COLOR_VEC_SIZE*foreground + 3],
+                              screen[COLOR_VEC_SIZE*foreground],
+                              screen[COLOR_VEC_SIZE*foreground + 1],
+                              screen[COLOR_VEC_SIZE*foreground + 2],
+                              screen[COLOR_VEC_SIZE*foreground + 3],
                         );
                         const bg = Codes.Background(
-                              this.#screen[COLOR_VEC_SIZE*background],
-                              this.#screen[COLOR_VEC_SIZE*background + 1],
-                              this.#screen[COLOR_VEC_SIZE*background + 2],
-                              this.#screen[COLOR_VEC_SIZE*background + 3],
+                              screen[COLOR_VEC_SIZE*background],
+                              screen[COLOR_VEC_SIZE*background + 1],
+                              screen[COLOR_VEC_SIZE*background + 2],
+                              screen[COLOR_VEC_SIZE*background + 3],
                         );
 
                         buffer += bg + fg + String.fromCharCode(primitive || EMPTY) + Codes.Reset;
