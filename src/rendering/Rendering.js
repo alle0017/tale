@@ -26,6 +26,7 @@ export const useRendering = (() => {
             }
       }
       const system = () => {
+            ctx.clear();
             ctx.draw();
       };
       return () => {
