@@ -69,7 +69,7 @@ export class Area extends Shader {
             
             for (let i = 0; i < height; i ++) {
                   const width = this.width && this.width < this.#matrix[i].length? this.width: this.#matrix[i].length;
-                  for (let j = 0; j < this.#matrix[i].length; j++) {
+                  for (let j = 0; j < width; j++) {
                         screen.set({
                               x: j + this.x,
                               y: i + this.y,
