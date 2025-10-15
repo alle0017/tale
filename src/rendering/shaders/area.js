@@ -1,11 +1,7 @@
 /**@import Screen from "../screen/screen.js";*/
 /**@import {HexColor} from "../rendering/canvas.js" */
 import { Shader } from "./shader.js";
-/**
- * @typedef {{ 
- * color: import("../rendering/canvas.js").HexColor,
- * }} VirtualPixel
- */
+import { Border, BorderComponent } from "./border.js";
 /**
  * @implements {Shader}
  */
@@ -14,9 +10,13 @@ export class Area extends Shader {
        * @type {string[]}
        */
       #matrix;
+      #autoWidth = 0;
+      #border = new BorderComponent();
       x = 0;
       y = 0;
       z = 0;
+      width = 0;
+      height = 0;
       /**
        * @type {HexColor}
        */
@@ -25,6 +25,10 @@ export class Area extends Shader {
        * @type {HexColor}
        */
       color = '#000';
+
+      get border() {
+            return this.#border;
+      }
 
       constructor() {
             super();
@@ -44,6 +48,10 @@ export class Area extends Shader {
             }
 
             this.#matrix[lineNo] = text;
+
+            if (text.length > this.#autoWidth) {
+                  this.#autoWidth = text.length;
+            }
       }
       /**
        * 
@@ -57,8 +65,10 @@ export class Area extends Shader {
        * @param {Screen} screen 
        */
       draw(screen) {
-
-            for (let i = 0; i < this.#matrix.length; i ++) {
+            const height = this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
+            
+            for (let i = 0; i < height; i ++) {
+                  const width = this.width && this.width < this.#matrix[i].length? this.width: this.#matrix[i].length;
                   for (let j = 0; j < this.#matrix[i].length; j++) {
                         screen.set({
                               x: j + this.x,
@@ -70,5 +80,14 @@ export class Area extends Shader {
                         });
                   }
             }
+
+            const bh = this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
+            const bw = this.width && this.width < this.#autoWidth? this.width: this.#autoWidth;
+
+            this.#border.x = this.x;
+            this.#border.y = this.y;
+            this.#border.z = this.z;
+
+            this.#border.draw(screen, bw, bh);
       }
 }
