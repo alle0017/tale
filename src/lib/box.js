@@ -1,45 +1,35 @@
-import { useGame } from "../game/Game.js"
-import { createDrawable } from "./Drawable.js";
+import { Area } from "../rendering/shaders/area.js";
+import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
 
 /**
- * @returns {TextureEntity & { 
- *    bind(position: Coordinates): void;
+ * @returns {Area & { 
+ *    bind(position: Position): void;
  *    unbind(): void; 
  * }}
  */
-export const Rect = createDrawable( () => ({})
-      /**
-       * 
-       * @param {number} width 
-       * @param {number} height 
-       * @returns 
-       *
-      (width = 10, height = 10) => {
-      const rect = useGame().ctx.rect();
+export const Box = createDrawable(() => {
+      const area = new Area();
       let ticket;
-
-      rect.width= width;
-      rect.height = height;
-
-      Object.defineProperties(rect, {
+      
+      Object.defineProperties(area, {
             bind: {
                   /**
                    * bind the position component
-                   * to the rect, so whenever the
-                   * position component changes the rect
+                   * to the area, so whenever the
+                   * position component changes the area
                    * will follow it. Every position that 
                    * was previously bind will be unbind
                    * @param {Coordinates} position 
-                   *
+                   */
                   value: (position) => {
                         if (ticket) {
                               ticket();
                         }
 
                         ticket = position.onMove(pos => {
-                              rect.x = pos.x;
-                              rect.y = pos.y;
+                              area.x = pos.x;
+                              area.y = pos.y;
                         });
                   },     
             },
@@ -48,7 +38,7 @@ export const Rect = createDrawable( () => ({})
                    * detach previously bound 
                    * position.
                    * @throws {Error} if no position was bound
-                   *
+                   */
                   value: () => {
                         if (!ticket) {
                               throw new Error('unbinding failed: position was not bound');
@@ -59,5 +49,5 @@ export const Rect = createDrawable( () => ({})
             }
       })
 
-      return rect;*/
-);
+      return area
+});

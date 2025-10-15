@@ -3,7 +3,7 @@ import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
 
 /**
- * @returns {TextureEntity & { 
+ * @returns {Image & { 
  *    bind(position: Position): void;
  *    unbind(): void; 
  * }}

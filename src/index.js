@@ -12,7 +12,7 @@ import { useRendering } from "./rendering/Rendering.js";
 import { usePhysicsSystem, Physics} from "./lib/Physics.js";
 import { createComponent } from "./ecs/Component.js";
 import FrameWrapper from "./lib/frame-wrapper.js";
-import { Rect } from "./lib/Rect.js";
+import { Box } from "./lib/box.js";
 
 export {
       useGame,
@@ -31,7 +31,7 @@ export {
       useTaskManager,
       useRendering,
       createComponent,
-      Rect,
+      Box,
       FrameWrapper,
 }
 
