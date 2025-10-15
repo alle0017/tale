@@ -1,8 +1,6 @@
-import { useGame } from "../game/Game.js"
 import { Image } from "../rendering/shaders/image.js";
 import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
-import * as SpriteEntity from "../rendering/entities/sprite.js";
 
 /**
  * @returns {TextureEntity & { 

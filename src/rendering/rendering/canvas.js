@@ -139,12 +139,16 @@ export default class Canvas {
             const background = toColorVector(cell.background);
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
+
+                  if (this.#screen[fg * COLOR_VEC_SIZE + i] !== foreground[i] || this.#screen[bg * COLOR_VEC_SIZE + i] !== background[i]) {
+                        this.#dirty = true;
+                  }
+                  
                   this.#screen[fg * COLOR_VEC_SIZE + i] = foreground[i];
                   this.#screen[bg * COLOR_VEC_SIZE + i] = background[i];
             }
             this.#primitive[primitive] = cell.char.charCodeAt(0);
             this.#depthBuffer[depth] = cell.z;
-            this.#dirty = true;
       }
 
       /**
