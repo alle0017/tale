@@ -36,6 +36,29 @@ export class Area extends Shader {
       }
 
       /**
+       * set minimum height and width to the specified ones.
+       * if the area has less lines then height, then lines are generated,
+       * nothing will happen otherwise. the same is applied
+       * for width.
+       * @param {number} width 
+       * @param {number} height 
+       */
+      resize(width, height) {
+            if (this.#autoWidth < width) {
+                  this.#autoWidth = width;
+            }
+            for (let i = 0; i < this.#matrix.length; i++) {
+                  if (this.#matrix[i].length < width) {
+                        this.#matrix[i] += ' '.repeat(width - this.#matrix[i].length);
+                  }
+            }
+            if (height >= this.#matrix.length) {
+                  for (let i = this.#matrix.length; i < height; i++) {
+                        this.#matrix.push(' '.repeat(width));
+                  }
+            }
+      }
+      /**
        * 
        * @param {number} lineNo 
        * @param {string} text 
