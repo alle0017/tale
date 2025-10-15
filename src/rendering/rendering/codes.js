@@ -9,6 +9,8 @@ const FROM_TC = (r, g, b, a) => 16 + 36*Math.trunc(r*5/255) + 6*Math.trunc(g*5/2
 export default {
       Home: `${PREFIX}H`,
       Clear: `${PREFIX}J`,
+      HideCursor: `${PREFIX}?25l`,
+      ShowCursor: `${PREFIX}?25h`,
       Reset: `${PREFIX}0m`,
       /**
        * @param {number} r

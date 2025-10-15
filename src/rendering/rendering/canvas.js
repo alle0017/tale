@@ -201,7 +201,7 @@ export default class Canvas {
                   }
                   buffer += '\n';
             }
-            console.log(Codes.Clear + Codes.Home + buffer)
+            console.log(Codes.HideCursor + Codes.Clear + Codes.Home + buffer + Codes.ShowCursor);
             this.#dirty = false;
       }
 }
