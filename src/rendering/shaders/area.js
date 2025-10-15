@@ -1,7 +1,7 @@
 /**@import Screen from "../screen/screen.js";*/
 /**@import {HexColor} from "../rendering/canvas.js" */
 import { Shader } from "./shader.js";
-import { Border, BorderComponent } from "./border.js";
+import { BorderComponent } from "./border-component.js";
 /**
  * @implements {Shader}
  */
