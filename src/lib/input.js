@@ -13,17 +13,24 @@ import EventManager from "../ecs/Event.js";
  */
 export const useInput = (() => {
       /**
-       * @type {List<(e: KeyboardEvent)=>void>}
+       * @type {List<(e: string)=>void>}
        */
       const tasks = new List();
 
-      /*window.addEventListener('keydown', e => {
-            tasks.forEach(task => task(e));
+      //@ts-ignore
+      process.stdin.setRawMode(true);
+      //@ts-ignore
+      process.stdin.resume();
+      //@ts-ignore
+      process.stdin.setEncoding("utf8");
+      //@ts-ignore
+      process.stdin.on("data", /**@param {string} key*/key => {
+            if (key === "\u0003") {
+                  //@ts-ignore
+                  process.exit();
+            }
+            tasks.forEach(task => task(key));
       });
-
-      window.addEventListener('keyup', e => {
-            tasks.forEach(task => task(e));
-      });*/
 
       return () => {
             const scene = WorldManager.current;
@@ -31,28 +38,24 @@ export const useInput = (() => {
             /**@type {Map<string,string>} */
             const resolver = new Map();
             
-            resolver.set("arrowup", 'up');
+            resolver.set("\u001b[a", 'up');
             resolver.set("w", 'up');
 
-            resolver.set("arrowdown", 'down');
+            resolver.set("\u001b[b", 'down');
             resolver.set("s", 'down');
 
-            resolver.set("arrowleft", 'left');
+            resolver.set("\u001b[d", 'left');
             resolver.set("a", 'left');
 
-            resolver.set("arrowright", 'right');
+            resolver.set("\u001b[c", 'right');
             resolver.set("d", 'right');
 
             /**
-             * @type {(e: KeyboardEvent)=>void}
+             * @type {(e: string) =>void}
              */
             const handler = e => {
-                  if (e.type === 'keyup') {
-                        events.trigger('keyup')
-                        return;
-                  }
 
-                  const key = e.key.toLowerCase();
+                  const key = e.toLowerCase();
                   let ev = key;
 
                   if (resolver.has(key)) {
