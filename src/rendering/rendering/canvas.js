@@ -39,6 +39,14 @@ const EMPTY = EMPTY_CHAR.charCodeAt(0);
  *    z: number,
  * }} Cell
  */
+/**
+ * Canvas class for managing a 2D buffer of colored character cells,
+ * supporting foreground/background color, depth, and primitive (character) data.
+ * 
+ * The buffer is designed for terminal-like rendering, where each cell can have
+ * a foreground color, background color, character, and depth value for z-ordering.
+ * 
+ */
 export default class Canvas {
       /**
        * @type {Uint8Array}
