@@ -12,6 +12,8 @@ export class Area extends Shader {
       #matrix;
       #autoWidth = 0;
       #border = new BorderComponent();
+      offsetX = 0;
+      offsetY = 0;
       x = 0;
       y = 0;
       z = 0;
@@ -28,6 +30,14 @@ export class Area extends Shader {
 
       get border() {
             return this.#border;
+      }
+
+      get boxHeight() {
+            return this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
+      }
+
+      get boxWidth() {
+            return this.width && this.width < this.#autoWidth? this.width: this.#autoWidth;
       }
 
       constructor() {
@@ -94,8 +104,8 @@ export class Area extends Shader {
                   const width = this.width && this.width < this.#matrix[i].length? this.width: this.#matrix[i].length;
                   for (let j = 0; j < width; j++) {
                         screen.set({
-                              x: j + this.x,
-                              y: i + this.y,
+                              x: j + this.x + this.offsetX,
+                              y: i + this.y + this.offsetY,
                               z: this.z,
                               color: this.color,
                               background: this.background,
@@ -107,8 +117,8 @@ export class Area extends Shader {
             const bh = this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
             const bw = this.width && this.width < this.#autoWidth? this.width: this.#autoWidth;
 
-            this.#border.x = this.x;
-            this.#border.y = this.y;
+            this.#border.x = this.x + this.offsetX;
+            this.#border.y = this.y + this.offsetY;
             this.#border.z = this.z;
 
             this.#border.draw(screen, bw, bh);
