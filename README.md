@@ -1,89 +1,92 @@
-# Tale
+# Tale — terminal-first ECS game toolkit
 
-## Project Overview
-Tale is a modular and extensible framework designed for building interactive applications, such as games or simulations. It provides a robust architecture for managing entities, components, systems, and rendering pipelines, making it easier to create and maintain complex projects. It is based around a functional-like ECS system, that encounter a little bit of OOP concepts like inheritance, to enhance code reusability
+Tale is a compact, modular toolkit for building terminal (text-mode) games and interactive applications in JavaScript. The project centers on a small Entity-Component-System (ECS) core and a renderer that targets terminal output — together with a layout library for composing text-based UIs and game screens.
 
-## Features
-- **Entity-Component-System (ECS)**: A flexible ECS architecture for managing game objects and their behaviors.
-- **Rendering Pipeline**: A customizable rendering system with support for shaders and buffers.
-- **Debugging Tools**: Includes a suite of debugging components like collision watchers, frame rate monitors, and entity explorers.
-- **Pixel Editor**: Tools for creating and editing pixel art directly within the application.
-- **Modular Design**: Organized into reusable modules for better maintainability and scalability.
+This README has been updated to reflect the project's current scope: terminal game programming (ECS + terminal renderer + layout primitives).
 
-## Folder Structure
-The project is organized as follows:
+Key features
+- Small, focused ECS (entities, components, systems, world management, task scheduling).
+- Terminal renderer and framing utilities to draw characters, boxes and simple layouts to a terminal canvas.
+- Layout primitives (box / horizontal / vertical) for composing screens and HUDs.
+- Utilities: input handling, sprites (text-based), collision helpers and basic physics utilities.
 
-```
+Why terminal-first?
+- Fast iteration: no graphics toolchain required — run in any terminal.
+- Low dependencies: easy to experiment with gameplay and systems.
+- Great for roguelike-style games, turn-based games, editors and prototyping.
+
+Repository layout (important files)
+
 src/
-├── index.js                # Entry point of the application
-├── debug/                 # Debugging tools and components
-│   ├── components/       # Individual debug components
-│   └── icons/            # Icons used in debugging tools
-├── ecs/                   # Entity-Component-System implementation
-├── game/                  # Core game logic and scenes
-├── lib/                   # Utility libraries and shared components
-├── rendering/             # Rendering pipeline and shader management
-├── types/                 # Type definitions and utilities
+- `index.js` — top-level entry and bootstrap (wires game and renderer together).
+- `layout.js` — higher-level layout helpers.
+
+src/ecs/
+- `Component.js`, `Entity.js`, `System.js`, `World.js`, `WorldManager.js`, `TaskManager.js`, `Event.js` — ECS and scheduling primitives.
+
+src/game/
+- `Game.js`, `Scene.js` — game lifecycle and scene orchestration.
+
+src/layout/
+- `box.js`, `horizontal.js`, `vertical.js` — layout primitives used to compose text UIs and game views.
+
+src/lib/
+- `Drawable.js`, `Sprite.js`, `Physics.js`, `Position.js`, `input.js`, `frame-wrapper.js`, `layout.js`, `box.js` — core utilities and building blocks.
+- `collisions/` — collision helpers such as `ChunkIterator.js` and `Collision.js`.
+
+src/rendering/
+- `Rendering.js`, `Context.js`, `screen/screen.js`, `pipe/pipe.js` — rendering pipeline and terminal output helpers. These modules implement a terminal-oriented renderer that maps game objects and layout primitives to characters and terminal regions.
+
+src/types/
+- `List.js`, `OrderedList.js` — small collection utilities.
+
+Quick start (run in Node.js)
+
+The project is plain JavaScript. To run a simple terminal demo you can create a tiny runner file and execute it with Node. If your code uses ES modules, add a minimal `package.json` with "type": "module".
+
+> note that it uses requestAnimationFrame and derived methods, 
+> so a polyfill should be added.
+```js
+// polyfill
+const REFRESH_RATE = 16;
+(function() {
+      /**
+       * 
+       * @param {FrameRequestCallback} callback 
+       * @returns 
+       */
+      globalThis.requestAnimationFrame = callback => {
+            const id = setTimeout(() => callback(REFRESH_RATE), REFRESH_RATE); 
+            return id;
+      };
+      /**
+       * 
+       * @param {IdleRequestCallback} callback 
+       * @returns 
+       */
+      globalThis.requestIdleCallback = callback => {
+            const id = setTimeout(() => callback(null), REFRESH_RATE*2); 
+            return id;
+      };
+ 
+      globalThis.cancelAnimationFrame = function(id) {
+            clearTimeout(id);
+      };
+      globalThis.cancelIdleCallback = function(id) {
+            clearTimeout(id);
+      };
+}());
 ```
 
-### Key Directories
-- **`src/ecs/`**: Contains the core ECS implementation, including `Component`, `Entity`, `System`, and `World` classes.
-- **`src/rendering/`**: Manages the rendering pipeline, including shaders, buffers, and rendering contexts.
-- **`src/debug/`**: Debugging tools such as `collision-watcher`, `frame-rate`, and `entity-explorer`.
-- **`src/game/`**: Game-specific logic, including the `Game` and `Scene` classes.
-- **`src/lib/`**: Shared utilities like `Drawable`, `Physics`, and `Sprite`.
+Renderer and layout overview
 
-## Installation
+- Terminal renderer: maps Drawable-like objects to character buffers and writes them to stdout (or a pty). Look at `src/rendering/screen/screen.js` and `src/rendering/pipe/pipe.js` for terminal output plumbing.
+- Layout primitives: `src/layout/box.js`, `horizontal.js`, and `vertical.js` provide flexible stacking and region allocation — useful for HUDs, panels, menus and game maps.
+- Sprites: `src/lib/Sprite.js` supports text-based sprites (single characters or small glyph blocks).
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/tale.git
-   ```
+Contributing
 
-2. Navigate to the project directory:
-   ```bash
-   cd tale
-   ```
-
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-4. Build the project (if applicable):
-   ```bash
-   npm run build
-   ```
-
-## Usage
-
-1. Start the development server:
-   ```bash
-   npm start
-   ```
-
-2. Open your browser and navigate to `http://localhost:3000`.
-
-3. Explore the application and its features.
-
-## Contributing
-
-Contributions are welcome! To contribute:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bug fix:
-   ```bash
-   git checkout -b feature-name
-   ```
-3. Commit your changes:
-   ```bash
-   git commit -m "Add new feature"
-   ```
-4. Push to your fork:
-   ```bash
-   git push origin feature-name
-   ```
-5. Open a pull request.
+Contribution are well accepted
 
 ## License
 
