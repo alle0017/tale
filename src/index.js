@@ -13,6 +13,12 @@ import { usePhysicsSystem, Physics} from "./lib/Physics.js";
 import { createComponent } from "./ecs/Component.js";
 import FrameWrapper from "./lib/frame-wrapper.js";
 import { Box } from "./lib/box.js";
+import { Layout } from "./lib/layout.js";
+import { Area } from "./rendering/shaders/area.js";
+import { Border } from "./rendering/shaders/border.js";
+import { BorderComponent } from "./rendering/shaders/border-component.js";
+import { Parent } from "./rendering/shaders/layout/parent.js";
+import { Vertical } from "./rendering/shaders/layout/vertical.js";
 
 export {
       useGame,
@@ -33,6 +39,12 @@ export {
       createComponent,
       Box,
       FrameWrapper,
+      Layout,
+      Area,
+      Border,
+      Parent,
+      Vertical,
+      BorderComponent,
 }
 
 export const useWorld = () => {
