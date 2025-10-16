@@ -88,6 +88,16 @@ export class Area extends Shader {
       }
       /**
        * 
+       * @param {number} row 
+       * @param {number} col 
+       * @param {string} char 
+       */
+      setChar(row,col,char) {
+            this.resize(row, col);
+            this.#matrix[row] = this.#matrix[row].slice(0, col) + char[0] + this.#matrix[row].slice(col + 1);
+      }
+      /**
+       * 
        * @param {number} lineNo 
        */
       getLine(lineNo) {
