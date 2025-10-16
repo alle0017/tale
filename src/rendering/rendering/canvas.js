@@ -197,15 +197,19 @@ export default class Canvas {
                   this.#primitive.restore();
                   this.#screen.restore();
 
-                  this.#screen.discardOld();
-                  this.#primitive.discardOld();
-                  this.#depthBuffer.discardOld();
+                  this.#screen.discard();
+                  this.#primitive.discard();
+                  this.#depthBuffer.discard();
                   this.#dirty = false;
                   return;
             }
             
             const screen = this.#screen.peek();
             const primitives = this.#primitive.peek();
+
+            this.#screen.discard();
+            this.#primitive.discard();
+            this.#depthBuffer.discard();
 
             let buffer = '';
             for (let y = 0; y < this.#height; y++) {

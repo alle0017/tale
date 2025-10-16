@@ -35,7 +35,7 @@ export class SnapshotBuffer {
             this.#buffer = this.#snapshot;
       }
 
-      discardOld() {
+      discard() {
             this.#snapshot = undefined;
       }
 
