@@ -62,6 +62,7 @@ export const useInput = (() => {
                         ev = resolver.get(key);
                   }
                   events.trigger(ev);
+                  events.trigger('any', { key: ev });
             };
 
             let node = tasks.push(handler);
