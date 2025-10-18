@@ -30,6 +30,10 @@ export function Button({ label, width, height, onClick, onHover, background, col
       const btn = new Area();
       const events = useInput().events;
 
+      btn.color = color;
+      btn.background = background;
+      btn.border.style = border;
+      btn.border.background = background;
       btn.resize(width, height);
       btn.setLine(Math.trunc(height/2), ' '.repeat(dt) + label);
 
