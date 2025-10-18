@@ -18,9 +18,10 @@ export const Action = {
  * @param {Action} action 
  * @param {number} x 
  * @param {number} y 
+ * @param {boolean} released true if it was released
  */
-export function buildMouseString(action, x, y) {
-      return `${PREFIX}[${action},${x},${y}]`
+export function buildMouseString(action, x, y, released) {
+      return `${PREFIX}[${released? 1: 0},${action},${x},${y}]`
 }
 
 /**
@@ -43,7 +44,7 @@ export function isMouseString(key) {
 /**
  * 
  * @param {string} key 
- * @returns {{ x: number, y: number, action: Action }}
+ * @returns {{ x: number, y: number, action: Action, released: boolean }}
  */
 export function getEvent(key) {
       if (key.length < PREFIX.length) {
@@ -52,7 +53,7 @@ export function getEvent(key) {
 
       const len = key.length - 1;
 
-      let i = PREFIX.length + 1;
+      let i = PREFIX.length + 3;
       let action = '';
       let x = 0;
       let y = 0;
@@ -74,6 +75,7 @@ export function getEvent(key) {
             i++;
       }
       return {
+            released: key[PREFIX.length + 1] === '1',
             action, 
             x, 
             y

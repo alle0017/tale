@@ -20,8 +20,7 @@ export function bootstrap(hook = undefined) {
                   return;
             }
 
-            if (key.toLowerCase().match(/\[<(\d+);(\d+);(\d+)m/ig)) {
-                  key = key.toLowerCase();
+            if (key.match(/\[<(\d+);(\d+);(\d+)[mM]/ig)) {
                   const code = parseInt(
                               key
                               .match(/\[<\d+;/ig)[0]
@@ -35,8 +34,9 @@ export function bootstrap(hook = undefined) {
                   ) - 1;
                   const y = parseInt(
                         key
-                        .match(/[0-9]+m/ig)[0]
+                        .match(/[0-9]+[mM]/ig)[0]
                         .replaceAll('m', '')
+                        .replaceAll('M', '')
                   ) - 1;
 
                   let action = Action.Click;
@@ -61,7 +61,7 @@ export function bootstrap(hook = undefined) {
                         case 65: action = Action.SwipeUp;
                               break;
                   }
-                  key = buildMouseString(action, x, y);
+                  key = buildMouseString(action, x, y, key[key.length - 1] === 'm');
             }
 
             switch (key) {
