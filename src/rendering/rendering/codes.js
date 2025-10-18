@@ -12,6 +12,8 @@ export default {
       HideCursor: `${PREFIX}?25l`,
       ShowCursor: `${PREFIX}?25h`,
       Reset: `${PREFIX}0m`,
+      MouseEvt: `${PREFIX}?1006h${PREFIX}?1003h`,
+      ExitMouseEvt: `${PREFIX}?1006l${PREFIX}?1003l`,
       /**
        * @param {number} r
        * @param {number} g

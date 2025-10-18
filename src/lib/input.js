@@ -2,6 +2,8 @@
 import List from "../types/List.js"
 import { WorldManager } from "../ecs/WorldManager.js";
 import EventManager from "../ecs/Event.js";
+import { bootstrap } from "./platform/term.js";
+import { getEvent, isMouseString } from "./platform/mouse.js";
 
 /**
  * hook used to define input events.
@@ -17,18 +19,7 @@ export const useInput = (() => {
        */
       const tasks = new List();
 
-      //@ts-ignore
-      process.stdin.setRawMode(true);
-      //@ts-ignore
-      process.stdin.resume();
-      //@ts-ignore
-      process.stdin.setEncoding("utf8");
-      //@ts-ignore
-      process.stdin.on("data", /**@param {string} key*/key => {
-            if (key === "\u0003") {
-                  //@ts-ignore
-                  process.exit();
-            }
+      bootstrap(key => {
             tasks.forEach(task => task(key));
       });
 
@@ -38,16 +29,16 @@ export const useInput = (() => {
             /**@type {Map<string,string>} */
             const resolver = new Map();
             
-            resolver.set("\u001b[a", 'up');
+            resolver.set("arrowup", 'up');
             resolver.set("w", 'up');
 
-            resolver.set("\u001b[b", 'down');
+            resolver.set("arrowdown", 'down');
             resolver.set("s", 'down');
 
-            resolver.set("\u001b[d", 'left');
+            resolver.set("arrowleft", 'left');
             resolver.set("a", 'left');
 
-            resolver.set("\u001b[c", 'right');
+            resolver.set("arrowright", 'right');
             resolver.set("d", 'right');
 
             /**
@@ -55,11 +46,18 @@ export const useInput = (() => {
              */
             const handler = e => {
 
-                  const key = e.toLowerCase();
-                  let ev = key;
+                  let ev = e;
 
-                  if (resolver.has(key)) {
-                        ev = resolver.get(key);
+                  if (isMouseString(ev)) {
+                        const event = getEvent(ev);
+
+                        events.trigger(event.action, event);
+                        events.trigger('any', { key: event.action });
+                        return;
+                  }
+
+                  if (resolver.has(ev)) {
+                        ev = resolver.get(ev);
                   }
                   events.trigger(ev);
                   events.trigger('any', { key: ev });
