@@ -32,12 +32,12 @@ export function bootstrap(hook = undefined) {
                         key
                         .match(/;[0-9]+;/ig)[0]
                         .replaceAll(';', '')
-                  )
+                  ) - 1;
                   const y = parseInt(
                         key
                         .match(/[0-9]+m/ig)[0]
                         .replaceAll('m', '')
-                  )
+                  ) - 1;
 
                   let action = Action.Click;
 
