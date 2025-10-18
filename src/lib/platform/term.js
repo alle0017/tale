@@ -24,7 +24,7 @@ export function bootstrap(hook = undefined) {
                   key = key.toLowerCase();
                   const code = parseInt(
                               key
-                              .match(/\[<(35|0|32|64|65);/ig)[0]
+                              .match(/\[<\d+;/ig)[0]
                               .replace('[<', '')
                               .replace(';', '')
                         );
@@ -82,6 +82,9 @@ export function bootstrap(hook = undefined) {
                   } break;
                   case '\t': {
                         key = 'Tab';
+                  } break;
+                  case '\x7f': {
+                        key = 'Backspace';
                   } break;
             }
             hook?.(key);
