@@ -2,7 +2,7 @@
 /**@import {HexColor} from "../rendering/canvas.js" */
 /**@import { Area } from "./area.js";*/
 
-/**@import {Border} from "./border.js" */
+/**@import {BorderType} from "./border.js" */
 export class BorderComponent {
       /**
        * @type {HexColor}
@@ -14,7 +14,7 @@ export class BorderComponent {
       color = '#000';
 
       /**
-       * @type {Border}
+       * @type {BorderType}
        */
       style;
       x = 0;

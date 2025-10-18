@@ -1,12 +1,15 @@
 /**
- * @enum {{
+ * @typedef {{
  *    lt: string,
  *    rt: string,
  *    lb: string,
  *    rb: string,
  *    horizontal: string,
  *    vertical: string
- * }}
+ * }} BorderType
+ */
+/**
+ * @enum {BorderType}
  */
 export const Border = {
       Double: {
