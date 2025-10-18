@@ -7,6 +7,10 @@ import { BorderComponent } from "./border-component.js";
  */
 export class Area extends Shader {
       /**
+       * @type {Area}
+       */
+      static #activeElement = undefined;
+      /**
        * @type {string[]}
        */
       #matrix;
@@ -102,6 +106,33 @@ export class Area extends Shader {
        */
       getLine(lineNo) {
             return this.#matrix[lineNo] || '';
+      }
+      /**
+       * checks whether given coordinates are inside 
+       * the area
+       * @param {number} x 
+       * @param {number} y 
+       * @return {boolean}
+       */
+      contains(x,y) {
+            const width = this.boxWidth;
+            const height = this.boxHeight;
+
+            return (
+                  x >= this.x + this.offsetX &&
+                  x <= this.x + this.offsetX + width &&
+                  y >= this.y + this.offsetY &&
+                  y <= this.y + this.offsetY + height
+            );
+      }
+      hasFocus() {
+            return Area.#activeElement === this;
+      }
+      focus() {
+            Area.#activeElement = this;
+      }
+      blur() {
+            Area.#activeElement = undefined;
       }
       /**
        * 
