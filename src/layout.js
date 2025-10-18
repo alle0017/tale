@@ -4,6 +4,7 @@ import { Box } from "./layout/box.js";
 import { World } from "./ecs/World.js";
 import { createEntity } from "./ecs/Entity.js";
 import { Layout } from "./lib/layout.js";
+import { Button } from "./layout/button.js";
 /**@import { Area } from "./rendering/shaders/area.js";*/
 
 /**
@@ -17,4 +18,4 @@ export function createRoot(parent, scene) {
       return entity;
 }
 
-export { Vertical, Horizontal, Box };
+export { Vertical, Horizontal, Box, Button };
