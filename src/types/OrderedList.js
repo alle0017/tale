@@ -21,7 +21,15 @@ export default class OrderedList {
             }
       }
       get length() {
-            return [...this].length;
+            let len = 0;
+            let curr = this.#head;
+
+            while (curr.next) {
+                  curr = curr.next;
+                  len++;
+            }
+
+            return len;
       }
 
 
