@@ -5,7 +5,7 @@ import { Parent } from "./parent.js";
 export class Vertical extends Parent {
       #offset = 0;
 
-      gap = 0;
+      gap = 1;
 
       /**
        * @param {Screen} screen 
