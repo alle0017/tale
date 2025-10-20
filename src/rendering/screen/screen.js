@@ -6,7 +6,7 @@ import Canvas from "../rendering/canvas.js";
  * drawing one pixel at time
  */
 export default class Screen {
-      #grid = new Canvas(100, 20);
+      #grid = new Canvas(100, 40);
       #pipe = new Pipe();
 
       /**
