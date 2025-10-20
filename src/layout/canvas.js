@@ -7,12 +7,12 @@ import { Action } from "../lib/platform/mouse.js";
  * @param {{
  *    width?: number
  *    height?: number,
- *    onClick?: (param: { x: number, y: number, released: boolean }) => void,
+ *    onClick?: (param: { x: number, y: number, released: boolean }, self: CC) => void,
  *    onHover?: (param: { x: number, y: number, released: boolean }) => void,
  * }} props 
  */
 export function Canvas({ width, height, onClick, onHover }) {
-      const comp = new CC();
+      const comp = new CC(); 
       const events = useInput().events;
 
       width ??= 10;
@@ -26,7 +26,7 @@ export function Canvas({ width, height, onClick, onHover }) {
                   const {x,y} = data;
       
                   if (comp.contains(x,y)) {
-                        onClick?.(data);
+                        onClick?.(data, comp);
                   }
             });
       }
