@@ -13,8 +13,8 @@ import { Border } from "../rendering/shaders/border.js";
  *    height?: number,
  *    background?: HexColor,
  *    color?: HexColor,
- *    onClick?: (param: { x: number, y: number, released: boolean }) => void,
- *    onHover?: (param: { x: number, y: number, released: boolean }) => void,
+ *    onClick?: (param: { x: number, y: number, released: boolean }, btn: Area) => void,
+ *    onHover?: (param: { x: number, y: number, released: boolean }, btn: Area) => void,
  *    border?: BorderType
  * }} param0 
  */
@@ -44,7 +44,7 @@ export function Button({ label, width, height, onClick, onHover, background, col
                   const {x,y} = data;
       
                   if (btn.contains(x,y)) {
-                        onClick?.(data);
+                        onClick?.(data,btn);
                   }
             });
       }
@@ -55,7 +55,7 @@ export function Button({ label, width, height, onClick, onHover, background, col
                   const {x,y} = data;
       
                   if (btn.contains(x,y)) {
-                        onHover?.(data);
+                        onHover?.(data,btn);
                   }
             });
       }
