@@ -21,8 +21,8 @@ import { Border } from "../rendering/shaders/border.js";
 export function Button({ label, width, height, onClick, onHover, background, color, border }) {
       height ??= 1;
       width ??= label.length;
-      background ??= '#FFF';
-      color ??= '#000';
+      background ??= '#000';
+      color ??= '#FFF';
       border ??= Border.None;
 
 
@@ -34,8 +34,9 @@ export function Button({ label, width, height, onClick, onHover, background, col
       btn.background = background;
       btn.border.style = border;
       btn.border.background = background;
+      btn.border.color = color;
       btn.resize(width, height);
-      btn.setLine(Math.trunc(height/2), ' '.repeat(dt) + label);
+      btn.setLine(Math.trunc(height/2), ' '.repeat(dt) + label + ' '.repeat(dt));
 
       if (onClick) {
             events.on(Action.Click, ev => {
