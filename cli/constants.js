@@ -120,6 +120,6 @@ export const BIOME = `
 }
 `
 
-export const DEISGN_FILE = `
+export const DESIGN_FILE = `
 # My awesome project
 `

@@ -3,7 +3,8 @@
       "include": [
             ".assets/**/*",
             "src/**/*",
-            "engine/**/*"
+            "engine/**/*",
+            "cli/**/*",
       ],
       "compilerOptions": {
             // Tells TypeScript to read JS files, as

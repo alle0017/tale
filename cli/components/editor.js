@@ -1,7 +1,7 @@
-import { Border, } from "../../../src/index.js";
-import { Vertical, Horizontal, createRoot, Box, Button, Canvas } from "../../../src/layout.js";
+import { Border, } from "../../src/index.js";
+import { Vertical, Horizontal, createRoot, Box, Button, Canvas } from "../../src/layout.js";
 import { ColorPicker } from "../components/color-picker.js";
-/**@import {HexColor} from "../../../src/rendering/rendering/canvas" */
+/**@import {HexColor} from "../../src/rendering/rendering/canvas" */
 
 
 

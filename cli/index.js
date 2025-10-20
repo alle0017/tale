@@ -1,9 +1,9 @@
-import { useWorld, useGame } from "../../src/index.js";
-import { createRoot, } from "../../src/layout.js";
+import { useWorld, useGame } from "../src/index.js";
+import { createRoot, } from "../src/layout.js";
 import Editor from "./components/editor.js";
 import { writeFile, fileExists, createDir } from "./filesystem/index.js";
-/**@import {HexColor} from "../../src/rendering/rendering/canvas" */
-import { Actions, BIOME, DEISGN_FILE, DENO_POLYFILL_JS, INDEX_JS, TSCONFIG } from "./constants.js";
+/**@import {HexColor} from "../src/rendering/rendering/canvas" */
+import { Actions, BIOME, DESIGN_FILE, DENO_POLYFILL_JS, INDEX_JS, TSCONFIG } from "./constants.js";
 
 
 export default function MainScene() {
@@ -23,7 +23,7 @@ export default function MainScene() {
                   writeFile(`src/polyfill.js`, DENO_POLYFILL_JS);
                   writeFile(`tsconfig.json`, TSCONFIG);
                   writeFile(`biome.json`, BIOME);
-                  writeFile(`README.md`, DEISGN_FILE);
+                  writeFile(`README.md`, DESIGN_FILE);
             } break;
             case Actions.Canvas.name: {
                   createRoot(Editor({ 

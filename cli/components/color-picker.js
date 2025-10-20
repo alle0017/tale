@@ -1,8 +1,8 @@
-/**@import {HexColor} from "../../../src/rendering/rendering/canvas" */
+/**@import {HexColor} from "../../src/rendering/rendering/canvas" */
 
-import { useInput } from "../../../src/index.js";
-import { Vertical, Horizontal, Box } from "../../../src/layout.js";
-import { Action } from "../../../src/lib/platform/mouse.js";
+import { useInput } from "../../src/index.js";
+import { Vertical, Horizontal, Box } from "../../src/layout.js";
+import { Action } from "../../src/lib/platform/mouse.js";
 /**
  * 
  * @param {number} idx 
