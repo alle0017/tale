@@ -1,5 +1,5 @@
 import { useGame,Game } from "./game/Game.js";
-import { Sprite } from "./lib/Sprite.js";
+import { Sprite, } from "./lib/Sprite.js";
 import { Position } from "./lib/Position.js";
 import { useInput } from "./lib/input.js";
 import { Body, useCollisionSystem } from "./lib/collisions/Collision.js";

@@ -1,9 +1,9 @@
 import { useWorld, useGame } from "../src/index.js";
 import { createRoot, } from "../src/layout.js";
 import Editor from "./components/editor.js";
-import { writeFile, fileExists, createDir } from "./filesystem/index.js";
+import { writeFile, fileExists, createDir, readFile } from "./filesystem/index.js";
 /**@import {HexColor} from "../src/rendering/rendering/canvas" */
-import { Actions, BIOME, DESIGN_FILE, DENO_POLYFILL_JS, INDEX_JS, TSCONFIG } from "./constants.js";
+import { Actions, BIOME, DESIGN_FILE, DENO_POLYFILL_JS, INDEX_JS, TSCONFIG, FILESYSTEM_LIB } from "./constants.js";
 
 
 export default function MainScene() {
@@ -20,6 +20,7 @@ export default function MainScene() {
                   createDir('src/entities');
                   createDir('src/layout');
                   writeFile(`src/index.js`, INDEX_JS);
+                  writeFile(`src/filesystem.js`, FILESYSTEM_LIB);
                   writeFile(`src/polyfill.js`, DENO_POLYFILL_JS);
                   writeFile(`tsconfig.json`, TSCONFIG);
                   writeFile(`biome.json`, BIOME);

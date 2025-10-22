@@ -4,10 +4,19 @@ import { ColorPicker } from "../components/color-picker.js";
 /**@import {HexColor} from "../../src/rendering/rendering/canvas" */
 
 
+/**
+ * @typedef {{
+ *    mapping: {
+ *          idx: number,
+ *          color: import("../../src/rendering/rendering/canvas").HexColor
+ *    }[],
+ *    matrix: number[][]
+ * }} Asset
+ */
 
 /**
  * 
- * @param {{ onSave?: (data: HexColor[][]) => void }} param0 
+ * @param {{ onSave?: (data: Asset) => void }} param0 
  * @returns 
  */
 export default function Editor({ onSave }) {
@@ -25,8 +34,18 @@ export default function Editor({ onSave }) {
       /**
        * @type {HexColor[][]}
        */
-      const result = new Array(CVS_HEIGHT).fill(new Array(CVS_WIDTH));
+      const result = [];
+
+      for (let i = 0; i < CVS_HEIGHT; i++) {
+            result.push(new Array(CVS_WIDTH))
+      }
       const activeMarker = Box({ background: '#000', color: '#0FA'}, '◉');
+      /**
+       * @type {Map<HexColor, number>}
+       */
+      const colors = new Map();
+      let colorIndex = 1;
+
       let active;
 
       const editor = Horizontal({},
@@ -36,6 +55,8 @@ export default function Editor({ onSave }) {
                   onClick({ x, y }, cvs) {
                         cvs.setChar(x, y,'', '#000', color);
                         cvs.setChar(x%2 ? x - 1: x + 1, y,'', '#000', color);
+                        colors.set(penColor, colorIndex);
+                        colorIndex++;
                         
                         if (erase) {
                               result[y][Math.trunc(x/2)] = undefined;
@@ -45,7 +66,11 @@ export default function Editor({ onSave }) {
                   }
             }),
             Vertical({gap: 5},
-                  ColorPicker({ onClick: c => { color = c; penColor = c; } }),
+                  ColorPicker({ onClick: c => { 
+                              color = c; 
+                              penColor = c; 
+                        } 
+                  }),
                   Horizontal({ gap: 5 },
                         Button({ 
                               label: 'pen', 
@@ -90,7 +115,22 @@ export default function Editor({ onSave }) {
                                     if (e.released) {
                                           return;
                                     }
-                                    onSave?.(result);
+                                    /**
+                                     * @type {Asset}
+                                     */
+                                    const asset = {
+                                          mapping: [],
+                                          matrix: result.map(row => 
+                                                row.map(color => colors.get(color) || 0)
+                                          ),
+                                    };
+                                    colors.forEach((idx, color) => {
+                                          asset.mapping.push({
+                                                idx,
+                                                color,
+                                          });
+                                    });
+                                    onSave?.(asset);
                               },
                         }),
                   )

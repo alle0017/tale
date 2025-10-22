@@ -123,3 +123,106 @@ export const BIOME = `
 export const DESIGN_FILE = `
 # My awesome project
 `
+
+export const FILESYSTEM_LIB = `
+//@ts-ignore
+import { exists } from "jsr:@std/fs/exists";
+/**
+ * 
+ * @param {string} file 
+ * @param {string} text 
+ */
+export const writeFile = async (file, text) => {
+      //@ts-ignore
+      await Deno.writeTextFile(file, text)
+}
+
+/**
+ * 
+ * @param {string} file 
+ * @returns {Promise<boolean>}
+ */
+export const fileExists = async file => await exists(file);
+
+/**
+ * 
+ * @param {string} dir 
+ */
+export const createDir = async dir => {
+      try {
+            //@ts-ignore
+            await Deno.mkdir(dir, { recursive: true });
+      } catch {
+            return;
+      }
+}
+
+/**
+ * 
+ * @param {string} file 
+ * @returns {Promise<string>}
+ */
+export const readFile = async file => {
+      
+      try {
+            //@ts-ignore
+            const content = await Deno.readTextFile(file);
+            return content;
+      } catch (e) {
+            console.error(e);
+      }
+}
+
+/**
+ * @template {{}} T
+ * @param {string} file 
+ * @returns {Promise<T>}
+ */
+export const readJsonFile = async file => {
+      
+      try {
+            //@ts-ignore
+            const content = await Deno.readTextFile(file);
+            return JSON.parse(content);
+      } catch (e) {
+            console.error(e);
+      }
+}
+/**
+ * @template {{}} T
+ * @param {string} file
+ * @param {T} obj
+ */
+export const writeJsonFile = async (file, obj) => {
+      await writeFile(file, JSON.stringify(obj));
+}
+/**
+ * @typedef {{
+ *    mapping: {
+ *          idx: number,
+ *          color: import("../../src/rendering/rendering/canvas").HexColor
+ *    }[],
+ *    matrix: number[][]
+ * }} Asset
+ */
+/**
+ * 
+ * @param {string} name 
+ */
+export const loadSpriteAsset = async name => {
+      //@ts-ignore
+      const uri = import.meta.resolve('assets/'+name+'.json')
+      /**
+       * @type {Asset}
+       */
+      const asset = await readJsonFile(uri);
+
+      asset.mapping.forEach(mapping => {
+            Image.map.clear();
+            //@ts-expect-error
+            Image.map.set(mapping.idx, mapping.color);
+      });
+
+      return asset.matrix;
+}
+`

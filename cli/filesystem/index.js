@@ -31,3 +31,43 @@ export const createDir = async dir => {
             return;
       }
 }
+
+/**
+ * 
+ * @param {string} file 
+ * @returns {Promise<string>}
+ */
+export const readFile = async file => {
+      
+      try {
+            //@ts-ignore
+            const content = await Deno.readTextFile(file);
+            return content;
+      } catch (e) {
+            console.error(e);
+      }
+}
+
+/**
+ * @template {{}} T
+ * @param {string} file 
+ * @returns {Promise<T>}
+ */
+export const readJsonFile = async file => {
+      
+      try {
+            //@ts-ignore
+            const content = await Deno.readTextFile(file);
+            return JSON.parse(content);
+      } catch (e) {
+            console.error(e);
+      }
+}
+/**
+ * @template {{}} T
+ * @param {string} file
+ * @param {T} obj
+ */
+export const writeJsonFile = async (file, obj) => {
+      await writeFile(file, JSON.stringify(obj));
+}
