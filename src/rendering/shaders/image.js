@@ -36,7 +36,7 @@ export class Image extends Shader {
                    */
                   const row = [];
                   for (let j = 0; j < asset[i].length; j++) {
-                        row.push(Image.map.get(asset[i][j])?.color || '#FFF');
+                        row.push(Image.map.get(asset[i][j])?.color);
                   }
                   this.#matrix.push(row);
             }
@@ -46,27 +46,23 @@ export class Image extends Shader {
        * @param {Screen} screen 
        */
       draw(screen) {
-            /**
-             * @type {import("../rendering/canvas.js").HexColor[][]}
-             */
-            let matrix = [];
+            const PIXEL_COMPONENTS = 2;
 
-            if (this.y%2 !== 0) {
-                  matrix.push(new Array(this.#matrix[0].length).fill('#000'));
-            }
-
-            matrix = matrix.concat(this.#matrix);
-
-            for (let i = 0; i < matrix.length; i += 2) {
-                  for (let j = 0; j < matrix[i].length; j++) {
-                        screen.set({
-                              x: j + this.x,
-                              y: i/2 + this.y,
-                              z: this.z,
-                              color: matrix[i]?.[j] || '#000',
-                              background: matrix[i + 1]?.[j] || '#000',
-                              char: PIXEL,
-                        });
+            for (let i = 0; i < this.#matrix.length; i++) {
+                  for (let j = 0; j < this.#matrix[i].length; j++) {
+                        for (let k = 0; k < PIXEL_COMPONENTS; k++) {
+                              if (!this.#matrix[i][j]) {
+                                    continue;
+                              }
+                              screen.set({
+                                    x: j * PIXEL_COMPONENTS + k + this.x,
+                                    y: i + this.y,
+                                    z: this.z,
+                                    color: '#000',
+                                    background: this.#matrix[i][j],
+                                    char: ' ',
+                              });
+                        }
                   }
             }
       }
