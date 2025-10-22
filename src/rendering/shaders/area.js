@@ -21,8 +21,8 @@ export class Area extends Shader {
       x = 0;
       y = 0;
       z = 0;
-      width = 0;
-      height = 0;
+      maxWidth = 0;
+      maxHeight = 0;
       /**
        * @type {HexColor}
        */
@@ -37,12 +37,29 @@ export class Area extends Shader {
       }
 
       get boxHeight() {
-            return this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
+            return this.maxHeight && this.maxHeight < this.#matrix.length? this.maxHeight: this.#matrix.length;
       }
 
       get boxWidth() {
-            return this.width && this.width < this.#autoWidth? this.width: this.#autoWidth;
+            return this.maxWidth && this.maxWidth < this.#autoWidth? this.maxWidth: this.#autoWidth;
       }
+
+      set width(width) {
+            this.resize(width, this.#matrix.length)
+      }
+
+      get width() {
+            return this.#autoWidth;
+      }
+
+      set height(height) {
+            this.resize(this.#autoWidth, height)
+      }
+
+      get height() {
+            return this.#matrix.length;
+      }
+
 
       constructor() {
             super();
@@ -139,10 +156,10 @@ export class Area extends Shader {
        * @param {Screen} screen 
        */
       draw(screen) {
-            const height = this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
+            const height = this.maxHeight && this.maxHeight < this.#matrix.length? this.maxHeight: this.#matrix.length;
             
             for (let i = 0; i < height; i ++) {
-                  const width = this.width && this.width < this.#matrix[i].length? this.width: this.#matrix[i].length;
+                  const width = this.maxWidth && this.maxWidth < this.#matrix[i].length? this.maxWidth: this.#matrix[i].length;
                   for (let j = 0; j < width; j++) {
                         screen.set({
                               x: j + this.x + this.offsetX,
@@ -155,8 +172,8 @@ export class Area extends Shader {
                   }
             }
 
-            const bh = this.height && this.height < this.#matrix.length? this.height: this.#matrix.length;
-            const bw = this.width && this.width < this.#autoWidth? this.width: this.#autoWidth;
+            const bh = this.maxHeight && this.maxHeight < this.#matrix.length? this.maxHeight: this.#matrix.length;
+            const bw = this.maxWidth && this.maxWidth < this.#autoWidth? this.maxWidth: this.#autoWidth;
 
             this.#border.x = this.x + this.offsetX;
             this.#border.y = this.y + this.offsetY;

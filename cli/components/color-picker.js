@@ -110,7 +110,7 @@ export function ColorPicker({ onClick }) {
             ...
             colors
             .map((row,i) => 
-                  Horizontal({ height: 1 },
+                  Horizontal({},
                         ...row
                         .map((color) => 
                               Box({ background:  color}, '  ')
