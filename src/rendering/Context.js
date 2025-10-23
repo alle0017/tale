@@ -1,6 +1,5 @@
 import OrderedList from "../types/OrderedList.js";
 import Screen from "./screen/screen.js";
-import { Camera } from "./shaders/camera.js";
 /**@import {Shader} from "./shaders/shader.js";*/
 /**@import GPUContext from "./index.d.ts"*/
 
@@ -14,19 +13,10 @@ export default class Context {
        * @type {OrderedList<Shader>}
        */
       #entities = new OrderedList();
-
-      /**
-       * @type {Camera}
-       */
-      #camera;
       /**
        * @type {Screen}
        */
       #screen;
-
-      get camera() {
-            return this.#camera;
-      }
 
       get entities() {
             return [...this.#entities]
@@ -36,9 +26,12 @@ export default class Context {
             return this.#screen.grid;
       }
 
+      get renderingPipeline() {
+            return this.#screen.pipe;
+      }
+
       constructor() {
             this.#screen = new Screen();
-            this.#camera = new Camera();
       }
 
       /**

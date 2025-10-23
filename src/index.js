@@ -20,6 +20,7 @@ import { BorderComponent } from "./rendering/shaders/border-component.js";
 import { Parent } from "./rendering/shaders/layout/parent.js";
 import { Vertical } from "./rendering/shaders/layout/vertical.js";
 import { Action as MouseAction } from "./lib/platform/mouse.js";
+import { Camera } from "./rendering/shaders/camera.js";
 
 export {
       useGame,
@@ -47,6 +48,7 @@ export {
       Vertical,
       BorderComponent,
       MouseAction,
+      Camera,
 }
 
 export const useWorld = () => {

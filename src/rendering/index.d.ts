@@ -1,13 +1,13 @@
-import type { Camera } from "./shaders/camera.js";
+import { Pipe } from "./pipe/pipe.js";
 import { Shader } from "./shaders/shader.js";
 
 /**
  * Represents the rendering context for WebGL operations.
  */
 export default interface GPUContext {
-      camera: Camera;
       entities: Shader[];
       canvas: { width: number, height: number };
+      renderingPipeline: Pipe;
       /**
        * Draws all entities added to the current context
        */

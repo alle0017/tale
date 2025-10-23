@@ -29,7 +29,7 @@ export const useRendering = (() => {
             ctx.clear();
             ctx.draw();
       };
-      return () => {
+      function render() {
 
             reload();
 
@@ -41,5 +41,7 @@ export const useRendering = (() => {
 
             useTaskManager().addAnimationTask(system);
       }
+      render.CONTEXT = ctx;
+      return render;
 })();
 
