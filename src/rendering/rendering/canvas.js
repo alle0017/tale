@@ -3,11 +3,12 @@ import { SnapshotBuffer } from "./snapshot-buffer.js";
 
 /**@typedef {'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' } Hex */
 /**@typedef {`#${Hex}${Hex}${Hex}`} HexColor */
+/**@typedef {`#${Hex}${Hex}${Hex}${Hex}`} AlphaHexColor */
 /**@typedef {[number, number, number, number]} Color */
 
 /**
  * 
- * @param {HexColor} color 
+ * @param {HexColor | AlphaHexColor} color 
  * @returns {Color}
  */
 const toColorVector = color => {
@@ -32,7 +33,7 @@ const EMPTY = EMPTY_CHAR.charCodeAt(0);
 
 /**
  * @typedef {{
- *    background: HexColor,
+ *    background: HexColor | AlphaHexColor,
  *    color: HexColor,
  *    char: string,
  *    x: number,
