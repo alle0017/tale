@@ -86,6 +86,21 @@ export default class List {
             return false;
       }
       /**
+       * 
+       * @param {ListNode<T>} node 
+       */
+      holds(node) {
+            let head = this.#head;
+
+            while (head) {
+                  if (head == node) {
+                        return true;
+                  }
+                  head = head.next;
+            }
+            return false;
+      }
+      /**
        * @param {T} value
        */
       push(value) {
