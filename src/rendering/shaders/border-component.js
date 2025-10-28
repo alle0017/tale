@@ -21,7 +21,7 @@ export class BorderComponent {
       y = 0;
       z = 0;
       /**
-       * @type {Area}
+       * @type {string}
        */
       label;
       /**
@@ -64,12 +64,13 @@ export class BorderComponent {
             this.#drawSymbol(screen, this.x - 1, this.y + height, this.style.lb);
             this.#drawSymbol(screen, this.x + width, this.y, this.style.rt);
             this.#drawSymbol(screen, this.x + width, this.y + height, this.style.rb);   
-
+            
             if (!this.label) {
                   return;
             }
-            this.label.x = this.x + Math.trunc(width/10);
-            this.label.y = this.y;
-            this.label.draw(screen);
+
+            for (let i = 0; i < this.label.length; i++) {
+                  this.#drawSymbol(screen, this.x + Math.trunc(width/10) + i, this.y, this.label[i]);
+            }
       }
 }
