@@ -1,18 +1,9 @@
 import { Border, } from "../../src/index.js";
-import { Vertical, Horizontal, createRoot, Box, Button, Canvas } from "../../src/layout.js";
+import { Vertical, Horizontal, Button, Canvas } from "../../src/layout.js";
+import { Canvas as CanvasComponent } from "../../src/rendering/shaders/layout/canvas.js";
 import { ColorPicker } from "../components/color-picker.js";
-/**@import {HexColor} from "../../src/rendering/rendering/canvas" */
-
-
-/**
- * @typedef {{
- *    mapping: {
- *          idx: number,
- *          color: import("../../src/rendering/rendering/canvas").HexColor
- *    }[],
- *    matrix: number[][]
- * }} Asset
- */
+import { useActiveButton, usePen, useCanvasSupport } from "./hooks/editor.js";
+/**@import { Asset } from "./hooks/editor.js";*/
 
 /**
  * 
@@ -22,53 +13,32 @@ import { ColorPicker } from "../components/color-picker.js";
 export default function Editor({ onSave }) {
       const CVS_WIDTH = 32;
       const CVS_HEIGHT = 32;
-      /**
-       * @type {HexColor}
-       */
-      let color = '#FFF';
-      /**
-       * @type {HexColor}
-       */
-      let penColor = color;
-      let erase = false;
-      /**
-       * @type {HexColor[][]}
-       */
-      const result = [];
+      const pen = usePen();
+      const support = useCanvasSupport(CVS_WIDTH, CVS_HEIGHT);
+      const setActive = useActiveButton();
 
-      for (let i = 0; i < CVS_HEIGHT; i++) {
-            result.push(new Array(CVS_WIDTH))
-      }
-      const activeMarker = Box({ background: '#000', color: '#0FA'}, '◉');
-      /**
-       * @type {Map<HexColor, number>}
-       */
-      const colors = new Map();
-      let colorIndex = 1;
 
-      let active;
-
-      const editor = Horizontal({},
+      return Horizontal({},
             Canvas({
                   height: CVS_HEIGHT,
                   width: CVS_WIDTH*2,
-                  onClick({ x, y }, cvs) {
-                        cvs.setChar(x, y,'', '#000', color);
-                        cvs.setChar(x%2 ? x - 1: x + 1, y,'', '#000', color);
-                        colors.set(penColor, colorIndex);
-                        colorIndex++;
-                        
-                        if (erase) {
-                              result[y][Math.trunc(x/2)] = undefined;
-                        } else {
-                              result[y][Math.trunc(x/2)] = color;
-                        }
+                  onDrag({ x, y, target }) {
+                        const cvs = /**@type {CanvasComponent} */(target);
+                        cvs.setChar(x, y,'', '#000', pen.getColor());
+                        cvs.setChar(x%2 ? x - 1: x + 1, y,'', '#000', pen.getColor());
+                        support.setPixel(pen.isErasing() ? undefined: pen.getColor(), x, y)
+                  },
+                  onClick({ x, y, target }) {
+                        const cvs = /**@type {CanvasComponent} */(target);
+                        cvs.setChar(x, y,'', '#000', pen.getColor());
+                        cvs.setChar(x%2 ? x - 1: x + 1, y,'', '#000', pen.getColor());
+                        support.setPixel(pen.isErasing() ? undefined: pen.getColor(), x, y)
                   }
             }),
             Vertical({gap: 5},
-                  ColorPicker({ onClick: c => { 
-                              color = c; 
-                              penColor = c; 
+                  ColorPicker({ 
+                        onClick: color => { 
+                              pen.write(color);
                         } 
                   }),
                   Horizontal({ gap: 5 },
@@ -77,15 +47,9 @@ export default function Editor({ onSave }) {
                               width: 13, 
                               height: 2, 
                               border: Border.SolidRound, 
-                              onClick: (_, btn) => {
-                                    color = penColor;
-                                    erase = false;
-                                    btn.border.label = activeMarker;
-
-                                    if (active && active !== btn) {
-                                          active.border.label = undefined;
-                                    }
-                                    active = btn;
+                              onClick: ({ target }) => {
+                                    pen.write();
+                                    setActive(target);
                               },
                         }),
                         Button({ 
@@ -93,15 +57,9 @@ export default function Editor({ onSave }) {
                               width: 13, 
                               height: 2, 
                               border: Border.SolidRound,
-                              onClick: (ev, btn) => {
-                                    color = '#000';
-                                    erase = true;
-                                    btn.border.label = activeMarker;
-
-                                    if (active && active !== btn) {
-                                          active.border.label = undefined;
-                                    }
-                                    active = btn;
+                              onClick: ({ target }) => {
+                                    pen.erase();
+                                    setActive(target);
                               } 
                         }),
                   ),
@@ -112,30 +70,14 @@ export default function Editor({ onSave }) {
                               height: 2, 
                               border: Border.SolidRound, 
                               onClick: (e) => {
-                                    if (e.released) {
-                                          return;
-                                    }
                                     /**
                                      * @type {Asset}
                                      */
-                                    const asset = {
-                                          mapping: [],
-                                          matrix: result.map(row => 
-                                                row.map(color => colors.get(color) || 0)
-                                          ),
-                                    };
-                                    colors.forEach((idx, color) => {
-                                          asset.mapping.push({
-                                                idx,
-                                                color,
-                                          });
-                                    });
+                                    const asset = support.toAsset();
                                     onSave?.(asset);
                               },
                         }),
                   )
             )
       );
-
-      return editor;
 }

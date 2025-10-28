@@ -2,9 +2,31 @@ import { useInput } from "../lib/input.js";
 import { Area } from "../rendering/shaders/area.js";
 import { Action } from "../lib/platform/mouse.js";
 import { Border } from "../rendering/shaders/border.js";
+import { createComponent } from "./component.js";
+/**@import { Props } from "./component.js";*/
 /**@import { BorderType } from "../rendering/shaders/border.js";*/
 /**@import {HexColor} from "../rendering/rendering/canvas.js" */
 
+
+export const Button = createComponent(
+      /**
+       * 
+       * @param {Partial<{ color: HexColor, background: HexColor, label: string } & Props>} props 
+       * @param  {...Area} children 
+       */
+      (props, ...children) => {
+            const btn = new Area();
+            const dt = Math.trunc((props.width - (props.label?.length || 0))/2);
+
+            btn.setLine(Math.trunc(props.height/2), ' '.repeat(dt) + (props.label || '') + ' '.repeat(dt));
+            btn.color = props.color || '#FFF';
+            btn.background = props.background || '#000';
+            btn.border.background = props.background || '#000';
+            btn.border.color = props.color || '#FFF';
+
+            return btn;
+      }
+)
 /**
  * 
  * @param {{
@@ -17,7 +39,7 @@ import { Border } from "../rendering/shaders/border.js";
  *    onHover?: (param: { x: number, y: number, released: boolean }, btn: Area) => void,
  *    border?: BorderType
  * }} param0 
- */
+ *
 export function Button({ label, width, height, onClick, onHover, background, color, border }) {
       height ??= 1;
       width ??= label.length;
@@ -40,7 +62,7 @@ export function Button({ label, width, height, onClick, onHover, background, col
 
       if (onClick) {
             events.on(Action.Click, ev => {
-                  const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
+                  const data = /**@type {{ x: number, y: number, released: boolean }}*(ev.data);
                   const {x,y} = data;
       
                   if (btn.contains(x,y)) {
@@ -51,7 +73,7 @@ export function Button({ label, width, height, onClick, onHover, background, col
 
       if (onHover) {
             events.on(Action.Hover, ev => {
-                  const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
+                  const data = /**@type {{ x: number, y: number, released: boolean }}*(ev.data);
                   const {x,y} = data;
       
                   if (btn.contains(x,y)) {
@@ -61,4 +83,4 @@ export function Button({ label, width, height, onClick, onHover, background, col
       }
 
       return btn;
-}
+}*/
