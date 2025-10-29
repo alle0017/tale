@@ -1,5 +1,6 @@
 import { Pipe } from "../pipe/pipe.js";
 import Canvas from "../rendering/canvas.js";
+import { onResize } from "../../lib/platform/term.js";
 /**@import {Cell} from "../rendering/canvas.js"; */
 
 /**
@@ -35,12 +36,8 @@ export default class Screen {
       }
 
       #resize() {
-            //@ts-ignore
-            this.#grid = new Canvas(process.stdout.columns, process.stdout.rows);
-            //@ts-ignore
-            process.on('SIGWINCH', () => {
-                  //@ts-ignore
-                  this.#grid = new Canvas(process.stdout.columns, process.stdout.rows);
+            onResize((width, height) => {
+                  this.#grid = new Canvas(width, height);
             });
       }
 

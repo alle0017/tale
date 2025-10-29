@@ -91,6 +91,19 @@ export function bootstrap(hook = undefined) {
       });
 }
 
+/**
+ * @param {(width: number, height: number) => void} hook
+ */
+export function onResize(hook) {
+      //@ts-ignore
+      hook(process.stdout.columns, process.stdout.rows);
+      //@ts-ignore
+      process.on('SIGWINCH', () => {
+            //@ts-ignore
+            hook(process.stdout.columns, process.stdout.rows);
+      });
+}
+
 export function teardown() {
       console.log(Codes.ExitMouseEvt);
       //@ts-ignore
