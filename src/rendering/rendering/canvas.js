@@ -28,6 +28,23 @@ const toColorVector = color => {
 }
 const COLOR_VEC_SIZE = 4;
 export const EMPTY_CHAR = ' ';
+/**
+ * 
+ * @param {number} r 
+ * @param {number} g 
+ * @param {number} b 
+ * @returns {HexColor}
+ */
+export const rgb = (r, g, b) => {
+      /**
+       * @type {Hex[]}
+       */
+      const HEX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+      const red = /**@type {Hex}*/(HEX[Math.trunc(15 * r / 255)]);
+      const green = /**@type {Hex}*/(HEX[Math.trunc(15 * g / 255)]);
+      const blue = /**@type {Hex}*/(HEX[Math.trunc(15 * b / 255)]);
+      return `#${red}${green}${blue}`;
+}
 const EMPTY = EMPTY_CHAR.charCodeAt(0);
 
 
