@@ -1,12 +1,16 @@
 import { Pipe } from "../pipe/pipe.js";
 import Canvas from "../rendering/canvas.js";
 /**@import {Cell} from "../rendering/canvas.js"; */
+
 /**
  * class that represent any backend which can support 
  * drawing one pixel at time
  */
 export default class Screen {
-      #grid = new Canvas(100, 40);
+      /**
+       * @type {Canvas}
+       */
+      #grid;
       #pipe = new Pipe();
 
       /**
@@ -26,7 +30,18 @@ export default class Screen {
       }
 
       constructor() {
-            this.#pipe.use(pixel => this.#setPixelOnScreen(pixel))
+            this.#resize();
+            this.#pipe.use(pixel => this.#setPixelOnScreen(pixel));
+      }
+
+      #resize() {
+            //@ts-ignore
+            this.#grid = new Canvas(process.stdout.columns, process.stdout.rows);
+            //@ts-ignore
+            process.on('SIGWINCH', () => {
+                  //@ts-ignore
+                  this.#grid = new Canvas(process.stdout.columns, process.stdout.rows);
+            });
       }
 
       /**
