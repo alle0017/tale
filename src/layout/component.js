@@ -20,6 +20,8 @@ import { Area } from "../rendering/shaders/area.js";
  *    maxHeight: number,
  *    label: string,
  *    border: BorderType,
+ *    left: number,
+ *    top: number,
  * }} Props
  */
 /**
@@ -55,6 +57,9 @@ export function createComponent(factory) {
 
             area.border.label = props.label ?? area.border.label;
             area.border.style = props.border ?? area.border.style;
+
+            area.x = props.left ?? area.x;
+            area.y = props.top ?? area.y;
 
             if (props.onClick || props.onClickReleased) {
                   events.on(Action.Click, ev => {

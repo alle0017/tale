@@ -21,3 +21,14 @@ export function Box(props, ...text) {
       }
       return comp;
 }
+
+/**
+ * @param {string} text 
+ */
+export function Text(text) {
+      const comp = new Area();
+
+      comp.setLine(0, text);
+
+      return comp;
+}
