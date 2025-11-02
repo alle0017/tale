@@ -2,11 +2,17 @@ import { WorldManager } from "../ecs/WorldManager.js";
 
 
 export class Game {
-      static #game = new Game();
-
+      /**
+       * @type {Game}
+       */
+      static #game;
       static get() {
+            if (!Game.#game) {
+                  Game.#game = new Game();
+            }
             return Game.#game;
       }
+
       debug = false;
       /**
        * Context used to draw entities onto the canvas.

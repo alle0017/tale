@@ -1,6 +1,6 @@
 import { Pipe } from "../pipe/pipe.js";
 import Canvas from "../rendering/canvas.js";
-import { onResize } from "../../lib/platform/term.js";
+import Platform from "../../platform/platform.js";
 /**@import {Cell} from "../rendering/canvas.js"; */
 
 /**
@@ -31,13 +31,15 @@ export default class Screen {
       }
 
       constructor() {
-            this.#resize();
             this.#pipe.use(pixel => this.#setPixelOnScreen(pixel));
+            Platform.onPlatformChange(() => {
+                  this.#resize();
+            });
       }
 
       #resize() {
-            onResize((width, height) => {
-                  this.#grid = new Canvas(width, height);
+            Platform.instance.resize((width, height) => {
+                  this.#grid = Platform.instance.canvas(width, height);
             });
       }
 

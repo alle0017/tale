@@ -2,9 +2,8 @@
 import List from "../types/List.js"
 import { WorldManager } from "../ecs/WorldManager.js";
 import EventManager from "../ecs/Event.js";
-import { bootstrap } from "./platform/term.js";
-import { getEvent, isMouseString } from "./platform/mouse.js";
-
+import { getEvent, isMouseString } from "./mouse.js";
+import Platform from "../platform/platform.js";
 /**
  * hook used to define input events.
  * every event is attached to the scene passed, 
@@ -19,7 +18,7 @@ export const useInput = (() => {
        */
       const tasks = new List();
 
-      bootstrap(key => {
+      Platform.instance.input(key => {
             tasks.forEach(task => task(key));
       });
 

@@ -1,4 +1,4 @@
-import { useGame,Game } from "./game/Game.js";
+import { useGame, Game } from "./game/Game.js";
 import { Sprite, } from "./lib/Sprite.js";
 import { Position } from "./lib/Position.js";
 import { useInput } from "./lib/input.js";
@@ -19,7 +19,7 @@ import { Border } from "./rendering/shaders/border.js";
 import { BorderComponent } from "./rendering/shaders/border-component.js";
 import { Parent } from "./rendering/shaders/layout/parent.js";
 import { Vertical } from "./rendering/shaders/layout/vertical.js";
-import { Action as MouseAction } from "./lib/platform/mouse.js";
+import { Action as MouseAction } from "./lib/mouse.js";
 import { Camera } from "./rendering/shaders/camera.js";
 import { Shader } from "./lib/shader.js";
 import { rgb } from "./rendering/rendering/canvas.js";

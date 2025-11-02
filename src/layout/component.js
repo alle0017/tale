@@ -1,5 +1,5 @@
 import { useInput } from "../lib/input.js";
-import { Action } from "../lib/platform/mouse.js";
+import { Action } from "../lib/mouse.js";
 import { Area } from "../rendering/shaders/area.js";
 /**@import { BorderType } from "../rendering/shaders/border";*/
 

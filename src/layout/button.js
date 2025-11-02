@@ -1,6 +1,5 @@
 import { useInput } from "../lib/input.js";
 import { Area } from "../rendering/shaders/area.js";
-import { Action } from "../lib/platform/mouse.js";
 import { Border } from "../rendering/shaders/border.js";
 import { createComponent } from "./component.js";
 /**@import { Props } from "./component.js";*/

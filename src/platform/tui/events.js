@@ -1,5 +1,5 @@
 import Codes from "../../rendering/rendering/codes.js";
-import { Action, buildMouseString } from "./mouse.js";
+import { Action, buildMouseString } from "../../lib/mouse.js";
 /**
  * 
  * @param {(key: string) => void} hook 
