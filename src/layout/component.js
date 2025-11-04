@@ -82,11 +82,9 @@ export function createComponent(factory) {
                         const {x,y} = data;
             
                         if (area.contains(x,y)) {
-                              if (data.released) {
-                                    props.onMouseLeft?.({...data, target: area });
-                              } else {
-                                    props.onHover?.({...data, target: area });
-                              }
+                              props.onHover?.({...data, target: area });
+                        } else if (area.isNear(x, y)) {
+                              props.onMouseLeft?.({...data, target: area });
                         }
                   });
             }

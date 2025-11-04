@@ -51,7 +51,7 @@ export function bootstrap(hook = undefined) {
             hook?.(key)
       });
 
-
+      
       window.addEventListener('mousemove', event => {
             let action = Action.SwipeDown;
 

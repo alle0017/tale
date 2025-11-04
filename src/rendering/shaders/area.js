@@ -142,6 +142,24 @@ export class Area extends Shader {
                   y <= this.y + this.offsetY + height
             );
       }
+      /**
+       * checks whether given coordinates are inside 
+       * the area
+       * @param {number} x 
+       * @param {number} y 
+       * @return {boolean}
+       */
+      isNear(x,y) {
+            const width = this.boxWidth;
+            const height = this.boxHeight;
+
+            return (
+                  x + 1 >= this.x + this.offsetX &&
+                  x - 1 <= this.x + this.offsetX + width &&
+                  y + 1 >= this.y + this.offsetY &&
+                  y - 1 <= this.y + this.offsetY + height
+            );
+      }
       hasFocus() {
             return Area.#activeElement === this;
       }
