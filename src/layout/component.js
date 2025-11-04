@@ -77,7 +77,7 @@ export function createComponent(factory) {
             }
       
             if (props.onHover || props.onMouseLeft) {
-                  events.on(Action.Click, ev => {
+                  events.on(Action.Hover, ev => {
                         const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
                         const {x,y} = data;
             
