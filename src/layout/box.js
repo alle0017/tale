@@ -1,26 +1,27 @@
 
 import { Area } from "../rendering/shaders/area.js";
+import { createComponent } from "./component.js";
+/**@import {HexColor} from "../rendering/rendering/canvas.js"*/
 
-/**
- * 
- * @param {Partial<Area>} props 
- * @param {...string} text 
- */
-export function Box(props, ...text) {
-      const entries = Object.entries(props);
-      const comp = new Area();
+export const Box = createComponent(
+      /**
+       * 
+       * @param {Partial<import("./component.js").Props & { background: HexColor, color: HexColor }>} props 
+       */
+      (props, ...text) => {
+            const comp = new Area();
 
-      for (let i = 0; i < entries.length; i++) {
-            const [k,v] = entries[i];
-
-            comp[k] = v;
+            comp.color = props.color || '#FFF';
+            comp.background = props.background || '#000';
+            comp.border.background = props.background || '#000';
+            comp.border.color = props.color || '#FFF';
+            
+            for (let i = 0; i < text.length; i++) {
+                  comp.setLine(i, text[i].getLine(0));
+            }
+            return comp;
       }
-
-      for (let i = 0; i < text.length; i++) {
-            comp.setLine(i, text[i]);
-      }
-      return comp;
-}
+);
 
 /**
  * @param {string} text 
