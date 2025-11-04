@@ -41,7 +41,7 @@ export function bootstrap(hook = undefined) {
             );
             hook?.(key)
       });
-      window.addEventListener('mouseover', event => {
+      window.addEventListener('mousemove', event => {
             const key = buildMouseString(
                   Action.Hover, 
                   toX(event.clientX), 

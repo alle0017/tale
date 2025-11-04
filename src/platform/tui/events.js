@@ -96,7 +96,7 @@ export function bootstrap(hook = undefined) {
  */
 export function onResize(hook) {
       //@ts-ignore
-      hook(process.stdout.columns, process.stdout.rows);
+      hook(process.stdout.columns, process.stdout.rows - 5);
       //@ts-ignore
       process.on('SIGWINCH', () => {
             //@ts-ignore

@@ -3,7 +3,6 @@ import { createComponent } from "../../ecs/Component.js";
 import List from "../../types/List.js"
 import { useUnhandledSystem } from "../../ecs/System.js";
 import EventManager from "../../ecs/Event.js";
-import { useGame } from "../../game/Game.js";
 /**@import {RigidBody} from ".." */
 /**@import {Entity} from "../../ecs/Entity.js" */
 

@@ -32,7 +32,8 @@ export default class WebCanvas extends ICanvas {
                   const cvs = document.createElement('canvas');
                   document.body.appendChild(cvs);
                   WebCanvas.#CanvasContext = cvs.getContext('2d');
-                  WebCanvas.#CanvasContext.font = `${WebCanvas.#fontHeight}px sans-serif`;
+                  WebCanvas.#CanvasContext.textBaseline = "top";
+                  WebCanvas.#CanvasContext.font = `${WebCanvas.#fontHeight}px monospace`;
                   WebCanvas.#fontWidth = WebCanvas.#CanvasContext.measureText('M').width;
             }
       }
@@ -56,14 +57,14 @@ export default class WebCanvas extends ICanvas {
       }
 
       draw() {
-                  
+            
             if (!this.needRedraw()) {
                   return;
             }
             
             const [screen, primitives] = this.getScreen();
 
-            this.#ctx.font = `${WebCanvas.#fontHeight}px sans-serif`;
+            this.#ctx.font = `${WebCanvas.#fontHeight}px monospace`;
 
             for (let y = 0; y < this.height; y++) {
                   for (let x = 0; x < this.width; x++) {
@@ -83,7 +84,12 @@ export default class WebCanvas extends ICanvas {
                         );
 
                         this.#ctx.fillStyle = bg;
-                        this.#ctx.fillRect(x*WebCanvas.#fontWidth, y*WebCanvas.#fontHeight, WebCanvas.#fontWidth, WebCanvas.#fontHeight);
+                        this.#ctx.fillRect(
+                              x*WebCanvas.#fontWidth, 
+                              y*WebCanvas.#fontHeight, 
+                              WebCanvas.#fontWidth + 1, 
+                              WebCanvas.#fontHeight
+                        );
                         this.#ctx.fillStyle = fg;
                         this.#ctx.fillText(
                               String.fromCharCode(primitive || EMPTY),
