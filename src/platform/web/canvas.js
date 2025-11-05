@@ -93,7 +93,7 @@ export default class WebCanvas extends ICanvas {
                         this.#ctx.fillRect(
                               x*WebCanvas.#fontWidth, 
                               // correction to the height of the pixel
-                              y*WebCanvas.#fontHeight + 5, 
+                              y*WebCanvas.#fontHeight, 
                               // correction to the width of the pixel
                               WebCanvas.#fontWidth + 1, 
                               WebCanvas.#fontHeight
@@ -102,7 +102,7 @@ export default class WebCanvas extends ICanvas {
                         this.#ctx.fillText(
                               String.fromCharCode(primitive || EMPTY),
                               x * WebCanvas.#fontWidth,
-                              (y + 1) * WebCanvas.#fontHeight,
+                              (y + 1) * WebCanvas.#fontHeight - 1,
                         );
                   }
             }

@@ -6,7 +6,19 @@ export class Horizontal extends Parent {
       #offset = 0;
 
       gap = 0;
+      get boxHeight() {
+            return this.#getChildrenHeight();
+      }
+      #getChildrenHeight() {
+            let offset = super.boxHeight;
 
+            for (let i = 0; i < this.children.length; i++) {
+                  const child = this.children[i];
+                  offset = Math.max(offset, child.boxHeight);
+            }
+
+            return offset;
+      }
       /**
        * @param {Screen} screen 
        */
