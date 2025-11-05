@@ -25,10 +25,17 @@ export const Box = createComponent(
 
 /**
  * @param {string} text 
+ * @param {{ color?: HexColor, background?: HexColor}} [props=null] 
  */
-export function Text(text) {
+export function Text(text, props = null) {
       const comp = new Area();
 
+      
+      if (props) {
+            comp.background = props.background ?? '#000';
+            comp.color = props.color ?? '#FFF';
+      }
+      
       comp.setLine(0, text);
 
       return comp;

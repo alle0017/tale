@@ -179,6 +179,7 @@ export class Area extends Shader {
             for (let i = 0; i < height; i ++) {
                   const width = this.maxWidth && this.maxWidth < this.#matrix[i].length? this.maxWidth: this.#matrix[i].length;
                   for (let j = 0; j < width; j++) {
+
                         screen.set({
                               x: j + this.x + this.offsetX,
                               y: i + this.y + this.offsetY,
@@ -196,7 +197,6 @@ export class Area extends Shader {
             this.#border.x = this.x + this.offsetX;
             this.#border.y = this.y + this.offsetY;
             this.#border.z = this.z;
-
             this.#border.draw(screen, bw, bh);
       }
 }
