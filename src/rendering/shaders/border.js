@@ -28,6 +28,14 @@ export const Border = {
             horizontal: "─",
             vertical: "│"
       },
+      SolidHorizontal: {
+            lt: "─",
+            rt: "─",
+            lb: "─",
+            rb: "─",
+            horizontal: "─",
+            vertical: ""
+      },
       SolidRound: {
             lt: "╭",
             rt: "╮",
