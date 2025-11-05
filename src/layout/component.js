@@ -1,10 +1,19 @@
 import { useInput } from "../lib/input.js";
+import { Layout } from "../lib/layout.js";
 import { Action } from "../lib/mouse.js";
 import { Area } from "../rendering/shaders/area.js";
+import { Parent } from "../rendering/shaders/layout/parent.js";
 /**@import { BorderType } from "../rendering/shaders/border";*/
 
 /**
  * @typedef {{ x: number, y: number, target: Area }} Event
+ */
+/**
+ * @template {{}} T
+ * @typedef {{ 
+ *    setState(transition: (state: Partial<Props & T>) => Partial<Props & T>): void, 
+ *    state: Props & T
+ * }} Ref
  */
 /**
  * @typedef {{ 
@@ -22,8 +31,10 @@ import { Area } from "../rendering/shaders/area.js";
  *    border: BorderType,
  *    left: number,
  *    top: number,
+ *    ref: Ref<{}>,
  * }} Props
  */
+
 /**
  * @param {string} str 
  */
@@ -32,7 +43,39 @@ const text = str => {
       area.setLine(0,str);
       return area;
 }
+/**
+ * @template T
+ * @returns {Ref<T>}
+ */
+export const useRef = () => ({ setState: null, state: null });
 
+/**
+ * 
+ * @param {Area} root 
+ * @param {Area} area 
+ * @param {Area} replace 
+ * @returns {boolean}
+ */
+function replaceNode(root, area, replace) {
+      if (!(root instanceof Parent)) {
+            return false;
+      }
+
+      for (let i = 0; i < root.children.length; i++) {
+            if (root.children[i] === area) {
+                  root.children[i] = replace;
+                  return true;
+            }
+
+            const found = replaceNode(root.children[i], area, replace);
+
+            if (found) {
+                  return true;
+            }
+      }
+
+      return false;
+}
 /**
  * @template {Props} T
  * @param {(props: Partial<T>, ...children: Area[]) => Area} factory
@@ -43,7 +86,7 @@ export function createComponent(factory) {
        * @param {(Area|string)[]} children
        */
       return (props, ...children) => {
-            const area = factory(
+            let area = factory(
                         props, 
                         ...children
                               .map(child => typeof child == 'string' ? 
@@ -60,6 +103,37 @@ export function createComponent(factory) {
 
             area.x = props.left ?? area.x;
             area.y = props.top ?? area.y;
+            
+            if (props.ref) {
+                  props.ref.setState = (transition) => {
+                        const children = 'children' in area? area.children: [];
+                        //@ts-ignore
+                        props.ref.state = transition(props.ref.state);
+                        const replace = factory(
+                              //@ts-ignore
+                              props.ref.state, 
+                              //@ts-ignore
+                              ...children
+                        );
+                        const layouts = Layout.getAll();
+
+                        for (let i = 0; i < layouts.length; i++) {
+                              if (layouts[i] === area) {
+                                    Layout.attach(i, replace);
+                                    break;
+                              }     
+
+                              const found = replaceNode(layouts[i], area, replace);
+
+                              if (found) {
+                                    break;
+                              }
+                        }
+                        area = replace;
+                  };
+                  //@ts-ignore
+                  props.ref.state = props;
+            }
 
             if (props.onClick || props.onClickReleased) {
                   events.on(Action.Click, ev => {

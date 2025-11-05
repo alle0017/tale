@@ -35,6 +35,5 @@ export class Vertical extends Parent {
             children.offsetY += this.#offset;
 
             this.#offset += children.boxHeight + this.gap;
-            console.log(this.#offset, children.boxHeight)
       }
 }

@@ -6,7 +6,7 @@ import { createEntity } from "./ecs/Entity.js";
 import { Layout } from "./lib/layout.js";
 import { Button } from "./layout/button.js";
 import { Canvas } from "./layout/canvas.js";
-import { createComponent } from "./layout/component.js";
+import { createComponent, useRef } from "./layout/component.js";
 /**@import { Area } from "./rendering/shaders/area.js";*/
 
 /**
@@ -20,4 +20,4 @@ export function createRoot(parent, scene) {
       return entity;
 }
 
-export { Vertical, Horizontal, Box, Button, Canvas, Text, createComponent };
+export { Vertical, Horizontal, Box, Button, Canvas, Text, createComponent, useRef };

@@ -11,6 +11,7 @@ import EventManager from "./Event.js";
  *    attach(entity: number, component: K): K,
  *    get(entity: number): K,
  *    delete(entity: number): K,
+ *    getAll(): K[],
  * }} Component
  */
 /**
@@ -64,6 +65,9 @@ export const createComponent = (factory, ...prototypes) => {
                   const component = entities[e];
                   entities[e] = undefined;
                   return component;
+            },
+            getAll() {
+                  return entities;
             }
       };
 
@@ -109,6 +113,9 @@ export const createAbstractComponent = (...prototypes) => {
                   const component = entities[e];
                   entities[e] = undefined;
                   return component;
+            },
+            getAll() {
+                  return entities;
             }
       };
 }
