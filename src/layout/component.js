@@ -1,3 +1,4 @@
+import EventManager from "../ecs/Event.js";
 import { useInput } from "../lib/input.js";
 import { Layout } from "../lib/layout.js";
 import { Action } from "../lib/mouse.js";
@@ -82,10 +83,25 @@ function replaceNode(root, area, replace) {
  */
 export function createComponent(factory) {
       /**
+       * 
+       * @param {Area} area 
+       * @param {Partial<T>} props 
+       */
+      function setProps(area, props) {
+            area.resize(props.width ?? area.width, props.height ?? area.height);
+
+            area.border.label = props.label ?? area.border.label;
+            area.border.style = props.border ?? area.border.style;
+
+            area.x = props.left ?? area.x;
+            area.y = props.top ?? area.y;
+      }
+      /**
        * @param {Partial<T>} props
        * @param {(Area|string)[]} children
        */
       return (props, ...children) => {
+            const events = useInput().events;
             let area = factory(
                         props, 
                         ...children
@@ -94,15 +110,8 @@ export function createComponent(factory) {
                                     child
                               )
                   );
-            const events = useInput().events;
 
-            area.resize(props.width ?? area.width, props.height ?? area.height);
-
-            area.border.label = props.label ?? area.border.label;
-            area.border.style = props.border ?? area.border.style;
-
-            area.x = props.left ?? area.x;
-            area.y = props.top ?? area.y;
+            setProps(area, props);
             
             if (props.ref) {
                   props.ref.setState = (transition) => {
@@ -130,11 +139,11 @@ export function createComponent(factory) {
                               }
                         }
                         area = replace;
+                        setProps(area, props);
                   };
                   //@ts-ignore
                   props.ref.state = props;
             }
-
             if (props.onClick || props.onClickReleased) {
                   events.on(Action.Click, ev => {
                         const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
