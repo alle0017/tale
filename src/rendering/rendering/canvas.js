@@ -1,7 +1,7 @@
 import { SnapshotBuffer } from "./snapshot-buffer.js";
 
 /**@typedef {'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' } Hex */
-/**@typedef {`#${Hex}${Hex}${Hex}`} HexColor */
+/**@typedef {`#${Hex}${Hex}${Hex}` | 'none'} HexColor */
 /**@typedef {`#${Hex}${Hex}${Hex}${Hex}`} AlphaHexColor */
 /**@typedef {[number, number, number, number]} Color */
 
@@ -205,8 +205,8 @@ export default class Canvas {
             if (depthBuffer[depth] > cell.z) {
                   return;
             } 
-            const foreground = toColorVector(cell.color);
-            const background = toColorVector(cell.background);
+            const foreground = cell.color !== 'none' ? toColorVector(cell.color): [...screen.subarray(fg * COLOR_VEC_SIZE, (fg + 1) * COLOR_VEC_SIZE)];
+            const background = cell.background !== 'none' ? toColorVector(cell.background): [...screen.subarray(bg * COLOR_VEC_SIZE, (bg + 1) * COLOR_VEC_SIZE)];;
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
 
