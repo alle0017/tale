@@ -21,7 +21,7 @@ export const Horizontal = createComponent(
             comp.border.color = props.color || '#FFF';
             
             if (children && children.length > 0) {
-                  comp.children.push(...children);
+                  comp.append(...children);
             }
       
             return comp;

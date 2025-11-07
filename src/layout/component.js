@@ -51,33 +51,6 @@ const text = str => {
 export const useRef = () => ({ setState: null, state: null });
 
 /**
- * 
- * @param {Area} root 
- * @param {Area} area 
- * @param {Area} replace 
- * @returns {boolean}
- */
-function replaceNode(root, area, replace) {
-      if (!(root instanceof Parent)) {
-            return false;
-      }
-
-      for (let i = 0; i < root.children.length; i++) {
-            if (root.children[i] === area) {
-                  root.children[i] = replace;
-                  return true;
-            }
-
-            const found = replaceNode(root.children[i], area, replace);
-
-            if (found) {
-                  return true;
-            }
-      }
-
-      return false;
-}
-/**
  * @template {Props} T
  * @param {(props: Partial<T>, ...children: Area[]) => Area} factory
  */
@@ -124,18 +97,15 @@ export function createComponent(factory) {
                               //@ts-ignore
                               ...children
                         );
-                        const layouts = Layout.getAll();
-
-                        for (let i = 0; i < layouts.length; i++) {
-                              if (layouts[i] === area) {
-                                    Layout.attach(i, replace);
-                                    break;
-                              }     
-
-                              const found = replaceNode(layouts[i], area, replace);
-
-                              if (found) {
-                                    break;
+                        if (area.parent) {
+                              area.parent.replaceChild(area, replace);
+                        } else {
+                              const layouts = Layout.getAll();
+                              for (let i = 0; i < layouts.length; i++) {
+                                    if (layouts[i] === area) {
+                                          Layout.attach(i, replace);
+                                          break;
+                                    }  
                               }
                         }
                         area = replace;

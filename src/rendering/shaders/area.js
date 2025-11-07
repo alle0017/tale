@@ -2,6 +2,7 @@
 /**@import {HexColor} from "../rendering/canvas.js" */
 import { Shader } from "./shader.js";
 import { BorderComponent } from "./border-component.js";
+/**@import { Parent } from "./layout/parent.js";*/
 /**
  * @implements {Shader}
  */
@@ -31,6 +32,11 @@ export class Area extends Shader {
        * @type {HexColor}
        */
       color = '#000';
+      /**
+       * @type {Parent}
+       * @readonly
+       */
+      parent;
 
       get border() {
             return this.#border;
