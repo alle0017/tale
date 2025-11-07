@@ -7,23 +7,25 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
 /**@import { BorderType } from "../rendering/shaders/border";*/
 
 /**
- * @typedef {{ x: number, y: number, target: Area }} Event
+ * @template {{}} T
+ * @typedef {{ x: number, y: number, target: Area, ref: Ref<T> }} Event
  */
 /**
  * @template {{}} T
  * @typedef {{ 
- *    setState(transition: (state: Partial<Props & T>) => Partial<Props & T>): void, 
- *    state: Props & T
+ *    setState(transition: (state: Partial<Props<T>>) => Partial<T>): void, 
+ *    state: T
  * }} Ref
  */
 /**
+ * @template {{}} T
  * @typedef {{ 
- *    onClick: (ev: Event) => void, 
- *    onClickReleased: (ev: Event) => void, 
- *    onHover: (ev: Event) => void, 
- *    onMouseLeft: (ev: Event) => void, 
- *    onDrag: (ev: Event) => void,
- *    onDrop: (ev: Event) => void,
+ *    onClick: (ev: Event<Props<T>>) => void, 
+ *    onClickReleased: (ev: Event<Props<T>>) => void, 
+ *    onHover: (ev: Event<Props<T>>) => void, 
+ *    onMouseLeft: (ev: Event<Props<T>>) => void, 
+ *    onDrag: (ev: Event<Props<T>>) => void,
+ *    onDrop: (ev: Event<Props<T>>) => void,
  *    width: number,
  *    height: number,
  *    maxWidth: number,
@@ -32,8 +34,8 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  *    border: BorderType,
  *    left: number,
  *    top: number,
- *    ref: Ref<{}>,
- * }} Props
+ *    ref: Ref<Props<T>>,
+ * } & T} Props
  */
 
 /**
@@ -51,14 +53,14 @@ const text = str => {
 export const useRef = () => ({ setState: null, state: null });
 
 /**
- * @template {Props} T
- * @param {(props: Partial<T>, ...children: Area[]) => Area} factory
+ * @template {{}} T
+ * @param {(props: Partial<Props<T>>, ...children: Area[]) => Area} factory
  */
 export function createComponent(factory) {
       /**
        * 
        * @param {Area} area 
-       * @param {Partial<T>} props 
+       * @param {Partial<Props<T>>} props 
        */
       function setProps(area, props) {
             area.resize(props.width ?? area.width, props.height ?? area.height);
@@ -70,7 +72,7 @@ export function createComponent(factory) {
             area.y = props.top ?? area.y;
       }
       /**
-       * @param {Partial<T>} props
+       * @param {Partial<Props<T>>} props
        * @param {(Area|string)[]} children
        */
       return (props, ...children) => {
@@ -85,35 +87,40 @@ export function createComponent(factory) {
                   );
 
             setProps(area, props);
+            /**@type {Ref<Props<T>>} */
+            let ref = props.ref;
             
-            if (props.ref) {
-                  props.ref.setState = (transition) => {
-                        const children = 'children' in area? area.children: [];
-                        //@ts-ignore
-                        props.ref.state = transition(props.ref.state);
-                        const replace = factory(
-                              //@ts-ignore
-                              props.ref.state, 
-                              //@ts-ignore
-                              ...children
-                        );
-                        if (area.parent) {
-                              area.parent.replaceChild(area, replace);
-                        } else {
-                              const layouts = Layout.getAll();
-                              for (let i = 0; i < layouts.length; i++) {
-                                    if (layouts[i] === area) {
-                                          Layout.attach(i, replace);
-                                          break;
-                                    }  
-                              }
-                        }
-                        area = replace;
-                        setProps(area, props);
-                  };
-                  //@ts-ignore
-                  props.ref.state = props;
+            if (!ref) {
+                  ref = useRef();
             }
+
+            ref.setState = (transition) => {
+                  const children = 'children' in area? area.children: [];
+                  //@ts-ignore
+                  ref.state = transition(ref.state);
+                  const replace = factory(
+                        //@ts-ignore
+                        ref.state, 
+                        //@ts-ignore
+                        ...children
+                  );
+                  if (area.parent) {
+                        area.parent.replaceChild(area, replace);
+                  } else {
+                        const layouts = Layout.getAll();
+                        for (let i = 0; i < layouts.length; i++) {
+                              if (layouts[i] === area) {
+                                    Layout.attach(i, replace);
+                                    break;
+                              }  
+                        }
+                  }
+                  area = replace;
+                  setProps(area, props);
+            };
+            //@ts-ignore
+            ref.state = props;
+
             if (props.onClick || props.onClickReleased) {
                   events.on(Action.Click, ev => {
                         const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
@@ -121,9 +128,9 @@ export function createComponent(factory) {
             
                         if (area.contains(x,y)) {
                               if (data.released) {
-                                    props.onClickReleased?.({...data, target: area });
+                                    props.onClickReleased?.({...data, target: area, ref });
                               } else {
-                                    props.onClick?.({...data, target: area });
+                                    props.onClick?.({...data, target: area, ref });
                               }
                         }
                   });
@@ -135,22 +142,22 @@ export function createComponent(factory) {
                         const {x,y} = data;
             
                         if (area.contains(x,y)) {
-                              props.onHover?.({...data, target: area });
+                              props.onHover?.({...data, target: area, ref });
                         } else if (area.isNear(x, y)) {
-                              props.onMouseLeft?.({...data, target: area });
+                              props.onMouseLeft?.({...data, target: area, ref });
                         }
                   });
             }
             if (props.onDrag || props.onDrop) {
                   events.on(Action.Drag, ev => {
-                        const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
+                        const data = /**@type {{ x: number, y: number, released: boolean, }}*/(ev.data);
                         const {x,y} = data;
             
                         if (area.contains(x,y)) {
                               if (data.released) {
-                                    props.onDrop?.({...data, target: area });
+                                    props.onDrop?.({...data, target: area, ref });
                               } else {
-                                    props.onDrag?.({...data, target: area });
+                                    props.onDrag?.({...data, target: area, ref });
                               }
                         }
                   });

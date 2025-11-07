@@ -6,7 +6,7 @@ import { createComponent } from "./component.js";
 export const Box = createComponent(
       /**
        * 
-       * @param {Partial<import("./component.js").Props & { background: HexColor, color: HexColor }>} props 
+       * @param {Partial<import("./component.js").Props<{ background: HexColor, color: HexColor }>>} props 
        */
       (props, ...text) => {
             const comp = new Area();
