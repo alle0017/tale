@@ -5,6 +5,7 @@ import { Action } from "../lib/mouse.js";
 import { Area } from "../rendering/shaders/area.js";
 import { Parent } from "../rendering/shaders/layout/parent.js";
 /**@import { BorderType } from "../rendering/shaders/border";*/
+/**@import {HexColor} from "../rendering/rendering/canvas.js" */
 
 /**
  * @template {{}} T
@@ -37,15 +38,20 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  *    top: number,
  *    ref: Ref<Props<T>>,
  *    classNames: string,
+ *    background: HexColor,
+ *    color: HexColor,
  * } & T} Props
  */
 
 /**
  * @param {string} str 
+ * @param {Partial<Props<{}>>} props
  */
-const text = str => {
+const text = (str, props) => {
       const area = new Area();
       area.setLine(0,str);
+      area.color = props.color ?? area.color;
+      area.background = props.background ?? area.background;
       return area;
 }
 /**
@@ -72,7 +78,9 @@ export function createComponent(factory) {
 
             area.x = props.left ?? area.x;
             area.y = props.top ?? area.y;
-            
+            area.color = props.color ?? area.color;
+            area.background = props.background ?? area.background;
+
             if (props.classNames) {
                   area.classList.push(...props.classNames.split(' '));
             }
@@ -87,7 +95,7 @@ export function createComponent(factory) {
                         props, 
                         ...children
                               .map(child => typeof child == 'string' ? 
-                                    text(child): 
+                                    text(child, props): 
                                     child
                               )
                   );

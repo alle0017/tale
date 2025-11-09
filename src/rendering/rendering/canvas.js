@@ -217,7 +217,7 @@ export default class Canvas {
                   screen[fg * COLOR_VEC_SIZE + i] = foreground[i];
                   screen[bg * COLOR_VEC_SIZE + i] = background[i];
             }
-            primitives[primitive] = cell.char.charCodeAt(0);
+            primitives[primitive] = cell.color !== 'none' ? cell.char.charCodeAt(0): primitive[primitive];
             depthBuffer[depth] = cell.z;
       }
 
