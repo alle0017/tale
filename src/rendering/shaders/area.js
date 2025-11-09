@@ -37,6 +37,10 @@ export class Area extends Shader {
        * @readonly
        */
       parent;
+      /**
+       * @type {string[]}
+       */
+      classList = [];
 
       get border() {
             return this.#border;
@@ -140,7 +144,6 @@ export class Area extends Shader {
       contains(x,y) {
             const width = this.boxWidth;
             const height = this.boxHeight;
-
             return (
                   x >= this.x + this.offsetX &&
                   x <= this.x + this.offsetX + width &&

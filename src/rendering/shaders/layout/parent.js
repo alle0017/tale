@@ -73,4 +73,25 @@ export class Parent extends Area {
             replace.parent = this;
             this.#children.splice(this.#children.indexOf(children), 1, replace);
       }
+      /**
+       * 
+       * @param {string} className 
+       */
+      getElementsByClassName(className) {
+            const result = [];
+            const children = [...this.#children];
+
+            while (children.length) {
+                  const node = children.shift();
+
+                  if (node.classList.includes(className)) {
+                        result.push(node);
+                  }
+
+                  if (node instanceof Parent && node.#children.length > 0) {
+                        children.push(...node.#children);
+                  }
+            }
+            return result;
+      }
 }
