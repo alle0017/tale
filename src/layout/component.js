@@ -14,7 +14,8 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  * @template {{}} T
  * @typedef {{ 
  *    setState(transition: (state: Partial<Props<T>>) => Partial<T>): void, 
- *    state: T
+ *    state: T,
+ *    root: Area,
  * }} Ref
  */
 /**
@@ -35,6 +36,7 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  *    left: number,
  *    top: number,
  *    ref: Ref<Props<T>>,
+ *    classNames: string,
  * } & T} Props
  */
 
@@ -50,7 +52,7 @@ const text = str => {
  * @template T
  * @returns {Ref<T>}
  */
-export const useRef = () => ({ setState: null, state: null });
+export const useRef = () => ({ setState: null, state: null, root: null });
 
 /**
  * @template {{}} T
@@ -70,6 +72,10 @@ export function createComponent(factory) {
 
             area.x = props.left ?? area.x;
             area.y = props.top ?? area.y;
+            
+            if (props.classNames) {
+                  area.classList.push(...props.classNames.split(' '));
+            }
       }
       /**
        * @param {Partial<Props<T>>} props
@@ -85,15 +91,16 @@ export function createComponent(factory) {
                                     child
                               )
                   );
-
-            setProps(area, props);
             /**@type {Ref<Props<T>>} */
             let ref = props.ref;
             
+            setProps(area, props);
+
             if (!ref) {
                   ref = useRef();
             }
 
+            ref.root = area;
             ref.setState = (transition) => {
                   const children = 'children' in area? area.children: [];
                   //@ts-ignore
@@ -115,8 +122,14 @@ export function createComponent(factory) {
                               }  
                         }
                   }
+                  ref.root = replace;
+                  setProps(replace, props);
+                  // needed to not conflict until rendering
+                  // if mismatched, it is corrected in next 
+                  // rendering cycle
+                  replace.offsetX = area.offsetX;
+                  replace.offsetY = area.offsetY;
                   area = replace;
-                  setProps(area, props);
             };
             //@ts-ignore
             ref.state = props;
@@ -125,7 +138,6 @@ export function createComponent(factory) {
                   events.on(Action.Click, ev => {
                         const data = /**@type {{ x: number, y: number, released: boolean }}*/(ev.data);
                         const {x,y} = data;
-            
                         if (area.contains(x,y)) {
                               if (data.released) {
                                     props.onClickReleased?.({...data, target: area, ref });

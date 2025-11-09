@@ -6,7 +6,7 @@ import { createComponent } from "./component.js";
 export const Horizontal = createComponent(
       /**
        * 
-       * @param {Partial<import("./component.js").Props & { gap?: number, color?: import("../rendering/rendering/canvas.js").HexColor, background?: import("../rendering/rendering/canvas.js").HexColor }>} props 
+       * @param {Partial<import("./component.js").Props<{ gap?: number, color?: import("../rendering/rendering/canvas.js").HexColor, background?: import("../rendering/rendering/canvas.js").HexColor }>>} props 
        * @param  {...Area} children 
        * @returns 
        */

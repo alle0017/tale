@@ -44,7 +44,6 @@ export const useInput = (() => {
              * @type {(e: string) =>void}
              */
             const handler = e => {
-
                   let ev = e;
 
                   if (isMouseString(ev)) {
