@@ -40,6 +40,8 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  *    classNames: string,
  *    background: HexColor,
  *    color: HexColor,
+ *    paddingLeft: number,
+ *    paddingTop: number,
  * } & T} Props
  */
 
@@ -80,6 +82,8 @@ export function createComponent(factory) {
             area.y = props.top ?? area.y;
             area.color = props.color ?? area.color;
             area.background = props.background ?? area.background;
+            area.paddingX = props.paddingLeft ?? area.paddingX;
+            area.paddingY = props.paddingTop ?? area.paddingY;
 
             if (props.classNames) {
                   area.classList.push(...props.classNames.split(' '));

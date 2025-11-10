@@ -7,9 +7,6 @@ export class Parent extends Area {
        */
       #children = [];
 
-      paddingX = 0;
-      paddingY = 0;
-
       /**
        * @type {readonly Area[]}
        */

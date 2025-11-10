@@ -19,6 +19,7 @@ export default class WebCanvas extends ICanvas {
       static #fontHeight = 24;
 
       static get FontWidth() {
+            this.#initializeCanvas();
             return this.#fontWidth;
       }
       static get FontHeight() {
@@ -93,7 +94,7 @@ export default class WebCanvas extends ICanvas {
                         this.#ctx.fillRect(
                               x*WebCanvas.#fontWidth, 
                               // correction to the height of the pixel
-                              y*WebCanvas.#fontHeight, 
+                              y*WebCanvas.#fontHeight + 4, 
                               // correction to the width of the pixel
                               WebCanvas.#fontWidth + 1, 
                               WebCanvas.#fontHeight

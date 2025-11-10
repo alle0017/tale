@@ -16,6 +16,8 @@ import { createComponent, useRef } from "./layout/component.js";
 export function createRoot(parent, scene) {
       const box = Layout.create(parent);
       const entity = createEntity().add(box);
+      entity.tags.push('window');
+      entity.tags.push('ui');
       scene.add(entity);
       return entity;
 }

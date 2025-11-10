@@ -77,8 +77,8 @@ export function bootstrap(hook = undefined) {
  * @param {(width: number, height: number) => void} hook
  */
 export function onResize(hook) {
-      hook(toX(window.innerWidth), toY(window.innerHeight));
+      hook(toX(window.innerWidth) - 1, toY(window.innerHeight));
       window.addEventListener('resize', () => {
-            hook(toX(window.innerWidth), toY(window.innerHeight));
+            hook(toX(window.innerWidth) - 1, toY(window.innerHeight));
       })
 }

@@ -72,6 +72,20 @@ export default class List {
             }
       }
       /**
+       * @template K
+       * @param {(value: T) => K} callback
+       */
+      map(callback) {
+            let head = this.#head;
+            let result = [];
+
+            while (head) {
+                  result.push(callback(head.value));
+                  head = head.next;
+            }
+            return result;
+      }
+      /**
        * @param {T} value 
        */
       has(value) {

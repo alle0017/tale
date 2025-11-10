@@ -10,6 +10,7 @@ import List from "../types/List.js";
  *    get: <X>(component: Component<X,unknown[]>) => X,
  *    remove: (component: Component<unknown, unknown[]>) => void,
  *    getAll(): unknown[];
+ *    getAllComponentClasses(): Component<unknown, unknown[]>[];
  * }} Entity
  */
 
@@ -53,6 +54,9 @@ export const createEntity = () => {
             },
             getAll() {
                   return [...components].map(comp => comp.get(id));
+            },
+            getAllComponentClasses() {
+                  return [...components];
             }
       }
 };

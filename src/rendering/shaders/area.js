@@ -17,6 +17,8 @@ export class Area extends Shader {
       #matrix;
       #autoWidth = 0;
       #border = new BorderComponent();
+      paddingX = 0;
+      paddingY = 0;
       offsetX = 0;
       offsetY = 0;
       x = 0;
