@@ -206,7 +206,7 @@ export default class Canvas {
                   return;
             } 
             const foreground = cell.color !== 'none' ? toColorVector(cell.color): [...screen.subarray(fg * COLOR_VEC_SIZE, (fg + 1) * COLOR_VEC_SIZE)];
-            const background = cell.background !== 'none' ? toColorVector(cell.background): [...screen.subarray(bg * COLOR_VEC_SIZE, (bg + 1) * COLOR_VEC_SIZE)];;
+            const background = cell.background !== 'none' ? toColorVector(cell.background): [...screen.subarray(bg * COLOR_VEC_SIZE, (bg + 1) * COLOR_VEC_SIZE)];
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
 
@@ -233,11 +233,10 @@ export default class Canvas {
             const screen = this.screen.peek();
             const primitives = this.primitive.peek();
 
+            for (let i = 0; i < screen.length; i++) {
+                  screen[i] = 0;
+            }
             for (let i = 0; i < primitives.length; i++) {
-                  for (let j = 0; j < COLOR_VEC_SIZE; j++) {
-                        screen[i * COLOR_VEC_SIZE + j] = 0;
-                        screen[i * COLOR_VEC_SIZE * 2 + j] = 0;
-                  }
                   primitives[i] = 0;
                   depthBuffer[i] = 0;
             }
