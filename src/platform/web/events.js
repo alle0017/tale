@@ -84,6 +84,7 @@ export function bootstrap(hook = undefined) {
             );
             hook?.(key)
       });
+      window.addEventListener('keydown', event => hook?.(event.key.toLowerCase()))
 }
 
 /**

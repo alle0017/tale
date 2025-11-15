@@ -45,7 +45,6 @@ export const useInput = (() => {
              */
             const handler = e => {
                   let ev = e;
-
                   if (isMouseString(ev)) {
                         const event = getEvent(ev);
 
