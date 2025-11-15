@@ -3,11 +3,7 @@ import { createComponent } from "../ecs/Component.js";
 import List from "../types/List.js"
 import { Position } from "./Position.js";
 /**@import {PhysicsPosition} from "." */
-
-/**
- * @type {import("../ecs/Component.js").Component<PhysicsPosition, unknown[]>}
- */
-export const Physics = createComponent(() => {
+function PhysicsComponent() {
       /**
        * @type {List<(pos: PhysicsPosition) => void>}
        */
@@ -61,7 +57,11 @@ export const Physics = createComponent(() => {
                   };
             },
       };
-}, Position);
+}
+/**
+ * @type {import("../ecs/Component.js").Component<PhysicsPosition, unknown[]>}
+ */
+export const Physics = createComponent(PhysicsComponent, Position);
 
 export const usePhysicsSystem = () => {
       let last = performance.now();

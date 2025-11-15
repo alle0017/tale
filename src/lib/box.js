@@ -2,13 +2,7 @@ import { Area } from "../rendering/shaders/area.js";
 import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
 
-/**
- * @returns {Area & { 
- *    bind(position: Position): void;
- *    unbind(): void; 
- * }}
- */
-export const Box = createDrawable(() => {
+function BoxComponent() {
       const area = new Area();
       let ticket;
       
@@ -49,5 +43,12 @@ export const Box = createDrawable(() => {
             }
       })
 
-      return area
-});
+      return area;
+}
+/**
+ * @returns {Area & { 
+ *    bind(position: Position): void;
+ *    unbind(): void; 
+ * }}
+ */
+export const Box = createDrawable(BoxComponent);

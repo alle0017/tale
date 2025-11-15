@@ -1,11 +1,7 @@
 /**@import {PhysicsPosition, Coordinates} from "." */
 import { createComponent } from "../ecs/Component.js";
 import List from "../types/List.js"
-
-/**
- * @type {import("../ecs/Component.js").Component<Coordinates, unknown[]>}
- */
-export const Position = createComponent(() => {
+function PositionComponent() {
       /**
        * @type {List<(pos: Coordinates) => void>}
        */
@@ -54,4 +50,8 @@ export const Position = createComponent(() => {
                   };
             },
       };
-});
+}
+/**
+ * @type {import("../ecs/Component.js").Component<Coordinates, unknown[]>}
+ */
+export const Position = createComponent(PositionComponent);

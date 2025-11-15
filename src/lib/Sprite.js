@@ -1,14 +1,8 @@
 import { Image } from "../rendering/shaders/image.js";
 import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
-
-/**
- * @returns {Image & { 
- *    bind(position: Position): void;
- *    unbind(): void; 
- * }}
- */
-export const Sprite = createDrawable(/**@param {number[][]} asset*/asset => {
+/**@param {number[][]} asset*/
+function SpriteComponent(asset) {
       const sprite = new Image(asset);
       let ticket;
       
@@ -50,4 +44,11 @@ export const Sprite = createDrawable(/**@param {number[][]} asset*/asset => {
       })
 
       return sprite
-});
+}
+/**
+ * @returns {Image & { 
+ *    bind(position: Position): void;
+ *    unbind(): void; 
+ * }}
+ */
+export const Sprite = createDrawable(SpriteComponent);

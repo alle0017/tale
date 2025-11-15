@@ -5,6 +5,7 @@ import EventManager from "./Event.js";
  * @template {{}} K
  * @template {unknown[]} X
  * @typedef {{ 
+ *    name: string,
  *    prototypes: readonly Component<unknown,unknown[]>[]
  *    events: EventManager<'access'|'attached'|'removed'>,
  *    create(...args: X): K & { $$proto: Component<K,X> },
@@ -41,6 +42,7 @@ export const createComponent = (factory, ...prototypes) => {
        * @type {Component<K, X>}
        */
       const component = { 
+            name: factory.name || '<<Component>>',
             prototypes,
             events: new EventManager(),
             create: (...args) => {
@@ -92,6 +94,7 @@ export const createAbstractComponent = (...prototypes) => {
       const entities = [];
 
       return { 
+            name: '<<Abstract component>>',
             prototypes,
             events: new EventManager(),
             create() {

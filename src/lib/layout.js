@@ -1,14 +1,8 @@
 import { Area } from "../rendering/shaders/area.js";
 import { createDrawable, } from "./Drawable.js";
 /**@import {Coordinates} from "./index.d.ts" */
-
-/**
- * @returns {Area & { 
- *    bind(position: Position): void;
- *    unbind(): void; 
- * }}
- */
-export const Layout = createDrawable(/**@param {Area} area*/area => {
+/**@param {Area} area*/
+function LayoutComponent(area) {
       let ticket;
       
       Object.defineProperties(area, {
@@ -49,4 +43,11 @@ export const Layout = createDrawable(/**@param {Area} area*/area => {
       })
 
       return area
-});
+}
+/**
+ * @returns {Area & { 
+ *    bind(position: Position): void;
+ *    unbind(): void; 
+ * }}
+ */
+export const Layout = createDrawable(LayoutComponent);

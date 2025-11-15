@@ -16,5 +16,6 @@ export const Drawable = createAbstractComponent();
  */
 export const createDrawable = (factory, ...prototypes) => {
       const component = createComponent(factory, Drawable, ...prototypes);
+      Drawable.name = 'DrawableComponent';
       return component;
 };
