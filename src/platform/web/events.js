@@ -19,6 +19,7 @@ const toY = num => Math.trunc(num/WebCanvas.FontHeight);
 export function bootstrap(hook = undefined) {
       let y = 0;
       let mousedown = false;
+      let drag = false;
 
       window.addEventListener('keypress', event => hook?.(event.key));
       window.addEventListener('mousedown', event => {
@@ -32,14 +33,16 @@ export function bootstrap(hook = undefined) {
             hook?.(key)
       });
       window.addEventListener('mouseup', event => {
-            mousedown = false;
             const key = buildMouseString(
-                  Action.Click, 
+                  drag ? Action.Drag : Action.Click, 
                   toX(event.clientX), 
                   toY(event.clientY), 
                   true
             );
             hook?.(key)
+
+            mousedown = false;
+            drag = false;
       });
       window.addEventListener('mousemove', event => {
             const key = buildMouseString(
@@ -51,9 +54,18 @@ export function bootstrap(hook = undefined) {
             hook?.(key)
       });
 
-      
+      window.addEventListener('dragstart', (event) => {
+            const key = buildMouseString(
+                  Action.Drag, 
+                  toX(event.clientX), 
+                  toY(event.clientY),  
+                  false
+            );
+            hook?.(key)
+      })
       window.addEventListener('mousemove', event => {
             let action = Action.SwipeDown;
+            let release = false;
 
             if (y - event.clientY > 0) {
                   action = Action.SwipeUp;
@@ -61,6 +73,7 @@ export function bootstrap(hook = undefined) {
 
             if (mousedown) {
                   action = Action.Drag;
+                  drag = true;
             }
 
             const key = buildMouseString(

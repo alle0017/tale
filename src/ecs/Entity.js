@@ -53,7 +53,7 @@ export const createEntity = () => {
                   return Boolean(component.get(id));
             },
             getAll() {
-                  return [...components].map(comp => comp.get(id));
+                  return components.map(comp => comp.get(id));
             },
             getAllComponentClasses() {
                   return [...components];

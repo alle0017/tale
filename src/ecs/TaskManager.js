@@ -34,7 +34,7 @@ export class TaskManager {
       #hpTasks;
       #idleId = -1;
       #animId = -1;
-      /**@type {EventManager<'change'>} */
+      /**@type {EventManager<'change'|'after-task'|'before-task'>} */
       #events = new EventManager();
 
       get events() {
@@ -59,7 +59,9 @@ export class TaskManager {
       #idleCallback = () => {
             for (const task of this.#lpTasks) {
                   try {
+                        this.#events.trigger('before-task', { task });
                         task();
+                        this.#events.trigger('after-task', { task });
                   } catch (e) {
                         console.error(e)
                   }
@@ -69,7 +71,9 @@ export class TaskManager {
 
       #animationCallback = () => {
             for (const task of this.#hpTasks) {
+                  this.#events.trigger('before-task', { task });
                   task();
+                  this.#events.trigger('after-task', { task });
             }
             this.#animId = requestAnimationFrame(this.#animationCallback);
       }

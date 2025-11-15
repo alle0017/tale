@@ -48,10 +48,10 @@ export default class Screen {
        * @param {Cell} pixel 
        */
       #setPixelOnScreen(pixel) {
-            if (pixel.x < 0 || pixel.x > this.#grid.width) {
+            if (pixel.x < 0 || pixel.x >= this.#grid.width) {
                   return;
             }
-            if (pixel.y < 0 || pixel.y > this.#grid.height) {
+            if (pixel.y < 0 || pixel.y >= this.#grid.height) {
                   return;
             }
             this.#grid.set(pixel);
