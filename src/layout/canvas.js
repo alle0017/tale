@@ -5,7 +5,7 @@ import { createComponent } from "./component.js";
 export const Canvas = createComponent(
       /**
        * 
-       * @param {import("./component.js").Props} props 
+       * @param {import("./component.js").Props<{}>} props 
        * @param  {...any} _ 
        */
       (props, ..._) => new CC()

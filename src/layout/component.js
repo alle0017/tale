@@ -13,6 +13,10 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  */
 /**
  * @template {{}} T
+ * @typedef {{ key: string, target: Area, ref: Ref<T> }} KeyEvent
+ */
+/**
+ * @template {{}} T
  * @typedef {{ 
  *    setState(transition: (state: Partial<Props<T>>) => Partial<T>): void, 
  *    state: T,
@@ -28,6 +32,7 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  *    onMouseLeft: (ev: Event<Props<T>>) => void, 
  *    onDrag: (ev: Event<Props<T>>) => void,
  *    onDrop: (ev: Event<Props<T>>) => void,
+ *    onKeyDown: (ev: KeyEvent<Props<T>>) => void,
  *    width: number,
  *    height: number,
  *    maxWidth: number,
@@ -184,6 +189,12 @@ export function createComponent(factory) {
                                     props.onDrag?.({...data, target: area, ref });
                               }
                         }
+                  });
+            }
+            if (props.onKeyDown) {
+                  events.on("keydown", ev => {
+                        const data = /**@type {{ key: string }}*/(ev.data);
+                        props.onKeyDown?.({ ...data, target: area, ref });
                   });
             }
             return area;

@@ -14,6 +14,9 @@ export class Canvas extends Area {
        * @type {Cell[][]}
        */
       #matrix = [];
+      get matrix() {
+            return this.#matrix;
+      }
       /**
        * 
        * @param {number} width 

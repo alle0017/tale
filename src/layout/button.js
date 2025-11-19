@@ -10,7 +10,7 @@ import { createComponent } from "./component.js";
 export const Button = createComponent(
       /**
        * 
-       * @param {Partial<{ color: HexColor, background: HexColor, text: string } & Props>} props 
+       * @param {Partial<Props<{ color: HexColor, background: HexColor, text: string }>>} props 
        * @param  {...Area} children 
        */
       (props, ...children) => {

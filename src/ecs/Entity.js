@@ -32,10 +32,14 @@ export const createEntity = () => {
             tags: new List(),
             add(instance) {
                   const component = /**@type {{} & { $$proto: Component<{}, unknown[]> }} */(instance);
+                  const protos = [];
                   component.$$proto.attach(id, instance);
                   components.push(component.$$proto);
-                  for (let i = 0; i < component.$$proto.prototypes.length; i++) {
-                        components.push(component.$$proto.prototypes[i]);
+                  protos.push(...component.$$proto.prototypes);
+
+                  for (let i = 0; i < protos.length; i++) {
+                        components.push(protos[i]);
+                        protos.push(...protos[i].prototypes);
                   }
                   return this;
             },

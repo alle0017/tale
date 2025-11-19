@@ -5,13 +5,13 @@ import WebCanvas from "./canvas.js";
  * @param {number} num 
  * @returns 
  */
-const toX = num => Math.trunc(num/WebCanvas.FontWidth);
+const toX = num => Math.trunc(num/WebCanvas.FontWidth) - 1;
 /**
  * 
  * @param {number} num 
  * @returns 
  */
-const toY = num => Math.trunc(num/WebCanvas.FontHeight);
+const toY = num => Math.round(num/WebCanvas.FontHeight) - 1;
 /**
  * 
  * @param {(key: string) => void} hook 
@@ -65,7 +65,6 @@ export function bootstrap(hook = undefined) {
       })
       window.addEventListener('mousemove', event => {
             let action = Action.SwipeDown;
-            let release = false;
 
             if (y - event.clientY > 0) {
                   action = Action.SwipeUp;

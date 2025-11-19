@@ -29,16 +29,9 @@ export const useInput = (() => {
             const resolver = new Map();
             
             resolver.set("arrowup", 'up');
-            resolver.set("w", 'up');
-
             resolver.set("arrowdown", 'down');
-            resolver.set("s", 'down');
-
             resolver.set("arrowleft", 'left');
-            resolver.set("a", 'left');
-
             resolver.set("arrowright", 'right');
-            resolver.set("d", 'right');
 
             /**
              * @type {(e: string) =>void}
@@ -58,6 +51,7 @@ export const useInput = (() => {
                   }
                   events.trigger(ev);
                   events.trigger('any', { key: ev });
+                  events.trigger('keydown', { key: ev });
             };
 
             let node = tasks.push(handler);
