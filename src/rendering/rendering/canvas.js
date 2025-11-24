@@ -1,5 +1,5 @@
 import { SnapshotBuffer } from "./snapshot-buffer.js";
-
+import ScreenIterator from "./screen-iterator.js";
 /**@typedef {'0' | '1' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' } Hex */
 /**@typedef {`#${Hex}${Hex}${Hex}` | 'none'} HexColor */
 /**@typedef {`#${Hex}${Hex}${Hex}${Hex}`} AlphaHexColor */
@@ -11,6 +11,9 @@ import { SnapshotBuffer } from "./snapshot-buffer.js";
  * @returns {Color}
  */
 export const toColorVector = color => {
+      if (color == 'none') {
+            return [0,0,0,0];
+      }
       /**
        * @type {Color}
        */
@@ -66,18 +69,19 @@ export const EMPTY = EMPTY_CHAR.charCodeAt(0);
  * @abstract
  */
 export default class Canvas {
+      static OffsetPrimitive = 9;
+      static OffsetZ = 8;
+      static OffsetBackground = 4;
+      static OffsetForeground = 0;
+      // foreground (4) + background (4) + z (1) + primitive (2)
+      static Stride = COLOR_VEC_SIZE*2 + 1 + 2;
       /**
+       * [
+       *    fg: [r: i8,g: i8,b: i8,a: i8], bg: [r: i8,g: i8,b: i8,a: i8], depth: i8, primitive: i16
+       * ]
        * @type {SnapshotBuffer<Uint8Array>}
        */
-      screen;
-      /**
-       * @type {SnapshotBuffer<Uint8Array>}
-       */
-      depthBuffer;
-      /**
-       * @type {SnapshotBuffer<Uint16Array>}
-       */
-      primitive;
+      buffer;
       /**
        * @readonly
        * @type {number}
@@ -103,9 +107,7 @@ export default class Canvas {
        * @param {number} height 
        */
       constructor(width, height) {
-            this.screen = new SnapshotBuffer(new Uint8Array(width*height*COLOR_VEC_SIZE*2)); // background + foreground
-            this.depthBuffer = new SnapshotBuffer(new Uint8Array(width*height));
-            this.primitive = new SnapshotBuffer(new Uint16Array(width*height));
+            this.buffer = new SnapshotBuffer(new Uint8Array(width*height*Canvas.Stride));
             this.#width = width;
             this.#height = height;
             this.clear();
@@ -116,35 +118,8 @@ export default class Canvas {
        * @param {number} y
        * @protected 
        */
-      getForegroundIndex(x, y) {
-            return y * this.#width + x;
-      }
-      /**
-       * 
-       * @param {number} x 
-       * @param {number} y 
-       * @protected
-       */
-      getDepthIndex(x, y) {
-            return y * this.#width + x;
-      }
-      /**
-       * 
-       * @param {number} x 
-       * @param {number} y 
-       * @protected
-       */
-      getPrimitiveIndex(x, y) {
-            return y * this.#width + x;
-      }
-      /**
-       * 
-       * @param {number} x 
-       * @param {number} y 
-       * @protected
-       */
-      getBackgroundIndex(x, y) {
-            return y * this.#width + x + this.#width * this.#height;
+      getIndex(x, y) {
+            return y * this.#width * Canvas.Stride + x * Canvas.Stride;
       }
       /**
        * @protected
@@ -155,14 +130,9 @@ export default class Canvas {
                   return false;
             }
 
-            if (this.depthBuffer.isEqualToPrevious() && this.screen.isEqualToPrevious() && this.primitive.isEqualToPrevious()) {
-                  this.depthBuffer.restore();
-                  this.primitive.restore();
-                  this.screen.restore();
+            if (this.buffer.isEqualToPrevious()) {
+                  this.buffer.restore().discard();
 
-                  this.screen.discard();
-                  this.primitive.discard();
-                  this.depthBuffer.discard();
                   this.dirty = false;
                   return false;
             }
@@ -170,17 +140,14 @@ export default class Canvas {
       }
       /**
        * 
-       * @returns {[Uint8Array, Uint16Array]}
+       * @returns {ScreenIterator}
        */
       getScreen() {
-            const screen = this.screen.peek();
-            const primitives = this.primitive.peek();
+            const buffer = this.buffer.peek();
 
-            this.screen.discard();
-            this.primitive.discard();
-            this.depthBuffer.discard();
+            this.buffer.discard();
 
-            return [screen, primitives]
+            return new ScreenIterator(buffer);
       }
       /**
        * set a cell of the buffer with corresponding 
@@ -193,52 +160,59 @@ export default class Canvas {
        * @param {Cell} cell
        */
       set(cell) {
-            const fg = this.getForegroundIndex(cell.x, cell.y);
-            const bg = this.getBackgroundIndex(cell.x, cell.y);
-            const depth = this.getDepthIndex(cell.x, cell.y);
-            const primitive = this.getPrimitiveIndex(cell.x, cell.y);
-            const depthBuffer = this.depthBuffer.peek();
-            const screen = this.screen.peek();
-            const primitives = this.primitive.peek();
+            const idx = this.getIndex(cell.x, cell.y)
+            const buffer = this.buffer.peek();
 
 
-            if (depthBuffer[depth] > cell.z) {
+            if (buffer[idx + Canvas.OffsetZ] > cell.z) {
                   return;
             } 
-            const foreground = cell.color !== 'none' ? toColorVector(cell.color): [...screen.subarray(fg * COLOR_VEC_SIZE, (fg + 1) * COLOR_VEC_SIZE)];
-            const background = cell.background !== 'none' ? toColorVector(cell.background): [...screen.subarray(bg * COLOR_VEC_SIZE, (bg + 1) * COLOR_VEC_SIZE)];
+
+            const currentForeground = buffer
+                  .subarray(
+                        idx + Canvas.OffsetForeground, 
+                        idx + Canvas.OffsetForeground + COLOR_VEC_SIZE
+                  );
+            const currentBackground = 
+            buffer
+                  .subarray(
+                        idx + Canvas.OffsetBackground, 
+                        idx + Canvas.OffsetBackground + COLOR_VEC_SIZE
+                  );
+            const foreground = cell.color !== 'none' ? 
+                  toColorVector(cell.color): 
+                  currentForeground;
+            const background = cell.background !== 'none' ? 
+                  toColorVector(cell.background): 
+                  currentBackground;
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
 
-                  if (screen[fg * COLOR_VEC_SIZE + i] !== foreground[i] || screen[bg * COLOR_VEC_SIZE + i] !== background[i]) {
+                  if (currentForeground[i] !== foreground[i] || currentBackground[i] !== background[i]) {
                         this.dirty = true;
                   }
-                  
-                  screen[fg * COLOR_VEC_SIZE + i] = foreground[i];
-                  screen[bg * COLOR_VEC_SIZE + i] = background[i];
+                  buffer[idx + Canvas.OffsetForeground + i] = foreground[i];
+                  buffer[idx + Canvas.OffsetBackground + i] = background[i];
             }
-            primitives[primitive] = cell.color !== 'none' ? cell.char.charCodeAt(0): primitive[primitive];
-            depthBuffer[depth] = cell.z;
+
+            if (cell.color !== 'none') {
+                  const code = cell.char.charCodeAt(0);
+                  // split the code into two bytes
+                  buffer[idx + Canvas.OffsetPrimitive] = code >> 8;
+                  buffer[idx + Canvas.OffsetPrimitive + 1] = code;
+            }
+
+            buffer[idx + Canvas.OffsetZ] = cell.z;
       }
 
       /**
        * clear all the buffer stored
        */
       clear() {
-            this.depthBuffer.snapshot();
-            this.primitive.snapshot();
-            this.screen.snapshot();
+            const buffer = this.buffer.snapshot().peek();
 
-            const depthBuffer = this.depthBuffer.peek();
-            const screen = this.screen.peek();
-            const primitives = this.primitive.peek();
-
-            for (let i = 0; i < screen.length; i++) {
-                  screen[i] = 0;
-            }
-            for (let i = 0; i < primitives.length; i++) {
-                  primitives[i] = 0;
-                  depthBuffer[i] = 0;
+            for (let i = 0; i < buffer.length; i++) {
+                  buffer[i] = 0;
             }
             this.dirty = true;
       }

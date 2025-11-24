@@ -100,6 +100,10 @@ export function createComponent(factory) {
        */
       return (props, ...children) => {
             const events = useInput().events;
+            //@ts-ignore
+            props.ref ??= useRef();
+            /**@type {Ref<Props<T>>} */
+            let ref = props.ref;
             let area = factory(
                         props, 
                         ...children
@@ -108,14 +112,9 @@ export function createComponent(factory) {
                                     child
                               )
                   );
-            /**@type {Ref<Props<T>>} */
-            let ref = props.ref;
             
             setProps(area, props);
 
-            if (!ref) {
-                  ref = useRef();
-            }
 
             ref.root = area;
             ref.setState = (transition) => {

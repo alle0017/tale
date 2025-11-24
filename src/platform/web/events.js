@@ -21,7 +21,6 @@ export function bootstrap(hook = undefined) {
       let mousedown = false;
       let drag = false;
 
-      window.addEventListener('keypress', event => hook?.(event.key));
       window.addEventListener('mousedown', event => {
             mousedown = true;
             const key = buildMouseString(

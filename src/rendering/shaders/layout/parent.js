@@ -58,6 +58,11 @@ export class Parent extends Area {
             children.parent = null;
             this.#children.splice(this.#children.indexOf(children), 1);
       }
+      removeChildren() {
+            //@ts-ignore
+            this.#children.forEach(child => (child.parent = null));
+            this.#children = [];
+      }
       /**
        * remove the children from this node
        * @param {Area} children 

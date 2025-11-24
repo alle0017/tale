@@ -29,14 +29,17 @@ export class SnapshotBuffer {
             for (let i = 0; i < this.#buffer.length; i++) {
                   this.#snapshot[i] = this.#buffer[i];
             }
+            return this;
       }
 
       restore() {
             this.#buffer = this.#snapshot;
+            return this;
       }
 
       discard() {
             this.#snapshot = undefined;
+            return this;
       }
 
       isEqualToPrevious() {

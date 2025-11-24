@@ -1,4 +1,4 @@
-import { EMPTY, COLOR_VEC_SIZE, rgb,  } from "../../rendering/rendering/canvas.js";
+import { rgb,  } from "../../rendering/rendering/canvas.js";
 import ICanvas from "../../rendering/rendering/canvas.js";
 /**@import { Cell  } from "../../rendering/rendering/canvas.js";*/
 
@@ -69,43 +69,60 @@ export default class WebCanvas extends ICanvas {
                   return;
             }
             
-            const [screen, primitives] = this.getScreen();
+            const iterator = this.getScreen();
+            let x = 0;
+            let y = 0;
+
             this.#ctx.textRendering = "optimizeSpeed";
             this.#ctx.font = `${WebCanvas.#fontHeight}px monospace`;
 
-            for (let y = 0; y < this.height; y++) {
-                  for (let x = 0; x < this.width; x++) {
-                        const primitive = primitives[this.getPrimitiveIndex(x, y)];
-                        const foreground = this.getForegroundIndex(x,y);
-                        const background = this.getBackgroundIndex(x,y);
+            while (iterator.hasNext()) {
+                  const primitive = iterator.primitive();
+                  const foreground = iterator.color();
+                  const background = iterator.background();
 
-                        const fg = rgb(
-                              screen[COLOR_VEC_SIZE*foreground],
-                              screen[COLOR_VEC_SIZE*foreground + 1],
-                              screen[COLOR_VEC_SIZE*foreground + 2],
-                        );
-                        const bg = rgb(
-                              screen[COLOR_VEC_SIZE*background],
-                              screen[COLOR_VEC_SIZE*background + 1],
-                              screen[COLOR_VEC_SIZE*background + 2],
-                        );
+                  const fg = rgb(
+                        foreground[0],
+                        foreground[1],
+                        foreground[2],
+                  );
+                  const bg = rgb(
+                        background[0],
+                        background[1],
+                        background[2],
+                  );
 
+                  if (bg !== this.#ctx.fillStyle) {
                         this.#ctx.fillStyle = bg;
-                        this.#ctx.fillRect(
-                              x*WebCanvas.#fontWidth, 
-                              // correction to the height of the pixel
-                              y*WebCanvas.#fontHeight + 4, 
-                              // correction to the width of the pixel
-                              WebCanvas.#fontWidth + 1, 
-                              WebCanvas.#fontHeight
-                        );
+                  }
+
+                  this.#ctx.fillRect(
+                        x*WebCanvas.#fontWidth, 
+                        // correction to the height of the pixel
+                        y*WebCanvas.#fontHeight + 4, 
+                        // correction to the width of the pixel
+                        WebCanvas.#fontWidth + 1, 
+                        WebCanvas.#fontHeight
+                  );
+
+                  if (fg !== this.#ctx.fillStyle) {
                         this.#ctx.fillStyle = fg;
+                  }
+
+                  if (fg !== bg) {
                         this.#ctx.fillText(
-                              String.fromCharCode(primitive || EMPTY),
+                              primitive,
                               x * WebCanvas.#fontWidth,
                               (y + 1) * WebCanvas.#fontHeight - 1,
                         );
                   }
+                  x++;
+
+                  if (x == this.width) {
+                        x = 0;
+                        y++;
+                  } 
+                  iterator.next();
             }
             this.dirty = false;
       }

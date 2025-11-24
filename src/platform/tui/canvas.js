@@ -19,31 +19,40 @@ export default class TuiCanvas extends ICanvas {
                   return;
             }
             
-            const [screen, primitives] = this.getScreen();
+            const iterator = this.getScreen();
 
+            let x = 0;
+            let y = 0;
             let buffer = '';
-            for (let y = 0; y < this.height; y++) {
-                  for (let x = 0; x < this.width; x++) {
-                        const primitive = primitives[this.getPrimitiveIndex(x, y)];
-                        const foreground = this.getForegroundIndex(x,y);
-                        const background = this.getBackgroundIndex(x,y);
 
-                        const fg = Codes.Foreground(
-                              screen[COLOR_VEC_SIZE*foreground],
-                              screen[COLOR_VEC_SIZE*foreground + 1],
-                              screen[COLOR_VEC_SIZE*foreground + 2],
-                              screen[COLOR_VEC_SIZE*foreground + 3],
-                        );
-                        const bg = Codes.Background(
-                              screen[COLOR_VEC_SIZE*background],
-                              screen[COLOR_VEC_SIZE*background + 1],
-                              screen[COLOR_VEC_SIZE*background + 2],
-                              screen[COLOR_VEC_SIZE*background + 3],
-                        );
+            while (iterator.hasNext()) {
+                  const primitive = iterator.primitive();
+                  const foreground = iterator.color();
+                  const background = iterator.background();
 
-                        buffer += bg + fg + String.fromCharCode(primitive || EMPTY) + Codes.Reset;
-                  }
-                  buffer += '\n';
+                  const fg = Codes.Foreground(
+                        foreground[0],
+                        foreground[1],
+                        foreground[2],
+                        foreground[3]
+                  );
+                  const bg = Codes.Background(
+                        background[0],
+                        background[1],
+                        background[2],
+                        background[3],
+                  );
+                  buffer += bg + fg + primitive + Codes.Reset;
+
+                  x++;
+
+                  if (x == this.width) {
+                        x = 0;
+                        buffer += '\n';
+
+                        y++;
+                  } 
+                  iterator.next();
             }
             console.log(Codes.HideCursor + Codes.Clear + Codes.Home + buffer + Codes.ShowCursor);
             this.dirty = false;
