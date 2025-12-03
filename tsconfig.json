@@ -5,6 +5,7 @@
             "src/**/*",
             "engine/**/*",
             "cli/**/*",
+            "game/**/*"
       ],
       "compilerOptions": {
             // Tells TypeScript to read JS files, as

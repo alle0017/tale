@@ -8,3 +8,4 @@ package-lock.json
 # MACOS
 .DS_Store
 .assets
+game
