@@ -1,12 +1,9 @@
-import { useGame, Game } from "./game/Game.js";
 import { Sprite, } from "./lib/Sprite.js";
 import { Position } from "./lib/Position.js";
 import { useInput } from "./lib/input.js";
 import { Body, useCollisionSystem } from "./lib/collisions/Collision.js";
 import { createEntity } from "./ecs/Entity.js";
 import { useSystem } from "./ecs/System.js";
-import { World } from "./ecs/World.js";
-import { WorldManager } from "./ecs/WorldManager.js";
 import { useTaskManager } from "./ecs/TaskManager.js";
 import { useRendering } from "./rendering/Rendering.js";
 import { usePhysicsSystem, Physics} from "./lib/Physics.js";
@@ -23,10 +20,9 @@ import { Action as MouseAction } from "./lib/mouse.js";
 import { Camera } from "./rendering/shaders/camera.js";
 import { Shader } from "./lib/shader.js";
 import { rgb } from "./rendering/rendering/canvas.js";
+import { setScene, createScene, addEntity, getScene } from "./ecs/scene.js";
 
 export {
-      useGame,
-      Game,
       useSystem,
       Physics,
       usePhysicsSystem,
@@ -35,8 +31,6 @@ export {
       useCollisionSystem,
       useInput,
       createEntity,
-      World,
-      WorldManager,
       Body,
       useTaskManager,
       useRendering,
@@ -53,14 +47,13 @@ export {
       Camera,
       Shader,
       rgb,
+      setScene,
+      createScene,
+      addEntity,
+      getScene,
 }
 
 export const useWorld = () => {
-      const world = new World();
-      
-      WorldManager.use(world);
-      
+      setScene({ entities: [] })
       useRendering();
-
-      return world;
 }

@@ -1,24 +1,23 @@
 import { Vertical } from "./layout/vertical.js";
 import { Horizontal } from "./layout/horizontal.js";
 import { Box, Text } from "./layout/box.js";
-import { World } from "./ecs/World.js";
 import { createEntity } from "./ecs/Entity.js";
 import { Layout } from "./lib/layout.js";
 import { Button } from "./layout/button.js";
 import { Canvas } from "./layout/canvas.js";
 import { createComponent, useRef } from "./layout/component.js";
+import { addEntity } from "./ecs/scene.js";
 /**@import { Area } from "./rendering/shaders/area.js";*/
 
 /**
  * @param {Area} parent 
- * @param {World} scene 
  */
-export function createRoot(parent, scene) {
+export function createRoot(parent) {
       const box = Layout.create(parent);
       const entity = createEntity().add(box);
       entity.tags.push('window');
       entity.tags.push('ui');
-      scene.add(entity);
+      addEntity(entity);
       return entity;
 }
 

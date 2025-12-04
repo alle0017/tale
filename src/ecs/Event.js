@@ -44,4 +44,7 @@ export default class EventManager {
       remove(event, hook) {
             this.#hooks.get(event).delete(hook)
       }
+      clear() {
+            this.#hooks.clear();
+      }
 }

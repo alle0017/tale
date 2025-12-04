@@ -1,5 +1,6 @@
 import { useTaskManager } from "./TaskManager.js";
-import { WorldManager } from "./WorldManager.js";
+//import { WorldManager } from "./WorldManager.js";
+import { getScene, } from "./scene.js";
 /**@import {Component, Query} from "./Component.js" */
 /**@import {Entity} from "./Entity.js" */
 
@@ -19,7 +20,7 @@ import { WorldManager } from "./WorldManager.js";
  */
 export const useSystem = (update, ...query) => {
       const system = () => {
-            const allEntities = WorldManager.current.entities;
+            const allEntities = getScene().entities;
 
             for (const entity of allEntities) {
                   let flag = true;
@@ -34,7 +35,7 @@ export const useSystem = (update, ...query) => {
             }
       };
 
-      WorldManager.current.addSystem(system);
+      //WorldManager.current.addSystem(system);
 
       useTaskManager().addTask(system);    
 };
@@ -48,8 +49,7 @@ export const useSystem = (update, ...query) => {
  */
 export const useUnhandledSystem = (update, ...query) => {
       const system = () => {
-            const entities = WorldManager
-                  .current
+            const entities = getScene()
                   .entities
                   .filter(entity => {
                         let flag = true;
@@ -61,7 +61,34 @@ export const useUnhandledSystem = (update, ...query) => {
             update(entities);
       };
 
-      WorldManager.current.addSystem(system);
+      //WorldManager.current.addSystem(system);
 
       useTaskManager().addTask(system);    
+};
+
+/** 
+ * create a `system` function, 
+ * a method that is executed during each update.
+ * Entities passed to it are the result of query execution
+ * on all entities available into the game.
+ * @param {(entities: Entity[]) => void} update
+ * @param {Component<unknown, unknown[]>[]} query
+ */
+export const useAnimationSystem = (update, ...query) => {
+      const system = () => {
+            const entities = getScene()
+                  .entities
+                  .filter(entity => {
+                        let flag = true;
+                        for (let i = 0; i < query.length && flag; i++) {
+                              flag &&= entity.has(query[i]);
+                        }
+                        return flag;
+                  });
+            update(entities);
+      };
+
+      //WorldManager.current.addSystem(system);
+
+      useTaskManager().addAnimationTask(system);    
 };
