@@ -15,6 +15,9 @@ import EventManager from "./Event.js";
  * @param {T} state
  */
 export const State = state => {
+      /**
+       * @type {EventManager<'change'|'before-change'|'after-change'>}
+       */
       const events = new EventManager();
 
       return {
@@ -28,8 +31,10 @@ export const State = state => {
                    * @param {Args} args
                    */
                   return (...args) => {
+                        const prev = state;
+                        events.trigger('before-change');
                         state = setter(state, ...args);
-                        events.trigger('change');
+                        events.trigger('change', { previousState: prev });
                   }
             },
             /**

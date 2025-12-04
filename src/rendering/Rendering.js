@@ -28,7 +28,7 @@ export function useRendering() {
             }
             ctx.clear();
             ctx.draw();
-      }, Drawable)
+      }, Drawable);
 }
 
 /**

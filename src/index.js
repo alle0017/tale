@@ -52,8 +52,3 @@ export {
       addEntity,
       getScene,
 }
-
-export const useWorld = () => {
-      setScene({ entities: [] })
-      useRendering();
-}
