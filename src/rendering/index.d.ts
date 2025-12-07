@@ -1,4 +1,3 @@
-import { Pipe } from "./pipe/pipe.js";
 import { Shader } from "./shaders/shader.js";
 
 /**
@@ -7,7 +6,6 @@ import { Shader } from "./shaders/shader.js";
 export default interface GPUContext {
       entities: Shader[];
       canvas: { width: number, height: number };
-      renderingPipeline: Pipe;
       /**
        * Draws all entities added to the current context
        */

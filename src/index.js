@@ -8,7 +8,6 @@ import { useTaskManager } from "./ecs/TaskManager.js";
 import { useRendering } from "./rendering/Rendering.js";
 import { usePhysicsSystem, Physics} from "./lib/Physics.js";
 import { createComponent } from "./ecs/Component.js";
-import FrameWrapper from "./lib/frame-wrapper.js";
 import { Box } from "./lib/box.js";
 import { Layout } from "./lib/layout.js";
 import { Area } from "./rendering/shaders/area.js";
@@ -36,7 +35,6 @@ export {
       useRendering,
       createComponent,
       Box,
-      FrameWrapper,
       Layout,
       Area,
       Border,

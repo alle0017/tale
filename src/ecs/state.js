@@ -16,7 +16,7 @@ import EventManager from "./Event.js";
  */
 export const State = state => {
       /**
-       * @type {EventManager<'change'|'before-change'|'after-change'>}
+       * @type {EventManager<'change'|'before-change'>}
        */
       const events = new EventManager();
 

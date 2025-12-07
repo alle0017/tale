@@ -1,4 +1,4 @@
-import { useAnimationSystem } from "../ecs/System.js";
+import { useUnhandledSystem } from "../ecs/System.js";
 import { Drawable, } from "../lib/Drawable.js";
 import Context from "./Context.js";
 /**@import {Entity} from "../ecs/Entity.js" */
@@ -17,7 +17,7 @@ export function useRendering() {
 
       events.on('change', () => (dirty = true));
 
-      useAnimationSystem(entities => {
+      useUnhandledSystem(entities => {
             if (dirty) {
                   ctx.removeAll();
       

@@ -1,4 +1,3 @@
-import { Pipe } from "../pipe/pipe.js";
 import Canvas from "../rendering/canvas.js";
 import Platform from "../../platform/platform.js";
 /**@import {Cell} from "../rendering/canvas.js"; */
@@ -12,16 +11,6 @@ export default class Screen {
        * @type {Canvas}
        */
       #grid;
-      #pipe = new Pipe();
-
-      /**
-       * pipeline used to render pixels.
-       * any pixel drawn on screen can be modified 
-       * through functions attached to the pipeline
-       */
-      get pipe() {
-            return this.#pipe;
-      }
 
       /**
        * grid used to draw pixels onto
@@ -31,7 +20,6 @@ export default class Screen {
       }
 
       constructor() {
-            this.#pipe.use(pixel => this.#setPixelOnScreen(pixel));
             Platform.onPlatformChange(() => {
                   this.#resize();
             });
@@ -74,6 +62,6 @@ export default class Screen {
        * @param {Cell} pixel 
        */
       set(pixel) {
-            this.#pipe.apply(pixel);
+            this.#setPixelOnScreen(pixel);
       }
 }

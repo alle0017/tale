@@ -26,10 +26,6 @@ export default class Context {
             return this.#screen.grid;
       }
 
-      get renderingPipeline() {
-            return this.#screen.pipe;
-      }
-
       constructor() {
             this.#screen = new Screen();
       }
