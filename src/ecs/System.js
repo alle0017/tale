@@ -90,5 +90,5 @@ export const useAnimationSystem = (update, ...query) => {
 
       //WorldManager.current.addSystem(system);
 
-      useTaskManager().addAnimationTask(system);    
+      useTaskManager().addTask(system);    
 };

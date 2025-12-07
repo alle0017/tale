@@ -44,6 +44,6 @@ events.on('change', (e) => {
       //@ts-ignore
       if (e.data.previousState != getScene()) {
             events.clear();
-            TaskManager.get().clearAll();
+            TaskManager.clearAll();
       }     
 });
