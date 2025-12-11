@@ -47,6 +47,7 @@ import { Parent } from "../rendering/shaders/layout/parent.js";
  *    color: HexColor,
  *    paddingLeft: number,
  *    paddingTop: number,
+ *    overflow: 'hidden' | 'show'
  * } & T} Props
  */
 
@@ -92,6 +93,10 @@ export function createComponent(factory) {
 
             if (props.classNames) {
                   area.classList.push(...props.classNames.split(' '));
+            }
+
+            if (props.overflow && area instanceof Parent) {
+                  area.overflow = props.overflow;
             }
       }
       /**

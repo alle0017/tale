@@ -2,7 +2,9 @@
 /**@import {HexColor} from "../rendering/canvas.js" */
 import { Shader } from "./shader.js";
 import { BorderComponent } from "./border-component.js";
+import { BoundingBoxComponent } from "./bounding-box.js";
 /**@import { Parent } from "./layout/parent.js";*/
+
 /**
  * @implements {Shader}
  */
@@ -17,6 +19,7 @@ export class Area extends Shader {
       #matrix;
       #autoWidth = 0;
       #border = new BorderComponent();
+      #boundingBox = new BoundingBoxComponent();
       paddingX = 0;
       paddingY = 0;
       offsetX = 0;
@@ -70,6 +73,14 @@ export class Area extends Shader {
 
       get height() {
             return this.#matrix.length;
+      }
+
+      get boundingBox() {
+            return this.#boundingBox.boundingBox;
+      }
+
+      set boundingBox(box) {
+            this.#boundingBox.boundingBox = box;
       }
 
 
@@ -190,7 +201,9 @@ export class Area extends Shader {
             for (let i = 0; i < height; i ++) {
                   const width = this.maxWidth && this.maxWidth < this.#matrix[i].length? this.maxWidth: this.#matrix[i].length;
                   for (let j = 0; j < width; j++) {
-
+                        if (!this.#boundingBox.isInBoundingBox(j + this.x + this.offsetX, i + this.y + this.offsetY)) {
+                              continue;
+                        }
                         screen.set({
                               x: j + this.x + this.offsetX,
                               y: i + this.y + this.offsetY,

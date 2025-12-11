@@ -7,6 +7,16 @@ export class Parent extends Area {
        */
       #children = [];
 
+      #overflow = true;
+
+      get overflow() {
+            return this.#overflow ? 'show': 'hidden'
+      }
+
+      set overflow(overflow) {
+            this.#overflow = overflow == 'show';
+      }
+
       /**
        * @type {readonly Area[]}
        */
@@ -26,15 +36,39 @@ export class Parent extends Area {
                   this.#children[i].draw(screen);
             }
       }
-
+      
       /**
        * strategy to implement for positioning 
        * children inside the parent
        * @param {Area} children 
        */
       position(children) {
-            children.offsetX = this.x + this.paddingX + this.offsetX;
-            children.offsetY = this.y + this.paddingY + this.offsetY;
+            const x = this.x + this.offsetX;
+            const y = this.y + this.offsetY;
+
+            children.offsetX = x + this.paddingX;
+            children.offsetY = y + this.paddingY;
+
+            if (this.#overflow) {
+                  return;
+            }
+
+            const boundingBox = {
+                  startX: x,
+                  startY: y,
+                  endX: x + this.width,
+                  endY: y + this.height,
+            };
+            const stack = [children];
+
+            while (stack.length > 0) {
+                  stack[0].boundingBox = boundingBox;
+
+                  if (stack[0] instanceof Parent) {
+                        stack.push(...stack[0].#children);
+                  }
+                  stack.shift();
+            }
       }
 
       /**
