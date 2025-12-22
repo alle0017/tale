@@ -1,5 +1,4 @@
-import { rgb,  } from "../../rendering/rendering/canvas.js";
-import ICanvas from "../../rendering/rendering/canvas.js";
+import ICanvas, { rgb, } from "../../rendering/rendering/canvas.js";
 /**@import { Cell  } from "../../rendering/rendering/canvas.js";*/
 
 /**

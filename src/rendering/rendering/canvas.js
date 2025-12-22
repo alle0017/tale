@@ -11,7 +11,7 @@ import ScreenIterator from "./screen-iterator.js";
  * @returns {Color}
  */
 export const toColorVector = color => {
-      if (color == 'none') {
+      if (!color || color == 'none') {
             return [0,0,0,0];
       }
       /**

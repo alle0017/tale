@@ -1,9 +1,11 @@
-import { Area } from "../rendering/shaders/area.js";
-import { createDrawable, } from "./Drawable.js";
-/**@import {Coordinates} from "./index.d.ts" */
+import { Node } from "./node.js";
+import { createDrawable } from "../../lib/Drawable.js";
+import { addEntity } from "../../ecs/scene.js";
+import { createEntity } from "../../ecs/Entity.js";
+/**@import {Coordinates} from "../../lib/index.d.ts" */
 
-function BoxComponent() {
-      const area = new Area();
+/**@param {Node} area*/
+function LayoutComponent(area) {
       let ticket;
       
       Object.defineProperties(area, {
@@ -22,8 +24,8 @@ function BoxComponent() {
                         }
 
                         ticket = position.onMove(pos => {
-                              area.x = pos.x;
-                              area.y = pos.y;
+                              area.style.left = pos.x;
+                              area.style.top = pos.y;
                         });
                   },     
             },
@@ -43,7 +45,7 @@ function BoxComponent() {
             }
       })
 
-      return area;
+      return area
 }
 /**
  * @returns {Area & { 
@@ -51,4 +53,12 @@ function BoxComponent() {
  *    unbind(): void; 
  * }}
  */
-export const Box = createDrawable(BoxComponent);
+export const Layout = createDrawable(LayoutComponent);
+export const createWindow = () => {
+      const box = Layout.create(new Node());
+      const entity = createEntity().add(box);
+      entity.tags.push('window');
+      entity.tags.push('ui');
+      addEntity(entity);
+      return entity;
+}
