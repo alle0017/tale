@@ -191,12 +191,12 @@ export class Style extends Shader {
             }
 
             this.border.x = x;
-            this.border.y = y;
+            this.border.y = y - 1;
             this.border.z = this.zIndex;
             this.border.draw(
                   screen, 
                   this.width, 
-                  this.height, 
+                  this.height + 1, 
                   this.boundingBox
             );
       }     

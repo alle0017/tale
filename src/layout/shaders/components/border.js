@@ -54,18 +54,18 @@ export class BorderComponent {
 
             for (let i = 0; i < height; i++) {
                   if (boundingBox.isInBoundingBox(this.x - 1, i + this.y)) {
-                        this.#drawSymbol(screen, this.x - 1, i + this.y, this.style.vertical);
+                        this.#drawSymbol(screen, this.x - 1, i + this.y, this.style.l);
                   }
                   if (boundingBox.isInBoundingBox(this.x + width, i + this.y)) {
-                        this.#drawSymbol(screen, this.x + width, i + this.y, this.style.vertical);
+                        this.#drawSymbol(screen, this.x + width, i + this.y, this.style.r);
                   }
             }
             for (let i = 0; i < width; i++) {
                   if (boundingBox.isInBoundingBox(this.x + i, this.y)) {
-                        this.#drawSymbol(screen, this.x + i, this.y, this.style.horizontal);
+                        this.#drawSymbol(screen, this.x + i, this.y, this.style.t);
                   }
                   if (boundingBox.isInBoundingBox(this.x + i, height + this.y)) {
-                        this.#drawSymbol(screen, this.x + i, this.y + height, this.style.horizontal);
+                        this.#drawSymbol(screen, this.x + i, this.y + height, this.style.b);
                   }
             }
 
