@@ -52,7 +52,7 @@ export const EMPTY = EMPTY_CHAR.charCodeAt(0);
 
 /**
  * @typedef {{
- *    background: HexColor | AlphaHexColor,
+ *    background: HexColor,
  *    color: HexColor,
  *    char: string,
  *    x: number,
@@ -160,11 +160,30 @@ export default class Canvas {
        * @param {Cell} cell
        */
       set(cell) {
-            const idx = this.getIndex(cell.x, cell.y)
+            this.setRaw(cell.x, cell.y, cell.z, cell.color, cell.background, cell.char);
+      }
+
+       /**
+       * set a cell of the buffer with corresponding 
+       * color and character. Note that characters occupies 2 row, 
+       * so using different primitives instead of pixel must be done
+       * carefully. in particular must be done by setting a primitive every 2 rows.
+       * if a primitive is settled, it always uses the foreground color, while the the other raw impose 
+       * the background (ex. if you use 'A' with color red in column 0 row 0 and set White in column 0 row 1, 
+       * then 'A' will appear red on white)
+       * @param {number} x
+       * @param {number} y
+       * @param {number} z
+       * @param {HexColor} backgroundColor 
+       * @param {HexColor} color
+       * @param {string} char  
+       */
+      setRaw(x, y, z, color, backgroundColor, char) {
+            const idx = this.getIndex(x, y)
             const buffer = this.buffer.peek();
 
 
-            if (buffer[idx + Canvas.OffsetZ] > cell.z) {
+            if (buffer[idx + Canvas.OffsetZ] > z) {
                   return;
             } 
 
@@ -179,12 +198,12 @@ export default class Canvas {
                         idx + Canvas.OffsetBackground, 
                         idx + Canvas.OffsetBackground + COLOR_VEC_SIZE
                   );
-            const foreground = cell.color !== 'none' ? 
-                  toColorVector(cell.color): 
-                  currentForeground;
-            const background = cell.background !== 'none' ? 
-                  toColorVector(cell.background): 
-                  currentBackground;
+            const foreground = color == 'none' ? 
+                  currentForeground:
+                  toColorVector(color);
+            const background = backgroundColor == 'none' ? 
+                  currentBackground: 
+                  toColorVector(backgroundColor);
 
             for (let i = 0; i < COLOR_VEC_SIZE; i++) {
 
@@ -195,15 +214,16 @@ export default class Canvas {
                   buffer[idx + Canvas.OffsetBackground + i] = background[i];
             }
 
-            if (cell.color !== 'none') {
-                  const code = cell.char.charCodeAt(0);
+            if (color !== 'none') {
+                  const code = char.codePointAt(0);
                   // split the code into two bytes
                   buffer[idx + Canvas.OffsetPrimitive] = code >> 8;
                   buffer[idx + Canvas.OffsetPrimitive + 1] = code;
             }
 
-            buffer[idx + Canvas.OffsetZ] = cell.z;
+            buffer[idx + Canvas.OffsetZ] = z;
       }
+
 
       /**
        * clear all the buffer stored

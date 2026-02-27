@@ -27,7 +27,7 @@ export class Style extends Shader {
        * @type {OverflowStrategy}
        */
       #overflowStrategy = OverflowStrategy.get();
-      #positionStrategy = PositioningStrategy.get();
+      $positionStrategy = PositioningStrategy.get();
       boundingBox = new BoundingBoxComponent();
 
       content = '';
@@ -92,10 +92,6 @@ export class Style extends Shader {
             this.paddingTop = value;
       }
 
-      get positioningStrategy() {
-            return this.#positionStrategy;
-      }
-
       get position() {
             switch (this.#position) {
                   case Positioning.Absolute: return 'absolute';
@@ -112,16 +108,16 @@ export class Style extends Shader {
       }
 
       get flexDirection() {
-            return this.#positionStrategy.Id;
+            return this.$positionStrategy.Id;
       }
 
       set flexDirection(value) {
             switch (value) {
-                  case PositioningStrategy.Id: this.#positionStrategy = PositioningStrategy.get();
+                  case PositioningStrategy.Id: this.$positionStrategy = PositioningStrategy.get();
                         break;
-                  case VerticalPositioningStrategy.Id: this.#positionStrategy = VerticalPositioningStrategy.get();
+                  case VerticalPositioningStrategy.Id: this.$positionStrategy = VerticalPositioningStrategy.get();
                         break;
-                  case HorizontalPositioningStrategy.Id: this.#positionStrategy = HorizontalPositioningStrategy.get();
+                  case HorizontalPositioningStrategy.Id: this.$positionStrategy = HorizontalPositioningStrategy.get();
                         break;
             }
       }

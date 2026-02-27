@@ -19,11 +19,11 @@ export class Node {
       /**
        * @readonly
        */
-      focus = new FocusComponent();
+      focus = new FocusComponent(this);
       /**
        * @type {Node[]}
        */ 
-      #children = [];
+      children = [];
       /**
        * @type {Set<string>}
        */
@@ -31,10 +31,6 @@ export class Node {
 
       get classList() {
             return this.#classes;
-      }
-
-      get children() {
-            return this.#children;
       }
 
       /**
@@ -63,13 +59,13 @@ export class Node {
             while (stack.length > 0) {
                   const curr = stack.shift();
 
-                  for (let i = 0; i < curr.#children.length; i++) {
-                        if (curr.#children[i].#classes.has(nodeClass)) {
-                              res.push(curr.#children[i]);
+                  for (let i = 0; i < curr.children.length; i++) {
+                        if (curr.children[i].#classes.has(nodeClass)) {
+                              res.push(curr.children[i]);
                         }
 
-                        if (curr.#children[i].#children.length > 0) {
-                              stack.push(curr.#children[i]);
+                        if (curr.children[i].children.length > 0) {
+                              stack.push(curr.children[i]);
                         }
                   }
             }
@@ -90,13 +86,13 @@ export class Node {
             while (stack.length > 0) {
                   const curr = stack.shift();
 
-                  for (let i = 0; i < curr.#children.length; i++) {
-                        if (curr.#children[i].id == id) {
-                              return curr.#children[i];
+                  for (let i = 0; i < curr.children.length; i++) {
+                        if (curr.children[i].id == id) {
+                              return curr.children[i];
                         }
 
-                        if (curr.#children[i].#children.length > 0) {
-                              stack.push(curr.#children[i]);
+                        if (curr.children[i].children.length > 0) {
+                              stack.push(curr.children[i]);
                         }
                   }
             }
@@ -125,12 +121,12 @@ export class Node {
 
             const [left,top] = this.style.getTopLeftCorner(); 
 
-            this.style.positioningStrategy.initialize();
+            this.style.$positionStrategy.initialize();
 
-            for (let i = 0; i < this.#children.length; i++) {
-                  this.style.positioningStrategy.position(this, this.#children[i], top, left);
-                  this.style.clip(this.#children[i]);
-                  this.#children[i].draw(screen);
+            for (let i = 0; i < this.children.length; i++) {
+                  this.style.$positionStrategy.position(this, this.children[i], top, left);
+                  this.style.clip(this.children[i]);
+                  this.children[i].draw(screen);
             }
       }
 
@@ -140,7 +136,7 @@ export class Node {
        */
       append(...children) {
             for (let i = 0; i < children.length; i++) {
-                  this.#children.push(children[i]);
+                  this.children.push(children[i]);
                   children[i].parent = this;
             }
       }
@@ -151,11 +147,11 @@ export class Node {
        */
       removeChild(children) {
             children.parent = null;
-            this.#children.splice(this.#children.indexOf(children), 1);
+            this.children.splice(this.children.indexOf(children), 1);
       }
       removeChildren() {
-            this.#children.forEach(child => (child.parent = null));
-            this.#children = [];
+            this.children.forEach(child => (child.parent = null));
+            this.children = [];
       }
       /**
        * remove the children from this node
@@ -165,7 +161,14 @@ export class Node {
       replaceChild(children, replace) {
             children.parent = null;
             replace.parent = this;
-            this.#children.splice(this.#children.indexOf(children), 1, replace);
+            this.children.splice(this.children.indexOf(children), 1, replace);
+      }
+      /**
+       * append the children to this node
+       * @param {Node[]} children 
+       */
+      replaceChildren(...children) {
+            this.children = children;
       }
 
       /**

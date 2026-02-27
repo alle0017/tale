@@ -8,7 +8,11 @@ import { Style } from "./style.js";
 
 /**
  * @template {{}} T
- * @typedef {{ x: number, y: number, target: Node, ref: Ref<T> }} Event
+ * @typedef {{ x: number, y: number, target: Node, ref: Ref<T> }} SpatialEvent
+ */
+/**
+ * @template {{}} T
+ * @typedef {{ target: Node, ref: Ref<T> }} Event
  */
 /**
  * @template {{}} T
@@ -35,12 +39,12 @@ import { Style } from "./style.js";
 /**
  * @template {{}} T
  * @typedef {{ 
- *    onClick: (ev: Event<Props<T>>) => void, 
- *    onClickReleased: (ev: Event<Props<T>>) => void, 
- *    onHover: (ev: Event<Props<T>>) => void, 
- *    onMouseLeft: (ev: Event<Props<T>>) => void, 
- *    onDrag: (ev: Event<Props<T>>) => void,
- *    onDrop: (ev: Event<Props<T>>) => void,
+ *    onClick: (ev: SpatialEvent<Props<T>>) => void, 
+ *    onClickReleased: (ev: SpatialEvent<Props<T>>) => void, 
+ *    onHover: (ev: SpatialEvent<Props<T>>) => void, 
+ *    onMouseLeft: (ev: SpatialEvent<Props<T>>) => void, 
+ *    onDrag: (ev: SpatialEvent<Props<T>>) => void,
+ *    onDrop: (ev: SpatialEvent<Props<T>>) => void,
  *    onKeyDown: (ev: KeyEvent<Props<T>>) => void,
  *    ref: Ref<Props<T>>,
  *    style: Part<Style>
@@ -87,8 +91,8 @@ function setProps(node, props) {
  * @param {Action} event 
  * @param {Node} node 
  * @param {Ref<Props<T>>} ref
- * @param {(ev: Event<Props<T>>) => void | undefined} onEnter 
-* @param {(ev: Event<Props<T>>) => void | undefined} onRelease 
+ * @param {(ev: SpatialEvent<Props<T>>) => void | undefined} onEnter 
+* @param {(ev: SpatialEvent<Props<T>>) => void | undefined} onRelease 
  */
 function setEvent(event, node, ref, handler, onEnter, onRelease, delta = 0) {
       if (!onEnter && !onRelease) {

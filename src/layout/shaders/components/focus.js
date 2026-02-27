@@ -11,12 +11,16 @@ export class FocusComponent {
        */
       #target;
 
+      /**
+       * 
+       * @param {Node} target 
+       */
       constructor(target) {
             this.#target = target;
       }
       
       hasFocus() {
-            return FocusComponent.#activeElement === this.#target;
+            return FocusComponent.#activeElement && FocusComponent.#activeElement === this.#target;
       }
       focus() {
             FocusComponent.#activeElement = this.#target;

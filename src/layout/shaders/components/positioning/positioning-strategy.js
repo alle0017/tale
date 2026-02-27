@@ -35,6 +35,5 @@ export class PositioningStrategy {
       position(parent, children, top, left) {
             children.style.$offsetX = left + parent.style.paddingLeft;
             children.style.$offsetY = top + parent.style.paddingTop;
-            //parent.style.clip(children);
       }
 }

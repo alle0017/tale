@@ -82,7 +82,10 @@ export function bootstrap(hook = undefined) {
             );
             hook?.(key)
       });
-      window.addEventListener('keydown', event => hook?.(event.key.length > 1? event.key.toLowerCase(): event.key))
+      window.addEventListener('keydown', event => {
+            event.preventDefault();
+            hook?.(event.key.length > 1? event.key.toLowerCase(): event.key)
+      })
 }
 
 /**
